@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceConnect - Messages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .messenger-container {
+            display: flex;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+
+        /* Login Screen */
+        .login-screen {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-screen.hidden {
+            display: none;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .login-box h1 {
+            color: #1877f2;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .login-box p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .profile-select {
+            margin-bottom: 20px;
+        }
+
+        .profile-select label {
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .profile-select select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .password-input {
+            margin-bottom: 20px;
+        }
+
+        .password-input label {
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .password-input input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background: #166fe5;
+        }
+
+        .error-msg {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+        }
+
+        .hint-box {
+            background: #e7f3ff;
+            border-left: 4px solid #1877f2;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #1877f2;
+            text-decoration: none;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 360px;
+            border-right: 1px solid #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .sidebar.hidden {
+            display: none;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .current-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #050505;
+        }
+
+        .logout-btn {
+            padding: 6px 12px;
+            background: #e4e6eb;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .conversation-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .conversation-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .conversation-item:hover {
+            background: #f2f2f2;
+        }
+
+        .conversation-item.active {
+            background: #e7f3ff;
+        }
+
+        .conversation-item.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .conversation-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .conversation-info {
+            flex: 1;
+        }
+
+        .conversation-name {
+            font-weight: 600;
+            color: #050505;
+            margin-bottom: 2px;
+        }
+
+        .conversation-preview {
+            font-size: 0.9rem;
+            color: #65676b;
+        }
+
+        .lock-icon {
+            color: #999;
+            font-size: 1.2rem;
+        }
+
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .chat-area.hidden {
+            display: none;
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .chat-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #050505;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+
+        .message {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .message.sent {
+            flex-direction: row-reverse;
+        }
+
+        .message-bubble {
+            max-width: 60%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .message.received .message-bubble {
+            background: #e4e6eb;
+            color: #050505;
+        }
+
+        .message.sent .message-bubble {
+            background: #0084ff;
+            color: white;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: #65676b;
+            margin-top: 2px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #65676b;
+        }
+
+        .empty-state .icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <h1>💬 FaceConnect</h1>
+            <p>Login to view messages</p>
+            
+            <form onsubmit="login(event)">
+                <div class="profile-select">
+                    <label>Select Profile</label>
+                    <select id="profileSelect">
+                        <option value="">Choose a profile...</option>
+                        <option value="aziz">Aziz Ben Mahmoud</option>
+                        <option value="ela">Ela Trabelsi</option>
+                        <option value="amine">Amine Khelifi</option>
+                        <option value="yassine">Yassine Mahmoudi</option>
+                        <option value="fares">Fares Jlassi</option>
+                    </select>
+                </div>
+                
+                <div class="password-input">
+                    <label>Password</label>
+                    <input type="password" id="passwordInput" placeholder="Enter password">
+                </div>
+                
+                <button type="submit" class="login-btn">Login</button>
+                
+                <div class="error-msg" id="errorMsg">❌ Incorrect password</div>
+                
+                <div class="hint-box">
+                    💡 <strong>Hint:</strong> Passwords might be mentioned in other evidence or related to personal info
+                </div>
+            </form>
+            
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Messenger Interface -->
+    <div class="messenger-container">
+        <div class="sidebar hidden" id="sidebar">
+            <div class="sidebar-header">
+                <div class="current-user">
+                    <div class="user-avatar" id="currentAvatar"></div>
+                    <div class="user-name" id="currentUserName"></div>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+            
+            <div class="conversation-list" id="conversationList"></div>
+        </div>
+
+        <div class="chat-area hidden" id="chatArea">
+            <div class="empty-state">
+                <div class="icon">💬</div>
+                <p>Select a conversation to view messages</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const profiles = {
+            aziz: {
+                name: 'Aziz Ben Mahmoud',
+                password: 'wehack2025',
+                avatar: 'A',
+                conversations: ['ela', 'amine', 'yassine']
+            },
+            ela: {
+                name: 'Ela Trabelsi',
+                password: 'treasurer123',
+                avatar: 'E',
+                conversations: ['aziz']
+            },
+            amine: {
+                name: 'Amine Khelifi',
+                password: 'cschair2025',
+                avatar: 'AM',
+                conversations: ['aziz', 'fares', 'yassine']
+            },
+            yassine: {
+                name: 'Yassine Mahmoudi',
+                password: 'yassine2025',
+                avatar: 'Y',
+                conversations: ['aziz', 'amine']
+            },
+            fares: {
+                name: 'Fares Jlassi',
+                password: 'design123',
+                avatar: 'F',
+                conversations: ['amine']
+            }
+        };
+
+        const messages = {
+            'aziz-ela': [
+                { sender: 'ela', text: 'Aziz, I need to talk to you. Privately.', time: '20:45' },
+                { sender: 'aziz', text: 'I think we said enough at the meeting.', time: '20:46' },
+                { sender: 'ela', text: "No. You're WRONG about me. I just found out during my audit!", time: '20:47' },
+                { sender: 'ela', text: "Listen, I'm not your enemy. But I think you're in danger.", time: '20:48' },
+                { sender: 'aziz', text: 'From who?', time: '20:49' },
+                { sender: 'ela', text: "From the people you exposed. They're scared.", time: '20:49' },
+                { sender: 'ela', text: 'Can I come to your apartment? 30 minutes?', time: '20:50' },
+                { sender: 'aziz', text: "Fine. But this doesn't change anything.", time: '20:52' }
+            ],
+            'aziz-amine': [
+                { sender: 'amine', text: 'Aziz why did you expose me like that?', time: '20:20' },
+                { sender: 'aziz', text: 'You exposed yourself by stealing.', time: '20:22' },
+                { sender: 'amine', text: 'I can pay it back! I swear!', time: '20:23' },
+                { sender: 'aziz', text: "That's not the point. You broke trust.", time: '20:24' }
+            ],
+            'aziz-yassine': [
+                { sender: 'yassine', text: 'We need to talk. NOW.', time: '20:25' },
+                { sender: 'aziz', text: 'About what?', time: '20:27' },
+                { sender: 'yassine', text: 'About your accusations. Those equipment purchases are FAKE.', time: '20:28' },
+                { sender: 'aziz', text: 'I have documents.', time: '20:29' },
+                { sender: 'yassine', text: 'Then your documents are FORGED. Those companies dont exist!', time: '20:31' },
+                { sender: 'yassine', text: "I'm coming to talk to you tonight.", time: '20:47' }
+            ],
+            'amine-fares': [
+                { sender: 'fares', text: 'Bro, I\'m freaking out.', time: '21:15' },
+                { sender: 'amine', text: 'Me too.', time: '21:16' },
+                { sender: 'fares', text: "I can't prove those design invoices were legitimate.", time: '21:17' },
+                { sender: 'fares', text: 'What do I do? I\'ll get expelled.', time: '21:18' },
+                { sender: 'amine', text: "I don't know yet.", time: '21:19' },
+                { sender: 'fares', text: 'Aziz has to be stopped.', time: '21:20' },
+                { sender: 'amine', text: 'What do you mean?', time: '21:21' },
+                { sender: 'fares', text: "He can't report us. He just CAN'T.", time: '21:22' },
+                { sender: 'amine', text: "Fares, don't do anything stupid.", time: '21:23' }
+            ],
+            'amine-yassine': [
+                { sender: 'yassine', text: "This isn't about YOUR fees. It's about Aziz's accusations about ME.", time: '20:25' },
+                { sender: 'amine', text: 'About the equipment purchases?', time: '20:26' },
+                { sender: 'yassine', text: "They're NOT REAL. He FABRICATED that evidence.", time: '20:27' },
+                { sender: 'amine', text: 'What? Why?', time: '20:28' },
+                { sender: 'yassine', text: 'To have leverage over everyone.', time: '20:29' },
+                { sender: 'yassine', text: "But YOUR embezzlement is real. He has actual proof.", time: '20:30' },
+                { sender: 'yassine', text: "I'm going to talk to him tonight.", time: '20:47' }
+            ]
+        };
+
+        let currentUser = null;
+        let activeConversation = null;
+
+        function login(e) {
+            e.preventDefault();
+            const profile = document.getElementById('profileSelect').value;
+            const password = document.getElementById('passwordInput').value;
+            
+            if (!profile) {
+                alert('Please select a profile');
+                return;
+            }
+            
+            if (profiles[profile] && profiles[profile].password === password) {
+                currentUser = profile;
+                showMessenger();
+            } else {
+                const err = document.getElementById('errorMsg');
+                err.style.display = 'block';
+                setTimeout(() => err.style.display = 'none', 3000);
+            }
+        }
+
+        function showMessenger() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('sidebar').classList.remove('hidden');
+            
+            const user = profiles[currentUser];
+            document.getElementById('currentAvatar').textContent = user.avatar;
+            document.getElementById('currentUserName').textContent = user.name;
+            
+            loadConversations();
+        }
+
+        function loadConversations() {
+            const user = profiles[currentUser];
+            const list = document.getElementById('conversationList');
+            
+            list.innerHTML = user.conversations.map(contactId => {
+                const contact = profiles[contactId];
+                const convKey = [currentUser, contactId].sort().join('-');
+                const msgs = messages[convKey] || [];
+                const lastMsg = msgs[msgs.length - 1];
+                
+                return `
+                    <div class="conversation-item" onclick="openConversation('${contactId}')">
+                        <div class="conversation-avatar">${contact.avatar}</div>
+                        <div class="conversation-info">
+                            <div class="conversation-name">${contact.name}</div>
+                            <div class="conversation-preview">${lastMsg ? lastMsg.text.substring(0, 30) + '...' : 'No messages'}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openConversation(contactId) {
+            activeConversation = contactId;
+            const contact = profiles[contactId];
+            const chatArea = document.getElementById('chatArea');
+            
+            chatArea.classList.remove('hidden');
+            chatArea.innerHTML = `
+                <div class="chat-header">
+                    <div class="chat-avatar">${contact.avatar}</div>
+                    <div class="chat-name">${contact.name}</div>
+                </div>
+                <div class="messages-container" id="messagesContainer"></div>
+            `;
+            
+            loadMessages(contactId);
+            
+            // Update active state
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.conversation-item').classList.add('active');
+        }
+
+        function loadMessages(contactId) {
+            const convKey = [currentUser, contactId].sort().join('-');
+            const msgs = messages[convKey] || [];
+            const container = document.getElementById('messagesContainer');
+            
+            container.innerHTML = msgs.map(msg => {
+                const isSent = msg.sender === currentUser;
+                return `
+                    <div class="message ${isSent ? 'sent' : 'received'}">
+                        <div>
+                            <div class="message-bubble">${msg.text}</div>
+                            <div class="message-time">${msg.time}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function logout() {
+            currentUser = null;
+            activeConversation = null;
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('sidebar').classList.add('hidden');
+            document.getElementById('chatArea').classList.add('hidden');
+            document.getElementById('profileSelect').value = '';
+            document.getElementById('passwordInput').value = '';
+        }
+    </script>
+</body>
+</html>
