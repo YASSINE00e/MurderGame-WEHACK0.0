@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeHack 0.0 - Murder Mystery Investigation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        /* Crime Scene Tape Animation */
+        .crime-tape {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 60px;
+            background: repeating-linear-gradient(
+                45deg,
+                #ffeb3b,
+                #ffeb3b 20px,
+                #000 20px,
+                #000 40px
+            );
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: #000;
+            letter-spacing: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .crime-tape::after {
+            content: '⚠ CRIME SCENE - DO NOT CROSS ⚠ POLICE LINE ⚠ CRIME SCENE - DO NOT CROSS ⚠';
+            animation: scroll 20s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 80px auto 0;
+            padding: 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            margin-bottom: 40px;
+            border: 2px solid #333;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            color: #ff4444;
+            text-shadow: 0 0 20px rgba(255,68,68,0.5);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+
+        .hero h2 {
+            font-size: 1.8rem;
+            color: #ffeb3b;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #b0b0b0;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Case Info Cards */
+        .case-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .info-card {
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            border-left: 5px solid #ff4444;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255,68,68,0.3);
+        }
+
+        .info-card h3 {
+            color: #ff4444;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            color: #d0d0d0;
+            line-height: 1.6;
+        }
+
+        .info-card .icon {
+            font-size: 2rem;
+        }
+
+        /* Rules Section */
+        .rules {
+            background: #16213e;
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            border: 2px solid #2a3f5f;
+        }
+
+        .rules h2 {
+            color: #ffeb3b;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .rules ol {
+            list-style: none;
+            counter-reset: rule-counter;
+        }
+
+        .rules li {
+            counter-increment: rule-counter;
+            margin-bottom: 20px;
+            padding-left: 50px;
+            position: relative;
+            color: #e0e0e0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .rules li::before {
+            content: counter(rule-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #ff4444;
+            color: #fff;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Evidence Portal Links */
+        .portals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .portal-card {
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #444;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .portal-card:hover::before {
+            left: 100%;
+        }
+
+        .portal-card:hover {
+            transform: scale(1.05);
+            border-color: #ff4444;
+            box-shadow: 0 10px 30px rgba(255,68,68,0.3);
+        }
+
+        .portal-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .portal-card .portal-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .portal-card h3 {
+            color: #ffeb3b;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .portal-card p {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+        }
+
+        .portal-card .status {
+            margin-top: 15px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status.unlocked {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+
+        .status.locked {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 1px solid #f44336;
+        }
+
+        /* Start Button */
+        .start-section {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255,68,68,0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255,68,68,0.6);
+        }
+
+        .start-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            border-top: 1px solid #333;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="crime-tape"></div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>🔍 MURDER INVESTIGATION 🔍</h1>
+            <h2>WeHack 0.0 - The Hackathon That Hacked Back</h2>
+            <p>Two IEEE FSM EXCOM members are dead. One person sits in jail. But the truth remains buried in digital evidence, encrypted files, and hidden surveillance footage. Your team must navigate through multiple secure systems to uncover the truth.</p>
+        </div>
+
+        <!-- Case Information -->
+        <div class="case-info">
+            <div class="info-card">
+                <h3><span class="icon">💀</span> The Victims</h3>
+                <p><strong>Aziz Ben Mahmoud</strong> - SB Chair, found dead December 11, 2025</p>
+                <p style="margin-top: 10px;"><strong>Ela Trabelsi</strong> - Treasurer, found dead December 14, 2025</p>
+            </div>
+
+            <div class="info-card">
+                <h3><span class="icon">⚖️</span> The Accused</h3>
+                <p><strong>Amine Khelifi</strong> - CS Vice Chair, currently detained for Ela's murder. Claims he was framed.</p>
+            </div>
+
+            <div class="info-card">
+                <h3><span class="icon">❓</span> Your Mission</h3>
+                <p>Investigate digital evidence across multiple platforms. Determine who killed whom, who's lying, and who's being framed.</p>
+            </div>
+        </div>
+
+        <!-- Rules Section -->
+        <div class="rules">
+            <h2>📋 How to Play</h2>
+            <ol>
+                <li>Your team will navigate through multiple digital platforms: IEEE Portal, Police Database, Social Media, Security Systems, and more.</li>
+                <li>Each platform requires access credentials or search parameters. Look for clues in evidence you've already collected.</li>
+                <li>Not all evidence is available immediately - you must discover clues that unlock new portals and evidence.</li>
+                <li>Pay close attention to dates, times, usernames, and case numbers - they are your keys to unlocking information.</li>
+                <li>Some evidence is FORGED. Use forensic analysis and cross-referencing to identify fabricated materials.</li>
+                <li>Work together as a team. One person operates the computer, but everyone should analyze the evidence.</li>
+                <li>At the end, your team will present your conclusions about who killed whom and why.</li>
+            </ol>
+        </div>
+
+        <!-- Evidence Portals -->
+        <h2 style="text-align: center; color: #ffeb3b; font-size: 2rem; margin-bottom: 30px; text-transform: uppercase;">🔐 Evidence Access Portals</h2>
+
+        <div class="portals">
+            <div class="portal-card" onclick="openPortal('ieee')">
+                <div class="portal-icon">📁</div>
+                <h3>IEEE FSM Portal</h3>
+                <p>Internal document management system</p>
+                <div class="status unlocked">🔓 ACCESS REQUIRED</div>
+            </div>
+
+            <div class="portal-card" onclick="openPortal('police')">
+                <div class="portal-icon">🚔</div>
+                <h3>Police Database</h3>
+                <p>Public records & case files</p>
+                <div class="status unlocked">🔓 PUBLIC ACCESS</div>
+            </div>
+
+            <div class="portal-card" onclick="openPortal('messenger')">
+                <div class="portal-icon">💬</div>
+                <h3>Social Network</h3>
+                <p>Private messages & profiles</p>
+                <div class="status unlocked">🔓 LOGIN REQUIRED</div>
+            </div>
+
+            <div class="portal-card" onclick="openPortal('security')">
+                <div class="portal-icon">📹</div>
+                <h3>FSM Security System</h3>
+                <p>CCTV footage archive</p>
+                <div class="status unlocked">🔓 RESTRICTED ACCESS</div>
+            </div>
+
+            <div class="portal-card" onclick="openPortal('admin')">
+                <div class="portal-icon">💻</div>
+                <h3>Server Admin Panel</h3>
+                <p>Technical logs & access records</p>
+                <div class="status unlocked">🔓 RESTRICTED ACCESS</div>
+            </div>
+
+            <div class="portal-card locked" id="evidence-portal">
+                <div class="portal-icon">📊</div>
+                <h3>Evidence Board</h3>
+                <p>Collected evidence & analysis</p>
+                <div class="status locked">🔒 LOCKED</div>
+            </div>
+        </div>
+
+        <!-- Start Button -->
+        <div class="start-section">
+            <button class="start-btn" onclick="startInvestigation()">BEGIN INVESTIGATION</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>WeHack 0.0 Murder Mystery © 2025 | IEEE FSM | For Educational Purposes Only</p>
+    </footer>
+
+    <script>
+        function startInvestigation() {
+            // Show first clue/instruction
+            alert("INVESTIGATION STARTED\n\nFirst Lead: Multiple witnesses mentioned seeing IEEE EXCOM members accessing the IEEE Portal on the night of December 10th. The portal requires a password.\n\nHint: The password format is the current chairman's name + current year.\n\nClick 'IEEE FSM Portal' to begin.");
+        }
+
+        function openPortal(portalType) {
+            switch(portalType) {
+                case 'ieee':
+                    window.location.href = 'ieee-portal.html';
+                    break;
+                case 'police':
+                    window.location.href = 'police-database.html';
+                    break;
+                case 'messenger':
+                    window.location.href = 'messenger.html';
+                    break;
+                    case 'security':
+                    window.location.href = 'security-system.html';
+                    break;
+                    case 'admin':
+                    window.location.href = 'server-admin.html';
+                    break;
+                default:
+                    alert("This portal is currently locked. Find more clues to unlock it.");
+            }
+        }
+
+        // Unlock portals based on discovered clues (you can add logic here)
+        function unlockPortal(portalId) {
+            const portal = document.getElementById(portalId);
+            if (portal) {
+                portal.classList.remove('locked');
+                portal.querySelector('.status').className = 'status unlocked';
+                portal.querySelector('.status').textContent = '🔓 UNLOCKED';
+            }
+        }
+    </script>
+</body>
+</html>
