@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEEE FSM - Server Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            min-height: 100vh;
+        }
+
+        .terminal-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .terminal-header {
+            background: #2d2d30;
+            padding: 10px 20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .btn-close { background: #f44; }
+        .btn-minimize { background: #fb4; }
+        .btn-maximize { background: #4f4; }
+
+        .terminal-title {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .terminal-body {
+            background: #1e1e1e;
+            min-height: 80vh;
+            padding: 20px;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            border: 1px solid #2d2d30;
+        }
+
+        .login-screen {
+            max-width: 600px;
+            margin: 100px auto;
+        }
+
+        .login-screen.hidden {
+            display: none;
+        }
+
+        .terminal-prompt {
+            color: #4ec9b0;
+            margin-bottom: 20px;
+        }
+
+        .input-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .prompt-symbol {
+            color: #4ec9b0;
+            margin-right: 10px;
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #d4d4d4;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .error-text {
+            color: #f44747;
+            margin: 10px 0;
+        }
+
+        .success-text {
+            color: #4ec9b0;
+            margin: 10px 0;
+        }
+
+        .hint-text {
+            color: #608b4e;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .main-panel {
+            display: none;
+        }
+
+        .main-panel.active {
+            display: block;
+        }
+
+        .toolbar {
+            background: #2d2d30;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            padding: 8px 16px;
+            background: #0e639c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .tool-btn:hover {
+            background: #1177bb;
+        }
+
+        .tool-btn.danger {
+            background: #c5373c;
+        }
+
+        .tool-btn.danger:hover {
+            background: #d9534f;
+        }
+
+        .query-section {
+            background: #252526;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .query-label {
+            color: #4ec9b0;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .query-input {
+            width: 100%;
+            background: #1e1e1e;
+            border: 1px solid #3e3e42;
+            color: #d4d4d4;
+            padding: 10px;
+            font-family: inherit;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .results-table {
+            background: #252526;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: #2d2d30;
+            color: #4ec9b0;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #3e3e42;
+        }
+
+        .table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .table tr:hover {
+            background: #2a2d2e;
+        }
+
+        .log-entry {
+            background: #252526;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid #4ec9b0;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .log-time {
+            color: #608b4e;
+        }
+
+        .log-user {
+            color: #4ec9b0;
+            font-weight: bold;
+        }
+
+        .log-action {
+            color: #d4d4d4;
+        }
+
+        .log-warning {
+            border-left-color: #ffa500;
+        }
+
+        .log-critical {
+            border-left-color: #f44747;
+        }
+
+        .ip-address {
+            color: #ce9178;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="window-controls">
+                <div class="window-btn btn-close"></div>
+                <div class="window-btn btn-minimize"></div>
+                <div class="window-btn btn-maximize"></div>
+            </div>
+            <div class="terminal-title">root@ieee-server:~</div>
+        </div>
+
+        <div class="terminal-body">
+            <!-- Login Screen -->
+            <div class="login-screen" id="loginScreen">
+                <div class="terminal-prompt">
+                    IEEE FSM Server - Admin Access Terminal<br>
+                    ═══════════════════════════════════════<br>
+                    Unauthorized access is prohibited.<br><br>
+                </div>
+
+                <form onsubmit="adminLogin(event)">
+                    <div class="input-line">
+                        <span class="prompt-symbol">admin@ieee-server:~$</span>
+                        <span style="margin-right: 10px;">login</span>
+                        <input type="text" class="terminal-input" id="username" placeholder="username" autocomplete="off">
+                    </div>
+
+                    <div class="input-line">
+                        <span class="prompt-symbol">admin@ieee-server:~$</span>
+                        <span style="margin-right: 10px;">password</span>
+                        <input type="password" class="terminal-input" id="password" placeholder="••••••••" autocomplete="off">
+                    </div>
+
+                    <div class="input-line">
+                        <span class="prompt-symbol">admin@ieee-server:~$</span>
+                        <button type="submit" style="background: none; border: none; color: #4ec9b0; cursor: pointer; font-family: inherit; font-size: 1rem;">authenticate</button>
+                    </div>
+                </form>
+
+                <div class="error-text" id="errorMsg" style="display: none;">
+                    ✗ Authentication failed. Access denied.
+                </div>
+
+                <div class="hint-text">
+                    # Hint: Default admin credentials<br>
+                    # Username format: role_name (e.g., cs_chair, treasurer)<br>
+                    # Password: Check recent server activity logs
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <a href="index.html" style="color: #4ec9b0; text-decoration: none;">← exit</a>
+                </div>
+            </div>
+
+            <!-- Main Panel -->
+            <div class="main-panel" id="mainPanel">
+                <div class="toolbar">
+                    <button class="tool-btn" onclick="showLogs()">📋 View Logs</button>
+                    <button class="tool-btn" onclick="showQuery()">🔍 Query Database</button>
+                    <button class="tool-btn danger" onclick="logout()">⚠ Logout</button>
+                </div>
+
+                <!-- Logs Section -->
+                <div id="logsSection" style="display: none;">
+                    <h3 style="color: #4ec9b0; margin-bottom: 20px;">Server Access Logs - December 13, 2025</h3>
+                    <div id="logsContainer"></div>
+                </div>
+
+                <!-- Query Section -->
+                <div id="querySection" style="display: none;">
+                    <div class="query-section">
+                        <label class="query-label">Run Query:</label>
+                        <select class="query-input" id="querySelect" onchange="runQuery()">
+                            <option value="">Select a query...</option>
+                            <option value="recent_activity">Show recent server activity</option>
+                            <option value="user_logins">Show user login history</option>
+                            <option value="file_access">Show file access logs</option>
+                            <option value="email_activity">Show email server activity</option>
+                        </select>
+                    </div>
+                    <div id="queryResults"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_USER = 'admin';
+        const ADMIN_PASS = 'root2025';
+
+        const serverLogs = [
+            {
+                time: '20:42:15',
+                user: 'yassine_admin',
+                action: 'SSH Login',
+                ip: '41.230.###.67',
+                details: 'Successful authentication'
+            },
+            {
+                time: '20:43:18',
+                user: 'yassine_admin',
+                action: 'Directory Access',
+                details: 'Accessed /media/excom_meetings/recordings/',
+                warning: false
+            },
+            {
+                time: '20:45:22',
+                user: 'yassine_admin',
+                action: 'File Download',
+                details: 'Downloaded EXCOM_Nov15_Meeting.mp4 (156 MB)',
+                warning: true
+            },
+            {
+                time: '20:47:35',
+                user: 'yassine_admin',
+                action: 'File Download',
+                details: 'Downloaded EXCOM_Dec03_Meeting.mp4 (142 MB)',
+                warning: true
+            },
+            {
+                time: '20:49:16',
+                user: 'yassine_admin',
+                action: 'File Download',
+                details: 'Downloaded Amine_voice_segments.mp3 (12 MB)',
+                warning: true,
+                critical: true
+            },
+            {
+                time: '20:52:33',
+                user: 'yassine_admin',
+                action: 'Telegram Web',
+                details: 'Opened Telegram Web interface via browser',
+                warning: true
+            },
+            {
+                time: '20:55:47',
+                user: 'yassine_admin',
+                action: 'File Upload',
+                details: 'Uploaded audio file (23 seconds) to Telegram',
+                warning: true,
+                critical: true
+            },
+            {
+                time: '21:18:44',
+                user: 'yassine_admin',
+                action: 'Remote Desktop',
+                details: 'Connected to IEEE Office Computer via RDP',
+                warning: true
+            },
+            {
+                time: '21:19:12',
+                user: 'yassine_admin',
+                action: 'Account Login',
+                details: 'Logged into email: amine.khelifi@ieee-fsm.tn',
+                warning: true,
+                critical: true
+            },
+            {
+                time: '21:21:47',
+                user: 'yassine_admin',
+                action: 'Email Draft',
+                details: 'Created draft email to ela.trabelsi@ieee-fsm.tn',
+                warning: true,
+                critical: true
+            },
+            {
+                time: '21:23:58',
+                user: 'yassine_admin',
+                action: 'Email Draft',
+                details: 'Draft saved (NOT sent)',
+                warning: true
+            },
+            {
+                time: '21:24:45',
+                user: 'yassine_admin',
+                action: 'Remote Desktop',
+                details: 'Session terminated',
+                warning: false
+            },
+            {
+                time: '21:25:03',
+                user: 'yassine_admin',
+                action: 'SSH Logout',
+                details: 'Session ended',
+                warning: false
+            }
+        ];
+
+        const keyCardLogs = [
+            { time: '20:18:33', user: 'ela.trabelsi', location: 'IEEE Office', action: 'GRANTED' },
+            { time: '21:58:47', user: 'yassine.mahmoudi', location: 'IEEE Office', action: 'GRANTED', warning: true },
+            { time: '22:43:22', user: 'yassine.mahmoudi', location: 'IEEE Office', action: 'EXIT', warning: true }
+        ];
+
+        const amineActivity = [
+            { time: '18:45:22', service: 'Netflix', action: 'Streaming started', ip: '197.27.###.142' },
+            { time: '20:34:05', service: 'Netflix', action: 'Next episode', ip: '197.27.###.142' },
+            { time: '21:46:11', service: 'Netflix', action: 'Session ended', ip: '197.27.###.142' },
+            { time: '22:05:38', service: 'YouTube', action: 'Mobile browsing', ip: '197.27.###.142' },
+            { time: '22:47:15', service: 'Reddit', action: 'Mobile app active', ip: '197.27.###.142' }
+        ];
+
+        function adminLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            if (user === ADMIN_USER && pass === ADMIN_PASS) {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainPanel').classList.add('active');
+                showLogs();
+            } else {
+                const err = document.getElementById('errorMsg');
+                err.style.display = 'block';
+                setTimeout(() => err.style.display = 'none', 3000);
+            }
+        }
+
+        function showLogs() {
+            document.getElementById('logsSection').style.display = 'block';
+            document.getElementById('querySection').style.display = 'none';
+
+            const container = document.getElementById('logsContainer');
+            container.innerHTML = `
+                <h4 style="color: #ce9178; margin-bottom: 15px;">⚠ SUSPICIOUS ACTIVITY DETECTED</h4>
+                ${serverLogs.map(log => `
+                    <div class="log-entry ${log.warning ? 'log-warning' : ''} ${log.critical ? 'log-critical' : ''}">
+                        <span class="log-time">[${log.time}]</span>
+                        <span class="log-user">${log.user}</span>
+                        ${log.ip ? `<span class="ip-address">(${log.ip})</span>` : ''}
+                        | <span class="log-action">${log.action}:</span> ${log.details}
+                    </div>
+                `).join('')}
+
+                <h4 style="color: #4ec9b0; margin: 30px 0 15px;">Key Card Access Logs - IEEE Office</h4>
+                ${keyCardLogs.map(log => `
+                    <div class="log-entry ${log.warning ? 'log-warning' : ''}">
+                        <span class="log-time">[${log.time}]</span>
+                        <span class="log-user">${log.user}</span>
+                        | ${log.location} | ${log.action}
+                    </div>
+                `).join('')}
+
+                <h4 style="color: #4ec9b0; margin: 30px 0 15px;">Amine's Internet Activity (Dec 13)</h4>
+                ${amineActivity.map(log => `
+                    <div class="log-entry">
+                        <span class="log-time">[${log.time}]</span>
+                        <span class="ip-address">${log.ip}</span>
+                        | <span class="log-user">${log.service}</span>: ${log.action}
+                    </div>
+                `).join('')}
+
+                <div style="margin-top: 30px; padding: 20px; background: #2d2d30; border-radius: 6px; border-left: 4px solid #f44747;">
+                    <h4 style="color: #f44747; margin-bottom: 10px;">⚠ CRITICAL FINDINGS:</h4>
+                    <ul style="color: #d4d4d4; line-height: 2;">
+                        <li>✓ Yassine downloaded Amine's voice recordings at 20:49</li>
+                        <li>✓ Yassine uploaded forged audio to Telegram at 20:55</li>
+                        <li>✓ Yassine remotely accessed office computer AS AMINE at 21:19</li>
+                        <li>✓ Yassine created fake email from Amine's account at 21:21</li>
+                        <li>✓ Yassine was at IEEE office during Ela's murder (21:58-22:43)</li>
+                        <li>✓ Amine was home streaming Netflix during these events</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function showQuery() {
+            document.getElementById('logsSection').style.display = 'none';
+            document.getElementById('querySection').style.display = 'block';
+        }
+
+        function runQuery() {
+            const query = document.getElementById('querySelect').value;
+            const results = document.getElementById('queryResults');
+
+            if (!query) {
+                results.innerHTML = '';
+                return;
+            }
+
+            if (query === 'recent_activity') {
+                showLogs();
+            } else {
+                results.innerHTML = `
+                    <div class="results-table">
+                        <div style="padding: 20px; text-align: center; color: #608b4e;">
+                            Query results would appear here.<br>
+                            For investigation purposes, check "View Logs" for complete evidence.
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainPanel').classList.remove('active');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+    </script>
+</body>
+</html>
