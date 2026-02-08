@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police Nationale - Case Database</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 5px solid #ffd700;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .badge {
+            width: 60px;
+            height: 60px;
+            background: #ffd700;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .search-section {
+            padding: 40px;
+            background: #f5f5f5;
+        }
+
+        .search-section h2 {
+            color: #0d47a1;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .search-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #0d47a1;
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .hint-box {
+            background: #e3f2fd;
+            border-left: 4px solid #0d47a1;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .hint-box strong {
+            color: #0d47a1;
+        }
+
+        .results-section {
+            padding: 40px;
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .case-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .case-card:hover {
+            border-color: #0d47a1;
+            box-shadow: 0 5px 20px rgba(13, 71, 161, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .case-card.red-herring {
+            opacity: 0.7;
+        }
+
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .case-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+
+        .case-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-closed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .case-summary {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .case-date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #ddd;
+            color: #333;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        /* Document Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            border-radius: 10px;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .doc-content {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <div class="badge">🚔</div>
+                Police Nationale - Sfax District
+            </h1>
+            <p>Public Case Database & Records Search</p>
+        </div>
+
+        <div class="search-section">
+            <h2>🔍 Search Case Files</h2>
+            <div class="search-form">
+                <form onsubmit="searchCases(event)">
+                    <div class="form-group">
+                        <label>Case Number</label>
+                        <input 
+                            type="text" 
+                            id="caseInput" 
+                            placeholder="e.g., SFX-2025-1211-089"
+                            autocomplete="off"
+                        >
+                    </div>
+                    <button type="submit" class="search-btn">SEARCH DATABASE</button>
+                </form>
+                <div class="hint-box">
+                    <strong>💡 Hint:</strong> Case numbers mentioned in other evidence. Format: SFX-YYYY-MMDD-###
+                </div>
+            </div>
+            <a href="index.html" class="back-btn" style="display: block; text-align: center; margin-top: 30px;">← Back to Home</a>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <h2 style="color: #0d47a1; margin-bottom: 25px;">Search Results</h2>
+            <div id="resultsContainer"></div>
+            <button onclick="newSearch()" class="back-btn" style="display: block; width: fit-content; margin: 20px auto;">New Search</button>
+        </div>
+    </div>
+
+    <!-- Document Modal -->
+    <div class="modal" id="docModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeDoc()">&times;</span>
+            <h2 id="docTitle" style="color: #0d47a1;"></h2>
+            <div class="doc-content" id="docContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const cases = [
+            {
+                number: 'SFX-2025-1211-089',
+                type: 'Suspicious Death Investigation',
+                victim: 'Aziz Ben Mahmoud',
+                date: 'December 11, 2025',
+                status: 'active',
+                summary: 'Victim found at base of staircase in residence. Severe head trauma. Suspicious circumstances.',
+                keywords: ['aziz', '1211', '089'],
+                content: `╔═══════════════════════════════════════════════════════════════╗
+║              POLICE NATIONALE - SFAX DISTRICT                 ║
+║                    INCIDENT REPORT                            ║
+╚═══════════════════════════════════════════════════════════════╝
+
+CASE NUMBER: SFX-2025-1211-089
+VICTIM: Aziz Ben Mahmoud, 22, IEEE FSM Student Branch Chair
+DATE OF DEATH: December 10, 2025 (9:30 PM - 11:00 PM estimated)
+LOCATION: Residence El Ferdaous, Sfax
+DISCOVERED: December 11, 2025, 7:45 AM by landlord
+
+SCENE DESCRIPTION:
+- Body found at base of staircase
+- Fell from 3rd floor apartment
+- Severe head trauma consistent with fall
+- Apartment door was OPEN when discovered
+- No signs of forced entry
+- Victim's phone on 2nd floor landing
+- Laptop open and unlocked in apartment
+
+CRITICAL FINDINGS FROM VICTIM'S LAPTOP:
+
+Document "EXCOM_Insurance.docx" created Dec 10, 7:45 PM:
+
+"If anything happens to me, these people are involved in 
+financial misconduct:
+
+- AMINE: Embezzled ~1,200 TND from CS funds
+- YASSINE: Approved fake equipment purchases (800 TND)
+- FARES: Billed design work to freelance clients
+- ELA: Knows about all this but hasn't reported
+
+I tried to use this to protect WeHack funding.
+They wanted me silenced.
+
+If I'm dead, it's not an accident."
+
+PERSONS OF INTEREST:
+1. ELA TRABELSI - Violent argument hours before death
+2. AMINE KHELIFI - Embezzlement exposed
+3. YASSINE MAHMOUDI - Accused of fraud
+4. FARES JLASSI - Billing fraud revealed
+
+WITNESS STATEMENTS:
+- Neighbor heard "loud argument" around 10 PM
+- "Angry male voice"
+- Then "huge crash"
+
+EVIDENCE:
+⚠ Security footage shows multiple people entered building
+⚠ Check case SFX-2025-1214-112 (related incident)
+
+STATUS: ACTIVE INVESTIGATION - SUSPECTED HOMICIDE
+
+📌 CLUE: Look for social media messages between suspects
+📌 CLUE: Second case number: SFX-2025-1214-112
+
+Report: Inspector Mehdi Lakhal
+Date: December 11, 2025`
+            },
+            {
+                number: 'SFX-2025-1214-112',
+                type: 'Homicide Investigation',
+                victim: 'Ela Trabelsi',
+                date: 'December 14, 2025',
+                status: 'active',
+                summary: 'Victim found in IEEE office. Blunt force trauma. Related to case SFX-2025-1211-089.',
+                keywords: ['ela', '1214', '112'],
+                content: `╔═══════════════════════════════════════════════════════════════╗
+║         INCIDENT REPORT - ELA TRABELSI HOMICIDE               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+CASE: SFX-2025-1214-112
+VICTIM: Ela Trabelsi, 21, IEEE FSM Treasurer
+DATE OF DEATH: December 13, 2025 (10:00-11:00 PM)
+LOCATION: IEEE Office, Faculty of Sciences
+DISCOVERED: December 14, 7:30 AM by Ikhlas Rebhi
+
+SCENE:
+- Multiple blunt force trauma to head (4+ strikes)
+- Murder weapon: IEEE trophy (2.1 kg metal)
+- Victim's phone in hand (unlocked, messaging app open)
+- No forced entry
+
+EVIDENCE AGAINST AMINE KHELIFI:
+
+1. VOICE MESSAGE on victim's phone
+   From: "Amine Khelifi" 
+   Sent: Dec 13, 21:22
+   Content: Asking Ela to meet at IEEE office at 10 PM
+
+2. EMAIL DRAFT on office computer
+   From: amine.khelifi@ieee-fsm.tn
+   Subject: "We need to talk - URGENT"
+   Threatening content about reporting
+
+3. COFFEE CUP with Amine's fingerprints at scene
+
+4. MOTIVE: Ela was reporting his embezzlement
+
+AMINE'S STATEMENT:
+"I did NOT kill Ela! Someone is framing me! That voice 
+message is FAKE! I was home alone!"
+
+SECURITY FOOTAGE (Dec 13):
+- 20:18: Ela enters building
+- 21:58: Unknown person (hooded, 175-180cm)
+- 22:47: Unknown person exits running
+
+ARREST: Amine Khelifi charged with murder
+
+CONNECTION TO CASE SFX-2025-1211-089:
+Ela was key witness in Aziz death investigation.
+
+📌 CLUE: Voice message may be forged (forensic analysis pending)
+📌 CLUE: Check FSM security footage for more evidence
+📌 CLUE: Examine social media for alibis
+
+STATUS: Suspect in custody
+Report: Inspector Lakhal, December 14, 2025`
+            },
+            // RED HERRINGS
+            {
+                number: 'SFX-2025-1208-045',
+                type: 'Burglary',
+                victim: 'N/A',
+                date: 'December 8, 2025',
+                status: 'closed',
+                summary: 'Campus dorm burglary. Laptop stolen. Suspect apprehended.',
+                keywords: ['1208', '045'],
+                redHerring: true,
+                content: '[Case file - Burglary]\n\nClosed case. Not relevant to investigation.'
+            },
+            {
+                number: 'SFX-2025-1115-203',
+                type: 'Assault',
+                victim: 'N/A',
+                date: 'November 15, 2025',
+                status: 'closed',
+                summary: 'Bar fight. Minor injuries. Resolved.',
+                keywords: ['1115', '203'],
+                redHerring: true,
+                content: '[Case file - Assault]\n\nClosed case. Not relevant to investigation.'
+            },
+            {
+                number: 'SFX-2025-1220-078',
+                type: 'Vandalism',
+                victim: 'N/A',
+                date: 'December 20, 2025',
+                status: 'active',
+                summary: 'University property damage. Investigation ongoing.',
+                keywords: ['1220', '078'],
+                redHerring: true,
+                content: '[Case file - Vandalism]\n\nOngoing. Not relevant to murder investigation.'
+            }
+        ];
+
+        function searchCases(e) {
+            e.preventDefault();
+            const query = document.getElementById('caseInput').value.toLowerCase().trim();
+            
+            if (!query) {
+                alert('Please enter a case number');
+                return;
+            }
+
+            const results = cases.filter(c => 
+                c.number.toLowerCase().includes(query) ||
+                c.keywords.some(k => query.includes(k))
+            );
+
+            displayResults(results, query);
+        }
+
+        function displayResults(results, query) {
+            document.querySelector('.search-section').style.display = 'none';
+            document.getElementById('resultsSection').classList.add('active');
+            
+            const container = document.getElementById('resultsContainer');
+            
+            if (results.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🔍</div>
+                        <p>No cases found matching "${query}"</p>
+                        <p style="margin-top: 10px; color: #666;">Try a different case number</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = results.map(c => `
+                    <div class="case-card ${c.redHerring ? 'red-herring' : ''}" onclick="openCase('${c.number}')">
+                        <div class="case-header">
+                            <div class="case-number">${c.number}</div>
+                            <div class="case-status status-${c.status}">${c.status.toUpperCase()}</div>
+                        </div>
+                        <div class="case-summary">
+                            <strong>${c.type}</strong><br>
+                            ${c.victim !== 'N/A' ? `Victim: ${c.victim}<br>` : ''}
+                            ${c.summary}
+                        </div>
+                        <div class="case-date">📅 ${c.date}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function openCase(caseNumber) {
+            const caseData = cases.find(c => c.number === caseNumber);
+            if (caseData) {
+                document.getElementById('docTitle').textContent = `Case ${caseNumber}`;
+                document.getElementById('docContent').textContent = caseData.content;
+                document.getElementById('docModal').classList.add('active');
+            }
+        }
+
+        function closeDoc() {
+            document.getElementById('docModal').classList.remove('active');
+        }
+
+        function newSearch() {
+            document.querySelector('.search-section').style.display = 'block';
+            document.getElementById('resultsSection').classList.remove('active');
+            document.getElementById('caseInput').value = '';
+        }
+
+        window.onclick = (e) => {
+            if (e.target.id === 'docModal') closeDoc();
+        };
+    </script>
+</body>
+</html>
