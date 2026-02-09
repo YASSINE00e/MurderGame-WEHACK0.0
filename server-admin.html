@@ -1,548 +1,798 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IEEE FSM - Server Admin Panel</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Consolas', 'Monaco', monospace;
-            background: #1e1e1e;
-            color: #d4d4d4;
-            min-height: 100vh;
-        }
-
-        .terminal-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .terminal-header {
-            background: #2d2d30;
-            padding: 10px 20px;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .window-controls {
-            display: flex;
-            gap: 8px;
-        }
-
-        .window-btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .btn-close { background: #f44; }
-        .btn-minimize { background: #fb4; }
-        .btn-maximize { background: #4f4; }
-
-        .terminal-title {
-            color: #ccc;
-            font-size: 0.9rem;
-        }
-
-        .terminal-body {
-            background: #1e1e1e;
-            min-height: 80vh;
-            padding: 20px;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-            border: 1px solid #2d2d30;
-        }
-
-        .login-screen {
-            max-width: 600px;
-            margin: 100px auto;
-        }
-
-        .login-screen.hidden {
-            display: none;
-        }
-
-        .terminal-prompt {
-            color: #4ec9b0;
-            margin-bottom: 20px;
-        }
-
-        .input-line {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .prompt-symbol {
-            color: #4ec9b0;
-            margin-right: 10px;
-        }
-
-        .terminal-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #d4d4d4;
-            font-family: inherit;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .error-text {
-            color: #f44747;
-            margin: 10px 0;
-        }
-
-        .success-text {
-            color: #4ec9b0;
-            margin: 10px 0;
-        }
-
-        .hint-text {
-            color: #608b4e;
-            margin: 15px 0;
-            font-style: italic;
-        }
-
-        .main-panel {
-            display: none;
-        }
-
-        .main-panel.active {
-            display: block;
-        }
-
-        .toolbar {
-            background: #2d2d30;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .tool-btn {
-            padding: 8px 16px;
-            background: #0e639c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.9rem;
-        }
-
-        .tool-btn:hover {
-            background: #1177bb;
-        }
-
-        .tool-btn.danger {
-            background: #c5373c;
-        }
-
-        .tool-btn.danger:hover {
-            background: #d9534f;
-        }
-
-        .query-section {
-            background: #252526;
-            padding: 20px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        .query-label {
-            color: #4ec9b0;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .query-input {
-            width: 100%;
-            background: #1e1e1e;
-            border: 1px solid #3e3e42;
-            color: #d4d4d4;
-            padding: 10px;
-            font-family: inherit;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-
-        .results-table {
-            background: #252526;
-            border-radius: 6px;
-            overflow-x: auto;
-            margin-top: 20px;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .table th {
-            background: #2d2d30;
-            color: #4ec9b0;
-            padding: 12px;
-            text-align: left;
-            border-bottom: 2px solid #3e3e42;
-        }
-
-        .table td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #3e3e42;
-        }
-
-        .table tr:hover {
-            background: #2a2d2e;
-        }
-
-        .log-entry {
-            background: #252526;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-left: 3px solid #4ec9b0;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-
-        .log-time {
-            color: #608b4e;
-        }
-
-        .log-user {
-            color: #4ec9b0;
-            font-weight: bold;
-        }
-
-        .log-action {
-            color: #d4d4d4;
-        }
-
-        .log-warning {
-            border-left-color: #ffa500;
-        }
-
-        .log-critical {
-            border-left-color: #f44747;
-        }
-
-        .ip-address {
-            color: #ce9178;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Consolas", "Monaco", monospace;
+        background: #1e1e1e;
+        color: #d4d4d4;
+        min-height: 100vh;
+      }
+      .terminal-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .terminal-header {
+        background: #2d2d30;
+        padding: 10px 20px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .window-controls {
+        display: flex;
+        gap: 8px;
+      }
+      .window-btn {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .btn-close {
+        background: #f44;
+      }
+      .btn-minimize {
+        background: #fb4;
+      }
+      .btn-maximize {
+        background: #4f4;
+      }
+      .terminal-title {
+        color: #ccc;
+        font-size: 0.9rem;
+      }
+      .terminal-body {
+        background: #1e1e1e;
+        min-height: 80vh;
+        padding: 20px;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border: 1px solid #2d2d30;
+      }
+      .login-screen {
+        max-width: 600px;
+        margin: 100px auto;
+      }
+      .login-screen.hidden {
+        display: none;
+      }
+      .terminal-prompt {
+        color: #4ec9b0;
+        margin-bottom: 20px;
+      }
+      .input-line {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      .prompt-symbol {
+        color: #4ec9b0;
+        margin-right: 10px;
+      }
+      .terminal-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: #d4d4d4;
+        font-family: inherit;
+        font-size: 1rem;
+        outline: none;
+      }
+      .error-text {
+        color: #f44747;
+        margin: 10px 0;
+      }
+      .success-text {
+        color: #4ec9b0;
+        margin: 10px 0;
+      }
+      .main-panel {
+        display: none;
+      }
+      .main-panel.active {
+        display: block;
+      }
+      .toolbar {
+        background: #2d2d30;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+      .tool-btn {
+        padding: 8px 16px;
+        background: #0e639c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.9rem;
+      }
+      .tool-btn:hover {
+        background: #1177bb;
+      }
+      .tool-btn.danger {
+        background: #c5373c;
+      }
+      .tool-btn.danger:hover {
+        background: #d9534f;
+      }
+      .log-entry {
+        background: #252526;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-left: 3px solid #4ec9b0;
+        border-radius: 4px;
+        font-size: 0.9rem;
+      }
+      .log-time {
+        color: #608b4e;
+      }
+      .log-user {
+        color: #4ec9b0;
+        font-weight: bold;
+      }
+      .log-action {
+        color: #d4d4d4;
+      }
+      .log-warning {
+        border-left-color: #ffa500;
+      }
+      .log-critical {
+        border-left-color: #f44747;
+      }
+      .ip-address {
+        color: #ce9178;
+      }
+      .highlight-box {
+        background: #2d2d30;
+        padding: 20px;
+        border-radius: 6px;
+        border-left: 4px solid #f44747;
+        margin-top: 30px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="terminal-container">
-        <div class="terminal-header">
-            <div class="window-controls">
-                <div class="window-btn btn-close"></div>
-                <div class="window-btn btn-minimize"></div>
-                <div class="window-btn btn-maximize"></div>
+      <div class="terminal-header">
+        <div class="window-controls">
+          <div class="window-btn btn-close"></div>
+          <div class="window-btn btn-minimize"></div>
+          <div class="window-btn btn-maximize"></div>
+        </div>
+        <div class="terminal-title">root@ieee-server:~</div>
+      </div>
+
+      <div class="terminal-body">
+        <!-- Login Screen -->
+        <div class="login-screen" id="loginScreen">
+          <div class="terminal-prompt">
+            IEEE FSM Server - Admin Access Terminal<br />
+            ═══════════════════════════════════════<br />
+            Faculty of Science of Monastir<br />
+            Unauthorized access is prohibited.<br /><br />
+          </div>
+
+          <form onsubmit="adminLogin(event)">
+            <div class="input-line">
+              <span class="prompt-symbol">admin@ieee-server:~$</span>
+              <span style="margin-right: 10px">login</span>
+              <input
+                type="text"
+                class="terminal-input"
+                id="username"
+                placeholder="username"
+                autocomplete="off"
+              />
             </div>
-            <div class="terminal-title">root@ieee-server:~</div>
+
+            <div class="input-line">
+              <span class="prompt-symbol">admin@ieee-server:~$</span>
+              <span style="margin-right: 10px">password</span>
+              <input
+                type="password"
+                class="terminal-input"
+                id="password"
+                placeholder="••••••••"
+                autocomplete="off"
+              />
+            </div>
+
+            <div class="input-line">
+              <span class="prompt-symbol">admin@ieee-server:~$</span>
+              <button
+                type="submit"
+                style="
+                  background: none;
+                  border: none;
+                  color: #4ec9b0;
+                  cursor: pointer;
+                  font-family: inherit;
+                  font-size: 1rem;
+                "
+              >
+                authenticate
+              </button>
+            </div>
+          </form>
+
+          <div class="error-text" id="errorMsg" style="display: none">
+            ✗ Authentication failed. Access denied.
+          </div>
+
+          <div style="margin-top: 30px">
+            <a href="index.html" style="color: #4ec9b0; text-decoration: none">← exit</a>
+          </div>
         </div>
 
-        <div class="terminal-body">
-            <!-- Login Screen -->
-            <div class="login-screen" id="loginScreen">
-                <div class="terminal-prompt">
-                    IEEE FSM Server - Admin Access Terminal<br>
-                    ═══════════════════════════════════════<br>
-                    Unauthorized access is prohibited.<br><br>
-                </div>
+        <!-- Main Panel -->
+        <div class="main-panel" id="mainPanel">
+          <div class="toolbar">
+            <button class="tool-btn" onclick="showLogs()">📋 View Server Logs</button>
+            <button class="tool-btn" onclick="showKeycard()">🔑 Key Card Access</button>
+            <button class="tool-btn" onclick="showActivity()">📊 User Activity</button>
+            <button class="tool-btn danger" onclick="logout()">⚠ Logout</button>
+          </div>
 
-                <form onsubmit="adminLogin(event)">
-                    <div class="input-line">
-                        <span class="prompt-symbol">admin@ieee-server:~$</span>
-                        <span style="margin-right: 10px;">login</span>
-                        <input type="text" class="terminal-input" id="username" placeholder="username" autocomplete="off">
-                    </div>
+          <!-- Server Logs Section -->
+          <div id="logsSection" style="display: none">
+            <h3 style="color: #4ec9b0; margin-bottom: 20px">
+              Server Access Logs - December 13, 2025
+            </h3>
+            <h4 style="color: #ce9178; margin-bottom: 15px">
+              ⚠ SUSPICIOUS ACTIVITY DETECTED - USER: yassine_admin
+            </h4>
+            <div id="logsContainer"></div>
+          </div>
 
-                    <div class="input-line">
-                        <span class="prompt-symbol">admin@ieee-server:~$</span>
-                        <span style="margin-right: 10px;">password</span>
-                        <input type="password" class="terminal-input" id="password" placeholder="••••••••" autocomplete="off">
-                    </div>
+          <!-- Keycard Section -->
+          <div id="keycardSection" style="display: none">
+            <h3 style="color: #4ec9b0; margin-bottom: 20px">Key Card Access Logs - IEEE Office</h3>
+            <div id="keycardContainer"></div>
+          </div>
 
-                    <div class="input-line">
-                        <span class="prompt-symbol">admin@ieee-server:~$</span>
-                        <button type="submit" style="background: none; border: none; color: #4ec9b0; cursor: pointer; font-family: inherit; font-size: 1rem;">authenticate</button>
-                    </div>
-                </form>
-
-                <div class="error-text" id="errorMsg" style="display: none;">
-                    ✗ Authentication failed. Access denied.
-                </div>
-
-                <div class="hint-text">
-                    # Hint: Default admin credentials<br>
-                    # Username format: role_name (e.g., cs_chair, treasurer)<br>
-                    # Password: Check recent server activity logs
-                </div>
-
-                <div style="margin-top: 30px;">
-                    <a href="index.html" style="color: #4ec9b0; text-decoration: none;">← exit</a>
-                </div>
-            </div>
-
-            <!-- Main Panel -->
-            <div class="main-panel" id="mainPanel">
-                <div class="toolbar">
-                    <button class="tool-btn" onclick="showLogs()">📋 View Logs</button>
-                    <button class="tool-btn" onclick="showQuery()">🔍 Query Database</button>
-                    <button class="tool-btn danger" onclick="logout()">⚠ Logout</button>
-                </div>
-
-                <!-- Logs Section -->
-                <div id="logsSection" style="display: none;">
-                    <h3 style="color: #4ec9b0; margin-bottom: 20px;">Server Access Logs - December 13, 2025</h3>
-                    <div id="logsContainer"></div>
-                </div>
-
-                <!-- Query Section -->
-                <div id="querySection" style="display: none;">
-                    <div class="query-section">
-                        <label class="query-label">Run Query:</label>
-                        <select class="query-input" id="querySelect" onchange="runQuery()">
-                            <option value="">Select a query...</option>
-                            <option value="recent_activity">Show recent server activity</option>
-                            <option value="user_logins">Show user login history</option>
-                            <option value="file_access">Show file access logs</option>
-                            <option value="email_activity">Show email server activity</option>
-                        </select>
-                    </div>
-                    <div id="queryResults"></div>
-                </div>
-            </div>
+          <!-- Activity Section -->
+          <div id="activitySection" style="display: none">
+            <h3 style="color: #4ec9b0; margin-bottom: 20px">
+              User Internet Activity - December 13, 2025
+            </h3>
+            <div id="activityContainer"></div>
+          </div>
         </div>
+      </div>
     </div>
 
     <script>
-        const ADMIN_USER = 'admin';
-        const ADMIN_PASS = 'root2025';
+      const ADMIN_USER = "admin";
+      const ADMIN_PASS = "root2025";
 
-        const serverLogs = [
-            {
-                time: '20:42:15',
-                user: 'yassine_admin',
-                action: 'SSH Login',
-                ip: '41.230.###.67',
-                details: 'Successful authentication'
-            },
-            {
-                time: '20:43:18',
-                user: 'yassine_admin',
-                action: 'Directory Access',
-                details: 'Accessed /media/excom_meetings/recordings/',
-                warning: false
-            },
-            {
-                time: '20:45:22',
-                user: 'yassine_admin',
-                action: 'File Download',
-                details: 'Downloaded EXCOM_Nov15_Meeting.mp4 (156 MB)',
-                warning: true
-            },
-            {
-                time: '20:47:35',
-                user: 'yassine_admin',
-                action: 'File Download',
-                details: 'Downloaded EXCOM_Dec03_Meeting.mp4 (142 MB)',
-                warning: true
-            },
-            {
-                time: '20:49:16',
-                user: 'yassine_admin',
-                action: 'File Download',
-                details: 'Downloaded Amine_voice_segments.mp3 (12 MB)',
-                warning: true,
-                critical: true
-            },
-            {
-                time: '20:52:33',
-                user: 'yassine_admin',
-                action: 'Telegram Web',
-                details: 'Opened Telegram Web interface via browser',
-                warning: true
-            },
-            {
-                time: '20:55:47',
-                user: 'yassine_admin',
-                action: 'File Upload',
-                details: 'Uploaded audio file (23 seconds) to Telegram',
-                warning: true,
-                critical: true
-            },
-            {
-                time: '21:18:44',
-                user: 'yassine_admin',
-                action: 'Remote Desktop',
-                details: 'Connected to IEEE Office Computer via RDP',
-                warning: true
-            },
-            {
-                time: '21:19:12',
-                user: 'yassine_admin',
-                action: 'Account Login',
-                details: 'Logged into email: amine.khelifi@ieee-fsm.tn',
-                warning: true,
-                critical: true
-            },
-            {
-                time: '21:21:47',
-                user: 'yassine_admin',
-                action: 'Email Draft',
-                details: 'Created draft email to ela.trabelsi@ieee-fsm.tn',
-                warning: true,
-                critical: true
-            },
-            {
-                time: '21:23:58',
-                user: 'yassine_admin',
-                action: 'Email Draft',
-                details: 'Draft saved (NOT sent)',
-                warning: true
-            },
-            {
-                time: '21:24:45',
-                user: 'yassine_admin',
-                action: 'Remote Desktop',
-                details: 'Session terminated',
-                warning: false
-            },
-            {
-                time: '21:25:03',
-                user: 'yassine_admin',
-                action: 'SSH Logout',
-                details: 'Session ended',
-                warning: false
-            }
-        ];
+      const serverLogs = [
+        {
+          time: "20:42:15",
+          user: "yassine_admin",
+          action: "SSH Login",
+          ip: "41.230.###.67",
+          details: "Successful authentication from home IP",
+          warning: false,
+        },
+        {
+          time: "20:42:48",
+          user: "yassine_admin",
+          action: "Directory Access",
+          details: "Navigated to /var/www/ieee-fsm/media/",
+          warning: false,
+        },
+        {
+          time: "20:43:18",
+          user: "yassine_admin",
+          action: "Directory Access",
+          details: "Accessed /media/excom_meetings/recordings/",
+          warning: true,
+        },
+        {
+          time: "20:44:22",
+          user: "yassine_admin",
+          action: "File List",
+          details: "Listed contents of recordings directory (18 files)",
+          warning: false,
+        },
+        {
+          time: "20:45:22",
+          user: "yassine_admin",
+          action: "File Download START",
+          details: "EXCOM_Nov15_Meeting.mp4 (156 MB)",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "20:46:35",
+          user: "yassine_admin",
+          action: "File Download COMPLETE",
+          details: "EXCOM_Nov15_Meeting.mp4 downloaded successfully",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "20:47:15",
+          user: "yassine_admin",
+          action: "File Download START",
+          details: "EXCOM_Dec03_Meeting.mp4 (142 MB)",
+          warning: true,
+        },
+        {
+          time: "20:48:28",
+          user: "yassine_admin",
+          action: "File Download COMPLETE",
+          details: "EXCOM_Dec03_Meeting.mp4 downloaded successfully",
+          warning: true,
+        },
+        {
+          time: "20:49:05",
+          user: "yassine_admin",
+          action: "Directory Access",
+          details: "Accessed /media/voice_recordings/cs_chapter/",
+          warning: true,
+        },
+        {
+          time: "20:49:16",
+          user: "yassine_admin",
+          action: "File Download START",
+          details: "Amine_voice_segments.mp3 (12 MB)",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "20:49:42",
+          user: "yassine_admin",
+          action: "File Download COMPLETE",
+          details: "Amine_voice_segments.mp3 downloaded",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "20:50:15",
+          user: "yassine_admin",
+          action: "Command Executed",
+          details: "ffmpeg -i Amine_voice_segments.mp3 -ar 44100 output.wav",
+          warning: true,
+        },
+        {
+          time: "20:51:33",
+          user: "yassine_admin",
+          action: "Process Started",
+          details: "Python script: voice_synthesis.py",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "20:52:33",
+          user: "yassine_admin",
+          action: "Browser Access",
+          details: "Opened Telegram Web interface via Firefox",
+          warning: true,
+        },
+        {
+          time: "20:53:47",
+          user: "yassine_admin",
+          action: "Telegram Login",
+          details: "Logged into Telegram account +216-###-###",
+          warning: true,
+        },
+        {
+          time: "20:55:12",
+          user: "yassine_admin",
+          action: "File Creation",
+          details: "Created synthesized_voice_23sec.mp3",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "20:55:47",
+          user: "yassine_admin",
+          action: "File Upload",
+          details: "Uploaded audio file (23 seconds) to Telegram contact: Ela Hassine",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "20:56:22",
+          user: "yassine_admin",
+          action: "Message Sent",
+          details: "Voice message sent via Telegram (timestamp: 21:22 - scheduled send)",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "21:18:44",
+          user: "yassine_admin",
+          action: "Remote Desktop",
+          details: "Connected to IEEE Office Computer (192.168.1.47) via RDP",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "21:18:58",
+          user: "yassine_admin",
+          action: "Screen Share",
+          details: "Remote desktop session established",
+          warning: true,
+        },
+        {
+          time: "21:19:12",
+          user: "yassine_admin",
+          action: "Email Login",
+          details: "Accessed email account: amine.zbaa@ieee-fsm.tn",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "21:19:45",
+          user: "yassine_admin",
+          action: "Credentials Used",
+          details: "Used stored password from credential manager",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "21:20:33",
+          user: "yassine_admin",
+          action: "Email Access",
+          details: "Opened inbox for amine.zbaa@ieee-fsm.tn",
+          warning: true,
+        },
+        {
+          time: "21:21:18",
+          user: "yassine_admin",
+          action: "Email Compose",
+          details: "New draft created to ela.hassine@ieee-fsm.tn",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "21:21:47",
+          user: "yassine_admin",
+          action: "Email Draft Saved",
+          details: 'Subject: "We need to talk - URGENT"',
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "21:22:15",
+          user: "yassine_admin",
+          action: "Email Draft",
+          details: "Draft contains threatening content",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "21:23:02",
+          user: "yassine_admin",
+          action: "File Access",
+          details: "Opened browser history deletion tool",
+          warning: true,
+        },
+        {
+          time: "21:23:58",
+          user: "yassine_admin",
+          action: "Email Draft",
+          details: "Draft left unsent (intentionally)",
+          warning: true,
+        },
+        {
+          time: "21:24:12",
+          user: "yassine_admin",
+          action: "Remote Desktop",
+          details: "Session terminated from office computer",
+          warning: true,
+        },
+        {
+          time: "21:24:45",
+          user: "yassine_admin",
+          action: "File Deletion",
+          details: "Deleted voice_synthesis.py and temporary audio files",
+          warning: true,
+        },
+        {
+          time: "21:25:03",
+          user: "yassine_admin",
+          action: "SSH Logout",
+          details: "Session ended, cleared bash history",
+          warning: true,
+        },
+      ];
 
-        const keyCardLogs = [
-            { time: '20:18:33', user: 'ela.trabelsi', location: 'IEEE Office', action: 'GRANTED' },
-            { time: '21:58:47', user: 'yassine.mahmoudi', location: 'IEEE Office', action: 'GRANTED', warning: true },
-            { time: '22:43:22', user: 'yassine.mahmoudi', location: 'IEEE Office', action: 'EXIT', warning: true }
-        ];
+      const keyCardLogs = [
+        {
+          time: "20:18:33",
+          user: "ela.hassine",
+          name: "Ela Hassine",
+          location: "IEEE Office - Main Door",
+          action: "GRANTED",
+          warning: false,
+        },
+        {
+          time: "21:58:47",
+          user: "yassine.azzouz",
+          name: "Yassine Azzouz",
+          location: "IEEE Office - Main Door",
+          action: "GRANTED",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "22:43:22",
+          user: "yassine.azzouz",
+          name: "Yassine Azzouz",
+          location: "IEEE Office - Main Door",
+          action: "EXIT",
+          warning: true,
+          critical: true,
+        },
+        {
+          time: "07:28:15",
+          user: "ikhlas.bahia",
+          name: "Ikhlas Bahia",
+          location: "IEEE Office - Main Door",
+          action: "GRANTED",
+          warning: false,
+          note: "Dec 14 - discovered body",
+        },
+      ];
 
-        const amineActivity = [
-            { time: '18:45:22', service: 'Netflix', action: 'Streaming started', ip: '197.27.###.142' },
-            { time: '20:34:05', service: 'Netflix', action: 'Next episode', ip: '197.27.###.142' },
-            { time: '21:46:11', service: 'Netflix', action: 'Session ended', ip: '197.27.###.142' },
-            { time: '22:05:38', service: 'YouTube', action: 'Mobile browsing', ip: '197.27.###.142' },
-            { time: '22:47:15', service: 'Reddit', action: 'Mobile app active', ip: '197.27.###.142' }
-        ];
+      const userActivity = [
+        {
+          time: "18:45:22",
+          user: "Amine Zbaa",
+          service: "Netflix",
+          action: "Streaming session started",
+          ip: "197.27.###.142",
+          details: "Series: Breaking Bad S3E7",
+        },
+        {
+          time: "19:32:14",
+          user: "Amine Zbaa",
+          service: "Netflix",
+          action: "Episode completed",
+          ip: "197.27.###.142",
+          details: "Auto-play to next episode",
+        },
+        {
+          time: "20:18:05",
+          user: "Amine Zbaa",
+          service: "Netflix",
+          action: "Still watching confirmation",
+          ip: "197.27.###.142",
+          details: "User clicked continue watching",
+        },
+        {
+          time: "20:34:05",
+          user: "Amine Zbaa",
+          service: "Netflix",
+          action: "Episode change",
+          ip: "197.27.###.142",
+          details: "Now watching S3E8",
+        },
+        {
+          time: "21:22:48",
+          user: "Amine Zbaa",
+          service: "Netflix",
+          action: "Episode completed",
+          ip: "197.27.###.142",
+          details: "S3E8 finished",
+        },
+        {
+          time: "21:46:11",
+          user: "Amine Zbaa",
+          service: "Netflix",
+          action: "Streaming session ended",
+          ip: "197.27.###.142",
+          details: "User manually stopped",
+        },
+        {
+          time: "22:05:38",
+          user: "Amine Zbaa",
+          service: "YouTube Mobile",
+          action: "App opened",
+          ip: "197.27.###.142",
+          details: "Mobile browsing started",
+        },
+        {
+          time: "22:15:22",
+          user: "Amine Zbaa",
+          service: "YouTube Mobile",
+          action: "Video watched",
+          ip: "197.27.###.142",
+          details: "Tech review video (12 min)",
+        },
+        {
+          time: "22:31:47",
+          user: "Amine Zbaa",
+          service: "YouTube Mobile",
+          action: "Video watched",
+          ip: "197.27.###.142",
+          details: "Gaming highlights (8 min)",
+        },
+        {
+          time: "22:47:15",
+          user: "Amine Zbaa",
+          service: "Reddit Mobile",
+          action: "App active",
+          ip: "197.27.###.142",
+          details: "Browsing r/programming",
+        },
+        {
+          time: "23:12:33",
+          user: "Amine Zbaa",
+          service: "Reddit Mobile",
+          action: "Commenting activity",
+          ip: "197.27.###.142",
+          details: "Posted 2 comments",
+        },
+        {
+          time: "23:45:18",
+          user: "Amine Zbaa",
+          service: "Reddit Mobile",
+          action: "Session ended",
+          ip: "197.27.###.142",
+          details: "App closed",
+        },
+      ];
 
-        function adminLogin(e) {
-            e.preventDefault();
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+      function adminLogin(e) {
+        e.preventDefault();
+        const user = document.getElementById("username").value;
+        const pass = document.getElementById("password").value;
 
-            if (user === ADMIN_USER && pass === ADMIN_PASS) {
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('mainPanel').classList.add('active');
-                showLogs();
-            } else {
-                const err = document.getElementById('errorMsg');
-                err.style.display = 'block';
-                setTimeout(() => err.style.display = 'none', 3000);
-            }
+        if (user === ADMIN_USER && pass === ADMIN_PASS) {
+          document.getElementById("loginScreen").classList.add("hidden");
+          document.getElementById("mainPanel").classList.add("active");
+          showLogs();
+        } else {
+          const err = document.getElementById("errorMsg");
+          err.style.display = "block";
+          setTimeout(() => (err.style.display = "none"), 3000);
         }
+      }
 
-        function showLogs() {
-            document.getElementById('logsSection').style.display = 'block';
-            document.getElementById('querySection').style.display = 'none';
+      function showLogs() {
+        document.getElementById("logsSection").style.display = "block";
+        document.getElementById("keycardSection").style.display = "none";
+        document.getElementById("activitySection").style.display = "none";
 
-            const container = document.getElementById('logsContainer');
-            container.innerHTML = `
-                <h4 style="color: #ce9178; margin-bottom: 15px;">⚠ SUSPICIOUS ACTIVITY DETECTED</h4>
-                ${serverLogs.map(log => `
-                    <div class="log-entry ${log.warning ? 'log-warning' : ''} ${log.critical ? 'log-critical' : ''}">
-                        <span class="log-time">[${log.time}]</span>
-                        <span class="log-user">${log.user}</span>
-                        ${log.ip ? `<span class="ip-address">(${log.ip})</span>` : ''}
-                        | <span class="log-action">${log.action}:</span> ${log.details}
+        const container = document.getElementById("logsContainer");
+        container.innerHTML =
+          serverLogs
+            .map(
+              (log) => `
+                <div class="log-entry ${log.warning ? "log-warning" : ""} ${
+                log.critical ? "log-critical" : ""
+              }">
+                    <span class="log-time">[${log.time}]</span>
+                    <span class="log-user">${log.user}</span>
+                    ${log.ip ? `<span class="ip-address">(${log.ip})</span>` : ""}
+                    | <span class="log-action">${log.action}:</span> ${log.details}
+                </div>
+            `
+            )
+            .join("") +
+          `
+                <div class="highlight-box">
+                    <h4 style="color: #f44747; margin-bottom: 15px;">⚠ CRITICAL ANALYSIS - SMOKING GUN EVIDENCE:</h4>
+                    <ul style="color: #d4d4d4; line-height: 2; list-style-position: inside;">
+                        <li>✓ Yassine downloaded Amine's voice recordings at 20:49:16</li>
+                        <li>✓ Yassine executed voice synthesis script at 20:51:33</li>
+                        <li>✓ Yassine created synthesized audio file at 20:55:12</li>
+                        <li>✓ Yassine uploaded FORGED voice message to Telegram at 20:55:47</li>
+                        <li>✓ Message scheduled to appear sent at 21:22 (26 min delay)</li>
+                        <li>✓ Yassine remotely accessed office computer at 21:18:44</li>
+                        <li>✓ Yassine logged into Amine's email account at 21:19:12</li>
+                        <li>✓ Yassine created threatening email draft at 21:21:47</li>
+                        <li>✓ Draft intentionally left UNSENT to frame Amine</li>
+                        <li>✓ All evidence fabricated to implicate innocent person</li>
+                    </ul>
+                    <div style="margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 4px;">
+                        <strong style="color: #f44747;">CONCLUSION:</strong><br>
+                        <span style="color: #ce9178;">Yassine Azzouz systematically created false evidence to frame Amine Zbaa for Ela Hassine's murder. This demonstrates premeditation and sophisticated technical execution.</span>
                     </div>
-                `).join('')}
+                </div>
+            `;
+      }
 
-                <h4 style="color: #4ec9b0; margin: 30px 0 15px;">Key Card Access Logs - IEEE Office</h4>
-                ${keyCardLogs.map(log => `
-                    <div class="log-entry ${log.warning ? 'log-warning' : ''}">
-                        <span class="log-time">[${log.time}]</span>
-                        <span class="log-user">${log.user}</span>
-                        | ${log.location} | ${log.action}
-                    </div>
-                `).join('')}
+      function showKeycard() {
+        document.getElementById("logsSection").style.display = "none";
+        document.getElementById("keycardSection").style.display = "block";
+        document.getElementById("activitySection").style.display = "none";
 
-                <h4 style="color: #4ec9b0; margin: 30px 0 15px;">Amine's Internet Activity (Dec 13)</h4>
-                ${amineActivity.map(log => `
-                    <div class="log-entry">
-                        <span class="log-time">[${log.time}]</span>
-                        <span class="ip-address">${log.ip}</span>
-                        | <span class="log-user">${log.service}</span>: ${log.action}
-                    </div>
-                `).join('')}
-
-                <div style="margin-top: 30px; padding: 20px; background: #2d2d30; border-radius: 6px; border-left: 4px solid #f44747;">
-                    <h4 style="color: #f44747; margin-bottom: 10px;">⚠ CRITICAL FINDINGS:</h4>
-                    <ul style="color: #d4d4d4; line-height: 2;">
-                        <li>✓ Yassine downloaded Amine's voice recordings at 20:49</li>
-                        <li>✓ Yassine uploaded forged audio to Telegram at 20:55</li>
-                        <li>✓ Yassine remotely accessed office computer AS AMINE at 21:19</li>
-                        <li>✓ Yassine created fake email from Amine's account at 21:21</li>
-                        <li>✓ Yassine was at IEEE office during Ela's murder (21:58-22:43)</li>
-                        <li>✓ Amine was home streaming Netflix during these events</li>
+        const container = document.getElementById("keycardContainer");
+        container.innerHTML =
+          keyCardLogs
+            .map(
+              (log) => `
+                <div class="log-entry ${log.warning ? "log-warning" : ""} ${
+                log.critical ? "log-critical" : ""
+              }">
+                    <span class="log-time">[${log.time}]</span>
+                    <span class="log-user">${log.name}</span>
+                    | ${log.location} | <strong>${log.action}</strong>
+                    ${log.note ? `<br><span style="color: #608b4e;">Note: ${log.note}</span>` : ""}
+                </div>
+            `
+            )
+            .join("") +
+          `
+                <div class="highlight-box">
+                    <h4 style="color: #f44747; margin-bottom: 15px;">⚠ KEY FINDINGS:</h4>
+                    <ul style="color: #d4d4d4; line-height: 2; list-style-position: inside;">
+                        <li>Ela Hassine entered IEEE office at 20:18:33 (8:18 PM)</li>
+                        <li>Yassine Azzouz entered at 21:58:47 (9:58 PM) - DURING MURDER TIMEFRAME</li>
+                        <li>Yassine exited at 22:43:22 (10:43 PM) - AFTER MURDER</li>
+                        <li>Yassine was physically present at crime scene during time of death</li>
+                        <li>No record of Amine Zbaa accessing IEEE office on Dec 13</li>
                     </ul>
                 </div>
             `;
-        }
+      }
 
-        function showQuery() {
-            document.getElementById('logsSection').style.display = 'none';
-            document.getElementById('querySection').style.display = 'block';
-        }
+      function showActivity() {
+        document.getElementById("logsSection").style.display = "none";
+        document.getElementById("keycardSection").style.display = "none";
+        document.getElementById("activitySection").style.display = "block";
 
-        function runQuery() {
-            const query = document.getElementById('querySelect').value;
-            const results = document.getElementById('queryResults');
+        const container = document.getElementById("activityContainer");
+        container.innerHTML =
+          `
+                <h4 style="color: #4ec9b0; margin-bottom: 15px;">Amine Zbaa - Internet Activity Log</h4>
+                <p style="color: #608b4e; margin-bottom: 20px;">IP Address: 197.27.###.142 (Home connection)</p>
+            ` +
+          userActivity
+            .map(
+              (log) => `
+                <div class="log-entry">
+                    <span class="log-time">[${log.time}]</span>
+                    <span class="ip-address">${log.ip}</span>
+                    | <span class="log-user">${log.service}</span>: ${log.action}
+                    <br><span style="color: #608b4e; font-size: 0.85rem;">${log.details}</span>
+                </div>
+            `
+            )
+            .join("") +
+          `
+                <div class="highlight-box">
+                    <h4 style="color: #4ec9b0; margin-bottom: 15px;">✓ AMINE ZBAA - PROVEN INNOCENT:</h4>
+                    <ul style="color: #d4d4d4; line-height: 2; list-style-position: inside;">
+                        <li>Continuous internet activity from home IP throughout evening</li>
+                        <li>Netflix streaming with manual interactions (not auto-play)</li>
+                        <li>Active YouTube browsing at time of forged message (21:22)</li>
+                        <li>Reddit commenting activity during time of murder (22:47)</li>
+                        <li>All activity from same home IP address (197.27.###.142)</li>
+                        <li>Physically impossible to be at IEEE office and home simultaneously</li>
+                        <li><strong style="color: #4ec9b0;">CONCLUSION: Amine was home during both message send time and murder</strong></li>
+                    </ul>
+                </div>
+            `;
+      }
 
-            if (!query) {
-                results.innerHTML = '';
-                return;
-            }
-
-            if (query === 'recent_activity') {
-                showLogs();
-            } else {
-                results.innerHTML = `
-                    <div class="results-table">
-                        <div style="padding: 20px; text-align: center; color: #608b4e;">
-                            Query results would appear here.<br>
-                            For investigation purposes, check "View Logs" for complete evidence.
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function logout() {
-            document.getElementById('loginScreen').classList.remove('hidden');
-            document.getElementById('mainPanel').classList.remove('active');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-        }
+      function logout() {
+        document.getElementById("loginScreen").classList.remove("hidden");
+        document.getElementById("mainPanel").classList.remove("active");
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+      }
     </script>
-</body>
+  </body>
 </html>
