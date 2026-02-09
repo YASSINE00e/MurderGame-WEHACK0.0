@@ -1,564 +1,877 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Police Nationale - Case Database</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            max-width: 1200px;
-            margin: 0 auto;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            border-bottom: 5px solid #ffd700;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-
-        .badge {
-            width: 60px;
-            height: 60px;
-            background: #ffd700;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-        }
-
-        .search-section {
-            padding: 40px;
-            background: #f5f5f5;
-        }
-
-        .search-section h2 {
-            color: #0d47a1;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .search-form {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #333;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #0d47a1;
-        }
-
-        .search-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .search-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .hint-box {
-            background: #e3f2fd;
-            border-left: 4px solid #0d47a1;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 5px;
-        }
-
-        .hint-box strong {
-            color: #0d47a1;
-        }
-
-        .results-section {
-            padding: 40px;
-            display: none;
-        }
-
-        .results-section.active {
-            display: block;
-        }
-
-        .case-card {
-            background: white;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .case-card:hover {
-            border-color: #0d47a1;
-            box-shadow: 0 5px 20px rgba(13, 71, 161, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .case-card.red-herring {
-            opacity: 0.7;
-        }
-
-        .case-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .case-number {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #0d47a1;
-        }
-
-        .case-status {
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        .status-active {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-closed {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .case-summary {
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-
-        .case-date {
-            color: #888;
-            font-size: 0.9rem;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
-
-        .back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #ddd;
-            color: #333;
-            text-decoration: none;
-            border-radius: 6px;
-        }
-
-        /* Document Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 900px;
-            max-height: 85vh;
-            border-radius: 10px;
-            padding: 30px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 2rem;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .close-btn:hover {
-            color: #333;
-        }
-
-        .doc-content {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            white-space: pre-wrap;
-            font-family: 'Courier New', monospace;
-            line-height: 1.6;
-            margin-top: 20px;
-            font-size: 0.9rem;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        background: white;
+        max-width: 1200px;
+        margin: 0 auto;
+        border-radius: 15px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+      }
+      .header {
+        background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        border-bottom: 5px solid #ffd700;
+      }
+      .header h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+      }
+      .badge {
+        width: 60px;
+        height: 60px;
+        background: #ffd700;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+      }
+      .search-section {
+        padding: 40px;
+        background: #f5f5f5;
+      }
+      .search-section h2 {
+        color: #0d47a1;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+      .search-form {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      .form-group label {
+        display: block;
+        color: #333;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+      }
+      .search-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #ddd;
+        color: #333;
+        text-decoration: none;
+        border-radius: 6px;
+      }
+      .results-section {
+        padding: 40px;
+        display: none;
+      }
+      .results-section.active {
+        display: block;
+      }
+      .case-card {
+        background: white;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .case-card:hover {
+        border-color: #0d47a1;
+        box-shadow: 0 5px 20px rgba(13, 71, 161, 0.2);
+        transform: translateY(-2px);
+      }
+      .case-card.red-herring {
+        opacity: 0.6;
+      }
+      .case-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      .case-number {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #0d47a1;
+      }
+      .case-status {
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: bold;
+      }
+      .status-active {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .status-closed {
+        background: #d4edda;
+        color: #155724;
+      }
+      .case-summary {
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 10px;
+      }
+      .case-date {
+        color: #888;
+        font-size: 0.9rem;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+      }
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        background: white;
+        width: 90%;
+        max-width: 900px;
+        max-height: 85vh;
+        border-radius: 10px;
+        padding: 30px;
+        overflow-y: auto;
+        position: relative;
+      }
+      .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 2rem;
+        cursor: pointer;
+        color: #999;
+      }
+      .doc-content {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        font-family: "Courier New", monospace;
+        line-height: 1.6;
+        margin-top: 20px;
+        font-size: 0.9rem;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="header">
-            <h1>
-                <div class="badge">🚔</div>
-                Police Nationale - Sfax District
-            </h1>
-            <p>Public Case Database & Records Search</p>
-        </div>
+      <div class="header">
+        <h1>
+          <div class="badge">🚔</div>
+          Police Nationale - Monastir District
+        </h1>
+        <p>Public Case Database & Records Search</p>
+      </div>
 
-        <div class="search-section">
-            <h2>🔍 Search Case Files</h2>
-            <div class="search-form">
-                <form onsubmit="searchCases(event)">
-                    <div class="form-group">
-                        <label>Case Number</label>
-                        <input 
-                            type="text" 
-                            id="caseInput" 
-                            placeholder="e.g., SFX-2025-1211-089"
-                            autocomplete="off"
-                        >
-                    </div>
-                    <button type="submit" class="search-btn">SEARCH DATABASE</button>
-                </form>
-                <div class="hint-box">
-                    <strong>💡 Hint:</strong> Case numbers mentioned in other evidence. Format: SFX-YYYY-MMDD-###
-                </div>
+      <div class="search-section">
+        <h2>🔍 Search Case Files</h2>
+        <div class="search-form">
+          <form onsubmit="searchCases(event)">
+            <div class="form-group">
+              <label>Case Number</label>
+              <input
+                type="text"
+                id="caseInput"
+                placeholder="Enter case number"
+                autocomplete="off"
+              />
             </div>
-            <a href="index.html" class="back-btn" style="display: block; text-align: center; margin-top: 30px;">← Back to Home</a>
+            <button type="submit" class="search-btn">SEARCH DATABASE</button>
+          </form>
         </div>
+        <a
+          href="index.html"
+          class="back-btn"
+          style="display: block; text-align: center; margin-top: 30px"
+          >← Back to Home</a
+        >
+      </div>
 
-        <div class="results-section" id="resultsSection">
-            <h2 style="color: #0d47a1; margin-bottom: 25px;">Search Results</h2>
-            <div id="resultsContainer"></div>
-            <button onclick="newSearch()" class="back-btn" style="display: block; width: fit-content; margin: 20px auto;">New Search</button>
-        </div>
+      <div class="results-section" id="resultsSection">
+        <h2 style="color: #0d47a1; margin-bottom: 25px">Search Results</h2>
+        <div id="resultsContainer"></div>
+        <button
+          onclick="newSearch()"
+          class="back-btn"
+          style="display: block; width: fit-content; margin: 20px auto"
+        >
+          New Search
+        </button>
+      </div>
     </div>
 
-    <!-- Document Modal -->
     <div class="modal" id="docModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeDoc()">&times;</span>
-            <h2 id="docTitle" style="color: #0d47a1;"></h2>
-            <div class="doc-content" id="docContent"></div>
-        </div>
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeDoc()">&times;</span>
+        <h2 id="docTitle" style="color: #0d47a1"></h2>
+        <div class="doc-content" id="docContent"></div>
+      </div>
     </div>
 
     <script>
-        const cases = [
-            {
-                number: 'SFX-2025-1211-089',
-                type: 'Suspicious Death Investigation',
-                victim: 'Aziz Ben Mahmoud',
-                date: 'December 11, 2025',
-                status: 'active',
-                summary: 'Victim found at base of staircase in residence. Severe head trauma. Suspicious circumstances.',
-                keywords: ['aziz', '1211', '089'],
-                content: `╔═══════════════════════════════════════════════════════════════╗
-║              POLICE NATIONALE - SFAX DISTRICT                 ║
+      const cases = [
+        {
+          number: "SFX-2025-1211-089",
+          type: "Suspicious Death Investigation",
+          victim: "Aziz Krifa",
+          date: "December 11, 2025",
+          status: "active",
+          summary:
+            "Male, 22, IEEE FSM Student Branch Chair. Found deceased at base of staircase. Severe head trauma. Investigating as suspicious death.",
+          keywords: ["aziz", "1211", "089", "krifa"],
+          content: `╔═══════════════════════════════════════════════════════════════╗
+║              POLICE NATIONALE - MONASTIR DISTRICT             ║
 ║                    INCIDENT REPORT                            ║
 ╚═══════════════════════════════════════════════════════════════╝
 
 CASE NUMBER: SFX-2025-1211-089
-VICTIM: Aziz Ben Mahmoud, 22, IEEE FSM Student Branch Chair
-DATE OF DEATH: December 10, 2025 (9:30 PM - 11:00 PM estimated)
-LOCATION: Residence El Ferdaous, Sfax
+REPORTING OFFICER: Inspector Mehdi Lakhal
+INCIDENT TYPE: Suspicious Death - Active Investigation
+
+═══════════════════════════════════════════════════════════════
+
+VICTIM INFORMATION:
+Name: Aziz Krifa
+Age: 22 years old
+Occupation: Student, IEEE FSM Student Branch Chair
+Institution: Faculty of Science of Monastir
+Residence: Residence El Ferdaous, Apt 3B, Monastir
+
+DATE/TIME OF DEATH: December 10, 2025
+Estimated: 9:30 PM - 11:00 PM
+LOCATION: Victim's apartment, 3rd floor
 DISCOVERED: December 11, 2025, 7:45 AM by landlord
 
+═══════════════════════════════════════════════════════════════
+
 SCENE DESCRIPTION:
-- Body found at base of staircase
-- Fell from 3rd floor apartment
-- Severe head trauma consistent with fall
-- Apartment door was OPEN when discovered
-- No signs of forced entry
-- Victim's phone on 2nd floor landing
-- Laptop open and unlocked in apartment
 
-CRITICAL FINDINGS FROM VICTIM'S LAPTOP:
+Initial findings by responding officers:
+- Body discovered at base of internal staircase (ground floor)
+- Victim fell approximately 3 floors (9 meters)
+- Severe blunt force trauma to head and neck
+- Multiple contusions consistent with tumbling down stairs
+- Rigor mortis partially established (death ~8-12 hours prior)
 
-Document "EXCOM_Insurance.docx" created Dec 10, 7:45 PM:
+Position of body:
+- Supine position at staircase base
+- Left arm extended, right arm under torso
+- Significant pooling of blood beneath head
+- No defensive wounds visible on hands or arms
 
-"If anything happens to me, these people are involved in 
+Apartment status:
+- Front door OPEN when landlord arrived
+- No signs of forced entry on door or windows
+- Interior showed signs of struggle near apartment entrance
+- Furniture displaced in entryway area
+- Victim's laptop OPEN and UNLOCKED on coffee table
+- Mobile phone found on 2nd floor landing (screen cracked)
+
+═══════════════════════════════════════════════════════════════
+
+CRITICAL EVIDENCE - VICTIM'S LAPTOP:
+
+Document discovered: "EXCOM_Insurance.docx"
+Created: December 10, 2025, 7:45 PM
+Last modified: December 10, 2025, 7:52 PM
+
+Full text of document:
+
+"TO WHOM IT MAY CONCERN:
+
+If you are reading this, something has happened to me.
+I am creating this document as insurance.
+
+The following IEEE FSM EXCOM members are involved in
 financial misconduct:
 
-- AMINE: Embezzled ~1,200 TND from CS funds
-- YASSINE: Approved fake equipment purchases (800 TND)
-- FARES: Billed design work to freelance clients
-- ELA: Knows about all this but hasn't reported
+1. AMINE ZBAA (CS Vice Chair)
+   - Embezzled approximately 1,200 TND from CS Chapter funds
+   - Unauthorized wire transfers for "consulting fees"
+   - Created fake invoices for website maintenance
+   - Evidence: Bank statements Nov 15 - Dec 8
 
-I tried to use this to protect WeHack funding.
-They wanted me silenced.
+2. YASSINE AZZOUZ (CS Chair)
+   - Approved fraudulent equipment purchases totaling 800 TND
+   - Purchases made to non-existent vendor companies
+   - Equipment never delivered to IEEE office
+   - Evidence: Purchase orders, invoices (see attached folder)
 
-If I'm dead, it's not an accident."
+3. FARES KLAII (Design Manager)
+   - Billed 600 TND for design work actually delivered
+     to his personal freelance clients
+   - Used IEEE resources for non-IEEE projects
+   - Evidence: Invoice comparisons, client testimonials
+
+4. ELA HASSINE (Treasurer)
+   - Aware of all the above violations
+   - Has not reported to faculty advisor or IEEE headquarters
+   - Potentially complicit in covering up misconduct
+
+I attempted to use this information to protect funding for
+WeHack 0.0, our flagship event. They discovered what I knew.
+Now they want me silenced.
+
+If I am found dead or seriously injured, it is NOT an accident.
+One or more of these individuals are responsible.
+
+- Aziz Krifa
+  December 10, 2025"
+
+═══════════════════════════════════════════════════════════════
 
 PERSONS OF INTEREST:
-1. ELA TRABELSI - Violent argument hours before death
-2. AMINE KHELIFI - Embezzlement exposed
-3. YASSINE MAHMOUDI - Accused of fraud
-4. FARES JLASSI - Billing fraud revealed
+
+1. ELA HASSINE (Treasurer, 21)
+   - Had violent confrontation with victim hours before death
+   - Threatened to "report everything" to authorities
+   - Last known contact: Left victim's apartment 9:36 PM
+   - REQUIRES INTERVIEW
+
+2. AMINE ZBAA (CS Vice Chair, 23)
+   - Financial misconduct exposed by victim
+   - Motive: Prevent exposure and expulsion
+   - Location during incident: UNKNOWN
+   - REQUIRES INTERVIEW
+
+3. YASSINE AZZOUZ (CS Chair, 22)
+   - Accused of equipment fraud by victim
+   - Sent threatening messages to victim
+   - Last text: "I'm coming to talk to you tonight"
+   - REQUIRES INTERVIEW
+
+4. FARES KLAII (Design Manager, 22)
+   - Billing fraud exposed
+   - Close associate of Amine Zbaa
+   - Location during incident: UNKNOWN
+   - REQUIRES INTERVIEW
+
+═══════════════════════════════════════════════════════════════
 
 WITNESS STATEMENTS:
-- Neighbor heard "loud argument" around 10 PM
-- "Angry male voice"
-- Then "huge crash"
 
-EVIDENCE:
-⚠ Security footage shows multiple people entered building
-⚠ Check case SFX-2025-1214-112 (related incident)
+Mrs. Leila Mansouri (Neighbor, Apt 3A):
+"I heard raised voices around 10 PM. A man's voice, very angry.
+Shouting something like 'You can't do this' or 'You fabricated'.
+Then I heard what sounded like furniture moving, a loud crash,
+and then silence. I was scared to open my door."
+
+Mr. Hassan Trabelsi (Neighbor, Apt 2C):
+"I saw a young man running down the emergency stairs around
+10:15-10:20 PM. He was wearing a dark jacket and looked panicked.
+He had a backpack. I didn't see his face clearly."
+
+Building Security Guard:
+"Emergency exit alarm triggered at 10:18 PM. By the time I
+checked, nobody was there. Main entrance camera was working."
+
+═══════════════════════════════════════════════════════════════
+
+FORENSIC FINDINGS (Preliminary):
+
+Time of death: Approximately 10:00-10:30 PM (based on body temp)
+Cause of death: Severe cranial trauma from fall
+Manner: UNDETERMINED - investigating as suspicious
+
+Toxicology: Blood sample sent to lab (results pending)
+No alcohol detected in preliminary field test
+
+Injuries catalogued:
+- Fractured skull (occipital region)
+- Broken neck (C2-C3 vertebrae)
+- Multiple rib fractures (left side, ribs 4-7)
+- Contusions on back, shoulders, left arm
+- Pattern consistent with falling down stairs
+
+Question: Was fall accidental or result of physical altercation?
+
+═══════════════════════════════════════════════════════════════
+
+EVIDENCE COLLECTED:
+
+1. Victim's laptop (password protected - bypassed)
+2. Victim's mobile phone (damaged but data recoverable)
+3. Various documents from apartment
+4. Photographs of scene (47 images)
+5. Door handle fingerprints (multiple prints found)
+6. Trace evidence from entryway (hair, fibers)
+
+SENT TO LAB FOR ANALYSIS
+
+═══════════════════════════════════════════════════════════════
+
+NEXT STEPS:
+
+1. Interview all persons of interest within 48 hours
+2. Obtain phone records for all EXCOM members
+3. Review building security footage (requested)
+4. Conduct forensic analysis of laptop and phone
+5. Verify financial allegations in victim's document
+6. Coordinate with Faculty of Science administration
+
+⚠️ RELATED CASE ALERT:
+Monitor for connection to case SFX-2025-1214-112
+(subsequent incident involving witness Ela Hassine)
+
+═══════════════════════════════════════════════════════════════
 
 STATUS: ACTIVE INVESTIGATION - SUSPECTED HOMICIDE
+PRIORITY: HIGH
+ASSIGNED TO: Inspector Mehdi Lakhal, Detective Sara Gharbi
 
-📌 CLUE: Look for social media messages between suspects
-📌 CLUE: Second case number: SFX-2025-1214-112
+Report filed: December 11, 2025, 11:30 AM
+Updated: December 11, 2025, 6:45 PM
 
-Report: Inspector Mehdi Lakhal
-Date: December 11, 2025`
-            },
-            {
-                number: 'SFX-2025-1214-112',
-                type: 'Homicide Investigation',
-                victim: 'Ela Trabelsi',
-                date: 'December 14, 2025',
-                status: 'active',
-                summary: 'Victim found in IEEE office. Blunt force trauma. Related to case SFX-2025-1211-089.',
-                keywords: ['ela', '1214', '112'],
-                content: `╔═══════════════════════════════════════════════════════════════╗
-║         INCIDENT REPORT - ELA TRABELSI HOMICIDE               ║
+═══════════════════════════════════════════════════════════════`,
+        },
+        {
+          number: "SFX-2025-1214-112",
+          type: "Homicide Investigation",
+          victim: "Ela Hassine",
+          date: "December 14, 2025",
+          status: "active",
+          summary:
+            "Female, 21, IEEE FSM Treasurer. Found deceased in IEEE office. Blunt force trauma. Suspect in custody. Linked to case SFX-2025-1211-089.",
+          keywords: ["ela", "1214", "112", "hassine"],
+          content: `╔═══════════════════════════════════════════════════════════════╗
+║         INCIDENT REPORT - ELA HASSINE HOMICIDE                ║
 ╚═══════════════════════════════════════════════════════════════╝
 
-CASE: SFX-2025-1214-112
-VICTIM: Ela Trabelsi, 21, IEEE FSM Treasurer
-DATE OF DEATH: December 13, 2025 (10:00-11:00 PM)
-LOCATION: IEEE Office, Faculty of Sciences
-DISCOVERED: December 14, 7:30 AM by Ikhlas Rebhi
+CASE NUMBER: SFX-2025-1214-112
+REPORTING OFFICER: Inspector Mehdi Lakhal
+INCIDENT TYPE: Homicide - Suspect in Custody
 
-SCENE:
-- Multiple blunt force trauma to head (4+ strikes)
-- Murder weapon: IEEE trophy (2.1 kg metal)
-- Victim's phone in hand (unlocked, messaging app open)
-- No forced entry
+═══════════════════════════════════════════════════════════════
 
-EVIDENCE AGAINST AMINE KHELIFI:
+VICTIM INFORMATION:
+Name: Ela Hassine
+Age: 21 years old
+Occupation: Student, IEEE FSM Treasurer
+Institution: Faculty of Science of Monastir
 
-1. VOICE MESSAGE on victim's phone
-   From: "Amine Khelifi" 
-   Sent: Dec 13, 21:22
-   Content: Asking Ela to meet at IEEE office at 10 PM
+DATE/TIME OF DEATH: December 13, 2025
+Estimated: 10:00 PM - 11:00 PM
+LOCATION: IEEE Student Office, Faculty of Science of Monastir
+DISCOVERED: December 14, 2025, 7:30 AM by Ikhlas Bahia
 
-2. EMAIL DRAFT on office computer
-   From: amine.khelifi@ieee-fsm.tn
-   Subject: "We need to talk - URGENT"
-   Threatening content about reporting
+═══════════════════════════════════════════════════════════════
 
-3. COFFEE CUP with Amine's fingerprints at scene
+SCENE DESCRIPTION:
 
-4. MOTIVE: Ela was reporting his embezzlement
+Victim position:
+- Found on office floor, face-up
+- Significant blood pooling beneath head
+- IEEE trophy (2.1 kg metal) found near body with blood
+- Defensive wounds on hands and forearms
 
-AMINE'S STATEMENT:
-"I did NOT kill Ela! Someone is framing me! That voice 
-message is FAKE! I was home alone!"
+Injuries observed:
+- Multiple blunt force trauma impacts to head (4-6 strikes)
+- Skull fractures (frontal and parietal regions)
+- Extensive hemorrhaging
+- Contusions on hands (defensive wounds)
 
-SECURITY FOOTAGE (Dec 13):
-- 20:18: Ela enters building
-- 21:58: Unknown person (hooded, 175-180cm)
-- 22:47: Unknown person exits running
+Office status:
+- Door unlocked, no forced entry
+- Lights ON when discovered
+- Victim's backpack on desk
+- Computer workstation active
+- Mobile phone clutched in victim's hand (UNLOCKED)
 
-ARREST: Amine Khelifi charged with murder
+═══════════════════════════════════════════════════════════════
+
+CRITICAL EVIDENCE AGAINST SUSPECT:
+
+EVIDENCE #1: VOICE MESSAGE ON VICTIM'S PHONE
+
+Sender: Listed as "Amine Zbaa"
+Received: December 13, 2025, 21:22 (9:22 PM)
+Duration: 23 seconds
+Message still on screen when body discovered
+
+Transcript of message:
+"Hey Ela, it's Amine. I know things have been crazy since
+the meeting. I need to talk to you about what Aziz said.
+About my situation with the funds. Can you meet me at the
+IEEE office tonight? Around 10 PM? I want to explain
+everything before you report it. Please. This is important.
+Don't tell anyone else. Just you and me."
+
+Analysis: Message appears to lure victim to crime scene
+Victim responded: "Ok, I'll be there at 10"
+
+EVIDENCE #2: EMAIL DRAFT ON OFFICE COMPUTER
+
+Email account: amine.zbaa@ieee-fsm.tn
+Recipient: ela.hassine@ieee-fsm.tn
+Subject: "We need to talk - URGENT"
+Status: DRAFT (not sent)
+Created: December 13, 2025, 21:21 (9:21 PM)
+
+Full text:
+"Ela,
+
+I know you're planning to report me to the faculty advisor.
+I'm begging you, please don't. My entire future is at stake.
+My family will disown me if I get expelled.
+
+Meet me tonight at the office. 10 PM. We can work this out.
+There has to be another way.
+
+If you report this, my life is over. Everything I've worked
+for will be destroyed. Please reconsider.
+
+Don't make me do something I'll regret.
+
+- Amine"
+
+Analysis: Threatening tone. "Don't make me do something I'll
+regret" interpreted as threat of violence.
+
+EVIDENCE #3: PHYSICAL EVIDENCE AT SCENE
+
+Coffee cup recovered from desk:
+- Fingerprints analyzed: Match AMINE ZBAA
+- Cup is Amine's personal cup (name written on bottom)
+- Contains coffee residue (fresh, <12 hours old)
+
+Analysis: Suspect was present at crime scene recently
+
+EVIDENCE #4: MOTIVE
+
+Financial crimes exposure:
+- Victim (Ela) was planning to report Amine's embezzlement
+- Amine stood to lose scholarship, face expulsion, criminal charges
+- Victim's testimony would provide evidence for prosecution
+- Amine had clear motive to silence victim
+
+═══════════════════════════════════════════════════════════════
+
+SUSPECT INFORMATION:
+
+ARRESTED: Amine Zbaa, 23, CS Vice Chair
+ARRESTED: December 14, 2025, 2:30 PM
+LOCATION: Suspect's residence
+CHARGES: First-degree murder, evidence tampering
+
+SUSPECT'S STATEMENT (Under interrogation):
+
+"I did NOT kill Ela! This is insane! Someone is framing me!
+
+That voice message - I never sent that! I don't even know
+how someone could fake my voice but I SWEAR I didn't send it!
+
+The email - yes that's my account but I didn't write that!
+Someone must have hacked into my email! Check the IP address!
+
+The coffee cup - OF COURSE my fingerprints are on it! I use
+that cup EVERY DAY in the office! That doesn't prove anything!
+
+I was at home alone on December 13. I was watching Netflix.
+Check my account activity! I can prove I was home!
+
+Please, you have to believe me. I'm being set up. Someone
+killed Ela and they're making it look like I did it!
+
+Why would I kill her? Yes, she was going to report me for
+the embezzlement, but I was planning to confess and pay
+everything back! I'm not a murderer!"
+
+═══════════════════════════════════════════════════════════════
+
+ALIBI INVESTIGATION:
+
+Suspect claims: Home alone, watching Netflix
+Verification attempted:
+- No witnesses to confirm
+- Netflix activity shows streaming during alleged time
+- However, streaming can be set to auto-play
+- Does not definitively prove physical location
+
+ALIBI PROVIDED BY WITNESS:
+
+Fares Klaii (Design Manager, friend of suspect) provided
+statement claiming Amine was with him December 13 evening.
+
+Fares' statement:
+"Amine was at my place on December 13. We were working on
+WeHack designs together from around 9 PM until midnight.
+We ordered food, worked on the laptop. He was definitely
+with me. There's no way he could have killed Ela."
+
+DISCREPANCY NOTED:
+Alibi conflicts with suspect's own statement (home alone)
+Further investigation of alibi witness required
+
+═══════════════════════════════════════════════════════════════
+
+SECURITY FOOTAGE ANALYSIS:
+
+Faculty building cameras - December 13, 2025:
+
+20:18:33 - Ela Hassine enters building (alone)
+         Carrying backpack, appears calm
+
+21:58:47 - Unknown person enters building
+         HOODED figure, face obscured by hood/scarf
+         Height estimated: 175-180 cm
+         Build: Medium
+         ⚠️ FACE NOT VISIBLE
+
+22:47:03 - Same hooded person exits building
+         RUNNING at high speed
+         Still obscured, face not identifiable
+
+NOTE: Footage does NOT show Amine Zbaa specifically
+However, height/build consistent with suspect
+
+═══════════════════════════════════════════════════════════════
 
 CONNECTION TO CASE SFX-2025-1211-089:
-Ela was key witness in Aziz death investigation.
 
-📌 CLUE: Voice message may be forged (forensic analysis pending)
-📌 CLUE: Check FSM security footage for more evidence
-📌 CLUE: Examine social media for alibis
+CRITICAL LINK IDENTIFIED:
+Victim Ela Hassine was KEY WITNESS in Aziz Krifa death case
 
-STATUS: Suspect in custody
-Report: Inspector Lakhal, December 14, 2025`
-            },
-            // RED HERRINGS
-            {
-                number: 'SFX-2025-1208-045',
-                type: 'Burglary',
-                victim: 'N/A',
-                date: 'December 8, 2025',
-                status: 'closed',
-                summary: 'Campus dorm burglary. Laptop stolen. Suspect apprehended.',
-                keywords: ['1208', '045'],
-                redHerring: true,
-                content: '[Case file - Burglary]\n\nClosed case. Not relevant to investigation.'
-            },
-            {
-                number: 'SFX-2025-1115-203',
-                type: 'Assault',
-                victim: 'N/A',
-                date: 'November 15, 2025',
-                status: 'closed',
-                summary: 'Bar fight. Minor injuries. Resolved.',
-                keywords: ['1115', '203'],
-                redHerring: true,
-                content: '[Case file - Assault]\n\nClosed case. Not relevant to investigation.'
-            },
-            {
-                number: 'SFX-2025-1220-078',
-                type: 'Vandalism',
-                victim: 'N/A',
-                date: 'December 20, 2025',
-                status: 'active',
-                summary: 'University property damage. Investigation ongoing.',
-                keywords: ['1220', '078'],
-                redHerring: true,
-                content: '[Case file - Vandalism]\n\nOngoing. Not relevant to murder investigation.'
-            }
-        ];
+Ela provided crucial testimony:
+- Visited Aziz on night of his death
+- Aziz admitted fabricating evidence against Yassine Azzouz
+- This established motive for Yassine to confront Aziz
+- Ela's testimony would be used in prosecution
 
-        function searchCases(e) {
-            e.preventDefault();
-            const query = document.getElementById('caseInput').value.toLowerCase().trim();
-            
-            if (!query) {
-                alert('Please enter a case number');
-                return;
-            }
+THEORY: Was Ela killed to prevent her testimony?
 
-            const results = cases.filter(c => 
-                c.number.toLowerCase().includes(query) ||
-                c.keywords.some(k => query.includes(k))
-            );
+If so, who benefits from Ela's silence?
+- Yassine Azzouz (primary suspect in Aziz case)
+- Ela could testify that Aziz admitted fabrication
+- Without Ela, prosecution case weakens
 
-            displayResults(results, query);
+ALTERNATIVE THEORY:
+Amine killed Ela to prevent embezzlement report
+Physical evidence points to Amine
+Digital evidence (voice, email) incriminates Amine
+
+═══════════════════════════════════════════════════════════════
+
+PENDING INVESTIGATION:
+
+1. Forensic analysis of voice message (URGENT)
+   - Voice authentication required
+   - Check for digital manipulation
+
+2. Email server logs analysis
+   - Verify IP address of draft creation
+   - Check for unauthorized access to account
+
+3. Verify Fares Klaii's alibi statement
+   - Interview neighbors, check security footage
+   - Determine if alibi is truthful
+
+4. Review all evidence for possibility of frame-up
+   - Suspect maintains innocence
+   - Claims evidence is fabricated
+
+═══════════════════════════════════════════════════════════════
+
+CURRENT STATUS:
+
+SUSPECT: Amine Zbaa - IN CUSTODY
+CHARGES: First-degree murder
+BAIL: DENIED (flight risk, severity of crime)
+NEXT HEARING: December 20, 2025
+
+EVIDENCE STATUS: Strong circumstantial case
+- Voice message luring victim
+- Threatening email
+- Physical presence at scene (coffee cup)
+- Clear motive
+
+DEFENSE CLAIM: Frame-up, requests forensic analysis
+
+═══════════════════════════════════════════════════════════════
+
+Report filed: December 14, 2025, 10:15 AM
+Updated: December 14, 2025, 8:30 PM
+
+Inspector Mehdi Lakhal
+Detective Sara Gharbi
+Police Nationale - Monastir District
+
+═══════════════════════════════════════════════════════════════`,
+        },
+        // RED HERRINGS
+        {
+          number: "SFX-2025-1208-045",
+          type: "Burglary",
+          victim: "Multiple students",
+          date: "December 8, 2025",
+          status: "closed",
+          summary:
+            "Campus dormitory burglary. Three laptops stolen from student rooms. Suspect apprehended with stolen property.",
+          keywords: ["1208", "045", "burglary"],
+          redHerring: true,
+          content:
+            "[Closed case - Campus burglary]\n\nSuspect arrested: Local resident, not student\nStolen property recovered\nNot related to ongoing investigations\n\nCase closed December 10, 2025",
+        },
+        {
+          number: "SFX-2025-1115-203",
+          type: "Assault",
+          victim: "N/A",
+          date: "November 15, 2025",
+          status: "closed",
+          summary:
+            "Altercation at local café. Two individuals involved. Minor injuries. Both parties agreed to mediation.",
+          keywords: ["1115", "203", "assault"],
+          redHerring: true,
+          content:
+            "[Closed case - Café altercation]\n\nDispute over personal matter\nMinor injuries treated at scene\nMediation completed\nNo charges filed\n\nCase closed November 18, 2025",
+        },
+        {
+          number: "SFX-2025-1220-078",
+          type: "Vandalism",
+          victim: "Faculty property",
+          date: "December 20, 2025",
+          status: "active",
+          summary:
+            "Graffiti on university building exterior. Investigation ongoing to identify suspects.",
+          keywords: ["1220", "078", "vandalism"],
+          redHerring: true,
+          content:
+            "[Active case - Vandalism]\n\nGraffiti discovered on north wall of building C\nSecurity footage being reviewed\nNo suspects identified yet\n\nInvestigation ongoing",
+        },
+        {
+          number: "SFX-2025-1205-156",
+          type: "Theft",
+          victim: "University library",
+          date: "December 5, 2025",
+          status: "closed",
+          summary:
+            "Theft of rare books from library special collections. Books recovered, student suspended.",
+          keywords: ["1205", "156", "theft", "library"],
+          redHerring: true,
+          content:
+            "[Closed case - Library theft]\n\nRare books taken from locked cabinet\nStudent identified via library card records\nAll items recovered\nStudent disciplinary action taken\n\nCase closed December 7, 2025",
+        },
+      ];
+
+      function searchCases(e) {
+        e.preventDefault();
+        const query = document.getElementById("caseInput").value.toLowerCase().trim();
+        if (!query) {
+          alert("Please enter a case number");
+          return;
         }
+        const results = cases.filter(
+          (c) => c.number.toLowerCase().includes(query) || c.keywords.some((k) => query.includes(k))
+        );
+        displayResults(results, query);
+      }
 
-        function displayResults(results, query) {
-            document.querySelector('.search-section').style.display = 'none';
-            document.getElementById('resultsSection').classList.add('active');
-            
-            const container = document.getElementById('resultsContainer');
-            
-            if (results.length === 0) {
-                container.innerHTML = `
-                    <div class="no-results">
-                        <div style="font-size: 3rem; margin-bottom: 20px;">🔍</div>
-                        <p>No cases found matching "${query}"</p>
-                        <p style="margin-top: 10px; color: #666;">Try a different case number</p>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = results.map(c => `
-                    <div class="case-card ${c.redHerring ? 'red-herring' : ''}" onclick="openCase('${c.number}')">
+      function displayResults(results, query) {
+        document.querySelector(".search-section").style.display = "none";
+        document.getElementById("resultsSection").classList.add("active");
+        const container = document.getElementById("resultsContainer");
+        if (results.length === 0) {
+          container.innerHTML =
+            '<div style="text-align:center; padding:60px; color:#999;"><div style="font-size:3rem; margin-bottom:20px;">🔍</div><p>No cases found matching "' +
+            query +
+            '"</p></div>';
+        } else {
+          container.innerHTML = results
+            .map(
+              (c) => `
+                    <div class="case-card ${
+                      c.redHerring ? "red-herring" : ""
+                    }" onclick="openCase('${c.number}')">
                         <div class="case-header">
                             <div class="case-number">${c.number}</div>
-                            <div class="case-status status-${c.status}">${c.status.toUpperCase()}</div>
+                            <div class="case-status status-${
+                              c.status
+                            }">${c.status.toUpperCase()}</div>
                         </div>
                         <div class="case-summary">
                             <strong>${c.type}</strong><br>
-                            ${c.victim !== 'N/A' ? `Victim: ${c.victim}<br>` : ''}
+                            ${c.victim !== "N/A" ? "Victim: " + c.victim + "<br>" : ""}
                             ${c.summary}
                         </div>
                         <div class="case-date">📅 ${c.date}</div>
                     </div>
-                `).join('');
-            }
+                `
+            )
+            .join("");
         }
+      }
 
-        function openCase(caseNumber) {
-            const caseData = cases.find(c => c.number === caseNumber);
-            if (caseData) {
-                document.getElementById('docTitle').textContent = `Case ${caseNumber}`;
-                document.getElementById('docContent').textContent = caseData.content;
-                document.getElementById('docModal').classList.add('active');
-            }
+      function openCase(caseNumber) {
+        const caseData = cases.find((c) => c.number === caseNumber);
+        if (caseData) {
+          document.getElementById("docTitle").textContent = "Case " + caseNumber;
+          document.getElementById("docContent").textContent = caseData.content;
+          document.getElementById("docModal").classList.add("active");
         }
+      }
 
-        function closeDoc() {
-            document.getElementById('docModal').classList.remove('active');
-        }
-
-        function newSearch() {
-            document.querySelector('.search-section').style.display = 'block';
-            document.getElementById('resultsSection').classList.remove('active');
-            document.getElementById('caseInput').value = '';
-        }
-
-        window.onclick = (e) => {
-            if (e.target.id === 'docModal') closeDoc();
-        };
+      function closeDoc() {
+        document.getElementById("docModal").classList.remove("active");
+      }
+      function newSearch() {
+        document.querySelector(".search-section").style.display = "block";
+        document.getElementById("resultsSection").classList.remove("active");
+        document.getElementById("caseInput").value = "";
+      }
+      window.onclick = (e) => {
+        if (e.target.id === "docModal") closeDoc();
+      };
     </script>
-</body>
+  </body>
 </html>
