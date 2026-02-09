@@ -1,370 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IEEE FSM - Internal Portal</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .portal-container {
-            background: white;
-            max-width: 1200px;
-            margin: 0 auto;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        .portal-header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .portal-header h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        /* Login Section */
-        .login-section {
-            padding: 50px;
-            display: block;
-        }
-
-        .login-section.hidden {
-            display: none;
-        }
-
-        .login-section h2 {
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #555;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .error-msg {
-            background: #fee;
-            color: #c33;
-            padding: 12px;
-            border-radius: 6px;
-            margin-top: 15px;
-            display: none;
-        }
-
-        .hint-box {
-            background: #f0f8ff;
-            border-left: 4px solid #667eea;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 5px;
-        }
-
-        .back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #ddd;
-            color: #333;
-            text-decoration: none;
-            border-radius: 6px;
-        }
-
-        /* File Browser */
-        .file-browser {
-            padding: 30px;
-            display: none;
-        }
-
-        .file-browser.active {
-            display: block;
-        }
-
-        .breadcrumb {
-            background: #f5f5f5;
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-            color: #666;
-        }
-
-        .breadcrumb-link {
-            color: #667eea;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .breadcrumb-link:hover {
-            text-decoration: underline;
-        }
-
-        .toolbar {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .search-box {
-            flex: 1;
-            padding: 10px 15px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-
-        .clear-btn {
-            padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .file-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .folder-card, .file-card {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-
-        .folder-card:hover {
-            border-color: #ffc107;
-            background: #fffbf0;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .file-card:hover {
-            border-color: #667eea;
-            background: #f0f4ff;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .folder-icon, .file-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
-
-        .item-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .item-meta {
-            font-size: 0.85rem;
-            color: #888;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 900px;
-            max-height: 80vh;
-            border-radius: 10px;
-            padding: 30px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 2rem;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .close-btn:hover {
-            color: #333;
-        }
-
-        .doc-content {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            white-space: pre-wrap;
-            font-family: 'Courier New', monospace;
-            line-height: 1.6;
-            margin-top: 20px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .portal-container {
+        background: white;
+        max-width: 1200px;
+        margin: 0 auto;
+        border-radius: 15px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+      .portal-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+      .portal-header h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+      .login-section {
+        padding: 50px;
+        display: block;
+      }
+      .login-section.hidden {
+        display: none;
+      }
+      .login-section h2 {
+        color: #333;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+      .form-group {
+        margin-bottom: 25px;
+      }
+      .form-group label {
+        display: block;
+        color: #555;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+      .form-group input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+      .login-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .error-msg {
+        background: #fee;
+        color: #c33;
+        padding: 12px;
+        border-radius: 6px;
+        margin-top: 15px;
+        display: none;
+      }
+      .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #ddd;
+        color: #333;
+        text-decoration: none;
+        border-radius: 6px;
+      }
+      .file-browser {
+        padding: 30px;
+        display: none;
+      }
+      .file-browser.active {
+        display: block;
+      }
+      .breadcrumb {
+        background: #f5f5f5;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 0.95rem;
+        color: #666;
+      }
+      .breadcrumb-link {
+        color: #667eea;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .breadcrumb-link:hover {
+        text-decoration: underline;
+      }
+      .toolbar {
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 15px;
+      }
+      .search-box {
+        flex: 1;
+        padding: 10px 15px;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+      }
+      .clear-btn {
+        padding: 10px 20px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .file-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      .folder-card,
+      .file-card {
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+      }
+      .folder-card:hover {
+        border-color: #ffc107;
+        background: #fffbf0;
+        transform: translateY(-3px);
+      }
+      .file-card:hover {
+        border-color: #667eea;
+        background: #f0f4ff;
+        transform: translateY(-3px);
+      }
+      .folder-icon,
+      .file-icon {
+        font-size: 3rem;
+        margin-bottom: 10px;
+      }
+      .item-name {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+      }
+      .item-meta {
+        font-size: 0.85rem;
+        color: #888;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+      }
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        background: white;
+        width: 90%;
+        max-width: 900px;
+        max-height: 85vh;
+        border-radius: 10px;
+        padding: 30px;
+        overflow-y: auto;
+        position: relative;
+      }
+      .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 2rem;
+        cursor: pointer;
+        color: #999;
+      }
+      .close-btn:hover {
+        color: #333;
+      }
+      .doc-content {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        font-family: "Courier New", monospace;
+        line-height: 1.6;
+        margin-top: 20px;
+        font-size: 0.9rem;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="portal-container">
-        <div class="portal-header">
-            <h1>🔷 IEEE FSM Internal Portal</h1>
-            <p>Faculty of Sciences - Sfax | Document Management System</p>
+      <div class="portal-header">
+        <h1>🔷 IEEE FSM Internal Portal</h1>
+        <p>Faculty of Science of Monastir | Document Management System</p>
+      </div>
+
+      <!-- Login -->
+      <div class="login-section" id="loginSection">
+        <h2>🔐 Secure Access Required</h2>
+        <form onsubmit="login(event)">
+          <div class="form-group">
+            <label>Portal Password</label>
+            <input type="password" id="passwordInput" placeholder="Enter password" />
+          </div>
+          <button type="submit" class="login-btn">ACCESS PORTAL</button>
+          <div class="error-msg" id="errorMsg">❌ Incorrect password</div>
+        </form>
+        <a href="index.html" class="back-btn">← Back</a>
+      </div>
+
+      <!-- File Browser -->
+      <div class="file-browser" id="fileBrowser">
+        <h2 style="color: #333; margin-bottom: 20px">📂 Document Archive</h2>
+        <div class="breadcrumb" id="breadcrumb">
+          <span class="breadcrumb-link" onclick="goHome()">📁 Home</span>
         </div>
-
-        <!-- Login -->
-        <div class="login-section" id="loginSection">
-            <h2>🔐 Secure Access Required</h2>
-            <form onsubmit="login(event)">
-                <div class="form-group">
-                    <label>Portal Password</label>
-                    <input type="password" id="passwordInput" placeholder="Enter password">
-                </div>
-                <button type="submit" class="login-btn">ACCESS PORTAL</button>
-                <div class="error-msg" id="errorMsg">❌ Incorrect password</div>
-            </form>
-            <div class="hint-box">
-                <strong>🔍 Hint:</strong> Password format: chairman name + year (e.g., name2025)
-            </div>
-            <a href="index.html" class="back-btn">← Back</a>
+        <div class="toolbar">
+          <input
+            type="text"
+            class="search-box"
+            id="searchInput"
+            placeholder="Search files..."
+            oninput="search()"
+          />
+          <button class="clear-btn" onclick="clearSearch()">Clear</button>
         </div>
-
-        <!-- File Browser -->
-        <div class="file-browser" id="fileBrowser">
-            <h2 style="color: #333; margin-bottom: 20px;">📂 Document Archive</h2>
-            
-            <div class="breadcrumb" id="breadcrumb">
-                <span class="breadcrumb-link" onclick="goHome()">📁 Home</span>
-            </div>
-
-            <div class="toolbar">
-                <input type="text" class="search-box" id="searchInput" placeholder="Search files..." oninput="search()">
-                <button class="clear-btn" onclick="clearSearch()">Clear</button>
-            </div>
-
-            <div class="file-grid" id="fileGrid"></div>
-
-            <a href="index.html" class="back-btn">← Back to Home</a>
-        </div>
+        <div class="file-grid" id="fileGrid"></div>
+        <a href="index.html" class="back-btn">← Back to Home</a>
+      </div>
     </div>
 
-    <!-- Document Modal -->
     <div class="modal" id="docModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeDoc()">&times;</span>
-            <h2 id="docTitle"></h2>
-            <div class="doc-content" id="docContent"></div>
-        </div>
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeDoc()">&times;</span>
+        <h2 id="docTitle"></h2>
+        <div class="doc-content" id="docContent"></div>
+      </div>
     </div>
 
     <script>
-        const PASSWORD = 'aziz2025';
-        let currentPath = [];
+      const PASSWORD = "aziz2025";
+      let currentPath = [];
 
-        const structure = {
-            'Meeting Reports': {
-                type: 'folder',
-                icon: '📋',
-                files: {
-                    'EXCOM Meeting - December 10, 2025': {
-                        type: 'file',
-                        date: 'Dec 10, 2025',
-                        size: '24 KB',
-                        keywords: ['december', 'dec 10', 'meeting', 'budget'],
-                        content: `════════════════════════════════════════════════════════════════
+      const structure = {
+        "Meeting Reports": {
+          type: "folder",
+          icon: "📋",
+          files: {
+            "EXCOM Meeting - December 10, 2025": {
+              type: "file",
+              date: "Dec 10, 2025",
+              size: "24 KB",
+              keywords: ["december", "dec 10", "meeting", "budget"],
+              content: `════════════════════════════════════════════════════════════════
                     IEEE FSM STUDENT BRANCH
               EXECUTIVE COMMITTEE MEETING MINUTES
 ════════════════════════════════════════════════════════════════
 
 DATE: December 10, 2025
 TIME: 6:00 PM - 8:15 PM
-LOCATION: IEEE Office, Faculty of Sciences - Sfax
+LOCATION: IEEE Office, Faculty of Science of Monastir
 
 ATTENDEES:
-✓ Aziz - SB Chair
-✓ Ela - Treasurer
-✓ Fares - Design Manager
-✓ Yassine - CS Chair
-✓ Amine - CS Vice Chair
-✓ Roua, Ikhlas, Yaakoub
+✓ Aziz Krifa - SB Chair (Presiding)
+✓ Ela Hassine - Treasurer
+✓ Fares Klaii - Design Manager
+✓ Yassine Azzouz - CS Chair
+✓ Amine Zbaa - CS Vice Chair
+✓ Roua Mabrouk, Ikhlas Bahia, Yaakoub Benslimen
 
 ══════════════════════════════════════════════════════════════
 
@@ -380,7 +323,7 @@ Ela: "That's embezzlement!"
 
 Aziz exposes violations:
 - Amine: Consulting fees from CS funds (~1,200 TND)
-- Yassine: Fake equipment purchases (800 TND)  
+- Yassine: Fake equipment purchases (800 TND)
 - Fares: Personal freelance billing
 - Ela: Allegedly complicit
 
@@ -393,270 +336,250 @@ Aziz exits 8:13 PM
 
 ══════════════════════════════════════════════════════════════
 
-Notes (Ikhlas): "Most disturbing meeting. Bad things coming."
+Notes (Ikhlas Bahia): "Most disturbing meeting. Bad things coming."
 
-📌 CLUES:
-- Police case: SFX-2025-1211-089
-- Check social media messages
-- Multiple members involved
-
-══════════════════════════════════════════════════════════════`
-                    },
-                    'EXCOM Meeting - November 15, 2025': {
-                        type: 'file',
-                        date: 'Nov 15, 2025',
-                        size: '18 KB',
-                        content: '[Generic meeting minutes - November 15, 2025]\n\nStandard agenda items discussed.\nNo critical information for investigation.'
-                    },
-                    'EXCOM Meeting - October 20, 2025': {
-                        type: 'file',
-                        date: 'Oct 20, 2025',
-                        size: '15 KB',
-                        content: '[Generic meeting minutes - October 20, 2025]\n\nRoutine EXCOM business.\nNo critical information for investigation.'
-                    }
-                }
+══════════════════════════════════════════════════════════════`,
             },
-            'Design Assets': {
-                type: 'folder',
-                icon: '🎨',
-                files: {
-                    'WeHack Poster v3': {
-                        type: 'file',
-                        date: 'Dec 8, 2025',
-                        size: '2.4 MB',
-                        content: '[Design file - WeHack 0.0 Poster]\n\nCreated by: Fares Jlassi\nFormat: Adobe Illustrator\n\nThis is a placeholder for the actual design file.'
-                    },
-                    'Logo Variants 2025': {
-                        type: 'file',
-                        date: 'Sep 10, 2025',
-                        size: '1.8 MB',
-                        content: '[Design file - IEEE FSM Logo Variants]\n\nVarious logo configurations.\nNot relevant to investigation.'
-                    },
-                    'Social Media Templates': {
-                        type: 'file',
-                        date: 'Nov 5, 2025',
-                        size: '3.2 MB',
-                        content: '[Design templates for social media]\n\nInstagram, Facebook, LinkedIn templates.\nNot relevant to investigation.'
-                    }
-                }
+            "EXCOM Meeting - November 15, 2025": {
+              type: "file",
+              date: "Nov 15, 2025",
+              size: "18 KB",
+              content:
+                "[Generic meeting - November 15, 2025]\n\nStandard agenda items.\nNot critical for investigation.",
             },
-            'Event Photos': {
-                type: 'folder',
-                icon: '📸',
-                files: {
-                    'AI Workshop Nov 2025': {
-                        type: 'file',
-                        date: 'Nov 18, 2025',
-                        size: '45 MB',
-                        content: '[Photo album - AI Workshop]\n\n67 photos from workshop event.\nNot relevant to investigation.'
-                    },
-                    'EXCOM Team Photo': {
-                        type: 'file',
-                        date: 'Sep 1, 2025',
-                        size: '8 MB',
-                        content: '[Group photo - EXCOM 2025]\n\nAll members pictured.\nNot relevant to investigation.'
-                    }
-                }
+            "EXCOM Meeting - October 20, 2025": {
+              type: "file",
+              date: "Oct 20, 2025",
+              size: "15 KB",
+              content:
+                "[Generic meeting - October 20, 2025]\n\nRoutine business.\nNot critical for investigation.",
             },
-            'Future Plans': {
-                type: 'folder',
-                icon: '📅',
-                files: {
-                    'WeHack Budget Proposal': {
-                        type: 'file',
-                        date: 'Dec 5, 2025',
-                        size: '22 KB',
-                        keywords: ['wehack', 'budget'],
-                        content: '[Budget proposal document]\n\nProposed budget for WeHack 0.0.\nStatus: Rejected during December 10 meeting.\nNot critical to investigation.'
-                    },
-                    'Spring 2026 Calendar': {
-                        type: 'file',
-                        date: 'Nov 25, 2025',
-                        size: '16 KB',
-                        content: '[Event calendar - Spring 2026]\n\nPlanned events for next semester.\nNot relevant to investigation.'
-                    }
-                }
+          },
+        },
+        "Design Assets": {
+          type: "folder",
+          icon: "🎨",
+          files: {
+            "WeHack Poster v3": {
+              type: "file",
+              date: "Dec 8, 2025",
+              size: "2.4 MB",
+              content: "[Design file - WeHack Poster]\n\nCreated by: Fares Klaii\nNot relevant.",
             },
-            'Financial Records': {
-                type: 'folder',
-                icon: '💰',
-                files: {
-                    'Q4 2025 Budget Report': {
-                        type: 'file',
-                        date: 'Dec 9, 2025',
-                        size: '28 KB',
-                        keywords: ['budget', 'financial'],
-                        content: `Q4 Budget Report
-By: Ela Trabelsi
+            "Logo Variants 2025": {
+              type: "file",
+              date: "Sep 10, 2025",
+              size: "1.8 MB",
+              content: "[Design file - Logo Variants]\n\nNot relevant.",
+            },
+            "Social Media Templates": {
+              type: "file",
+              date: "Nov 5, 2025",
+              size: "3.2 MB",
+              content: "[Design templates]\n\nNot relevant.",
+            },
+          },
+        },
+        "Event Photos": {
+          type: "folder",
+          icon: "📸",
+          files: {
+            "AI Workshop Nov 2025": {
+              type: "file",
+              date: "Nov 18, 2025",
+              size: "45 MB",
+              content: "[Photo album]\n\n67 photos.\nNot relevant.",
+            },
+            "EXCOM Team Photo": {
+              type: "file",
+              date: "Sep 1, 2025",
+              size: "8 MB",
+              content: "[Group photo]\n\nAll members.\nNot relevant.",
+            },
+          },
+        },
+        "Future Plans": {
+          type: "folder",
+          icon: "📅",
+          files: {
+            "WeHack Budget Proposal": {
+              type: "file",
+              date: "Dec 5, 2025",
+              size: "22 KB",
+              keywords: ["wehack", "budget"],
+              content:
+                "[Budget proposal]\n\nProposed budget for WeHack.\nStatus: Rejected Dec 10.\nNot critical.",
+            },
+            "Spring 2026 Calendar": {
+              type: "file",
+              date: "Nov 25, 2025",
+              size: "16 KB",
+              content: "[Event calendar]\n\nPlanned events.\nNot relevant.",
+            },
+          },
+        },
+        "Financial Records": {
+          type: "folder",
+          icon: "💰",
+          files: {
+            "Q4 2025 Budget Report": {
+              type: "file",
+              date: "Dec 9, 2025",
+              size: "28 KB",
+              keywords: ["budget", "financial"],
+              content: `Q4 Budget Report
+By: Ela Hassine
 Date: Dec 9, 2025
 
 Annual Budget: 4,400 TND
 
-⚠ CRITICAL DISCREPANCY FOUND:
-Unauthorized withdrawals: 2,400 TND
+⚠ CRITICAL DISCREPANCY:
+Unauthorized: 2,400 TND
 Marked as: "WeHack advance payments"
 Approved by: NONE
 
 Status: EMERGENCY
 Action: Meeting called for Dec 10
 
-[This report triggered the emergency meeting]`
-                    },
-                    'November Transactions': {
-                        type: 'file',
-                        date: 'Nov 30, 2025',
-                        size: '31 KB',
-                        content: '[Transaction log - November 2025]\n\nAll approved transactions for the month.\nNot relevant to investigation.'
-                    }
-                }
-            }
-        };
+[This report triggered the emergency meeting]`,
+            },
+            "November Transactions": {
+              type: "file",
+              date: "Nov 30, 2025",
+              size: "31 KB",
+              content: "[Transaction log]\n\nAll approved transactions.\nNot relevant.",
+            },
+          },
+        },
+      };
 
-        function login(e) {
-            e.preventDefault();
-            const input = document.getElementById('passwordInput').value.toLowerCase();
-            if (input === PASSWORD) {
-                document.getElementById('loginSection').classList.add('hidden');
-                document.getElementById('fileBrowser').classList.add('active');
-                render();
+      function login(e) {
+        e.preventDefault();
+        const input = document.getElementById("passwordInput").value.toLowerCase();
+        if (input === PASSWORD) {
+          document.getElementById("loginSection").classList.add("hidden");
+          document.getElementById("fileBrowser").classList.add("active");
+          render();
+        } else {
+          const err = document.getElementById("errorMsg");
+          err.style.display = "block";
+          setTimeout(() => (err.style.display = "none"), 3000);
+        }
+      }
+
+      function goHome() {
+        currentPath = [];
+        render();
+      }
+      function openFolder(name) {
+        currentPath.push(name);
+        render();
+      }
+      function openFile(name) {
+        const current = getCurrentLocation();
+        const file = current[name];
+        document.getElementById("docTitle").textContent = name;
+        document.getElementById("docContent").textContent = file.content;
+        document.getElementById("docModal").classList.add("active");
+      }
+      function closeDoc() {
+        document.getElementById("docModal").classList.remove("active");
+      }
+      function getCurrentLocation() {
+        let current = structure;
+        for (let folder of currentPath) current = current[folder].files;
+        return current;
+      }
+
+      function render() {
+        updateBreadcrumb();
+        const current = getCurrentLocation();
+        const grid = document.getElementById("fileGrid");
+        grid.innerHTML = Object.keys(current)
+          .map((name) => {
+            const item = current[name];
+            if (item.type === "folder") {
+              return `<div class="folder-card" onclick="openFolder('${name}')"><div class="folder-icon">${
+                item.icon
+              }</div><div class="item-name">${name}</div><div class="item-meta">${
+                Object.keys(item.files).length
+              } items</div></div>`;
             } else {
-                const err = document.getElementById('errorMsg');
-                err.style.display = 'block';
-                setTimeout(() => err.style.display = 'none', 3000);
+              return `<div class="file-card" onclick="openFile(\`${name}\`)"><div class="file-icon">📄</div><div class="item-name">${name}</div><div class="item-meta">${item.date} • ${item.size}</div></div>`;
             }
+          })
+          .join("");
+      }
+
+      function updateBreadcrumb() {
+        const breadcrumb = document.getElementById("breadcrumb");
+        let html = '<span class="breadcrumb-link" onclick="goHome()">📁 Home</span>';
+        currentPath.forEach((folder, idx) => {
+          html += " / ";
+          if (idx === currentPath.length - 1) {
+            html += `<span style="color: #333">${folder}</span>`;
+          } else {
+            html += `<span class="breadcrumb-link" onclick="navigateTo(${idx})">${folder}</span>`;
+          }
+        });
+        breadcrumb.innerHTML = html;
+      }
+
+      function navigateTo(index) {
+        currentPath = currentPath.slice(0, index + 1);
+        render();
+      }
+
+      function search() {
+        const term = document.getElementById("searchInput").value.toLowerCase();
+        if (!term) {
+          render();
+          return;
         }
-
-        function goHome() {
-            currentPath = [];
-            render();
-        }
-
-        function openFolder(name) {
-            currentPath.push(name);
-            render();
-        }
-
-        function openFile(name) {
-            const current = getCurrentLocation();
-            const file = current[name];
-            document.getElementById('docTitle').textContent = name;
-            document.getElementById('docContent').textContent = file.content;
-            document.getElementById('docModal').classList.add('active');
-        }
-
-        function closeDoc() {
-            document.getElementById('docModal').classList.remove('active');
-        }
-
-        function getCurrentLocation() {
-            let current = structure;
-            for (let folder of currentPath) {
-                current = current[folder].files;
-            }
-            return current;
-        }
-
-        function render() {
-            updateBreadcrumb();
-            const current = getCurrentLocation();
-            const grid = document.getElementById('fileGrid');
-            
-            grid.innerHTML = Object.keys(current).map(name => {
-                const item = current[name];
-                if (item.type === 'folder') {
-                    return `
-                        <div class="folder-card" onclick="openFolder('${name}')">
-                            <div class="folder-icon">${item.icon}</div>
-                            <div class="item-name">${name}</div>
-                            <div class="item-meta">${Object.keys(item.files).length} items</div>
-                        </div>
-                    `;
-                } else {
-                    return `
-                        <div class="file-card" onclick="openFile(\`${name}\`)">
-                            <div class="file-icon">📄</div>
-                            <div class="item-name">${name}</div>
-                            <div class="item-meta">${item.date} • ${item.size}</div>
-                        </div>
-                    `;
-                }
-            }).join('');
-        }
-
-        function updateBreadcrumb() {
-            const breadcrumb = document.getElementById('breadcrumb');
-            let html = '<span class="breadcrumb-link" onclick="goHome()">📁 Home</span>';
-            
-            currentPath.forEach((folder, idx) => {
-                html += ' / ';
-                if (idx === currentPath.length - 1) {
-                    html += `<span style="color: #333">${folder}</span>`;
-                } else {
-                    html += `<span class="breadcrumb-link" onclick="navigateTo(${idx})">${folder}</span>`;
-                }
-            });
-            
-            breadcrumb.innerHTML = html;
-        }
-
-        function navigateTo(index) {
-            currentPath = currentPath.slice(0, index + 1);
-            render();
-        }
-
-        function search() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            if (!term) {
-                render();
-                return;
-            }
-
-            const grid = document.getElementById('fileGrid');
-            const results = [];
-
-            function searchFolder(items, path) {
-                Object.keys(items).forEach(name => {
-                    const item = items[name];
-                    if (item.type === 'file') {
-                        const matches = name.toLowerCase().includes(term) ||
-                                      (item.keywords && item.keywords.some(k => k.includes(term)));
-                        if (matches) {
-                            results.push({ name, item, path });
-                        }
-                    } else {
-                        searchFolder(item.files, [...path, name]);
-                    }
-                });
-            }
-
-            searchFolder(structure, []);
-
-            if (results.length === 0) {
-                grid.innerHTML = '<div class="empty-state">🔍 No files found</div>';
+        const grid = document.getElementById("fileGrid");
+        const results = [];
+        function searchFolder(items, path) {
+          Object.keys(items).forEach((name) => {
+            const item = items[name];
+            if (item.type === "file") {
+              const matches =
+                name.toLowerCase().includes(term) ||
+                (item.keywords && item.keywords.some((k) => k.includes(term)));
+              if (matches) results.push({ name, item, path });
             } else {
-                grid.innerHTML = results.map(r => `
-                    <div class="file-card" onclick="openSearchResult('${r.path.join('/')}', \`${r.name}\`)">
-                        <div class="file-icon">📄</div>
-                        <div class="item-name">${r.name}</div>
-                        <div class="item-meta">${r.path.join(' / ')} • ${r.item.date}</div>
-                    </div>
-                `).join('');
+              searchFolder(item.files, [...path, name]);
             }
+          });
         }
-
-        function openSearchResult(path, name) {
-            currentPath = path ? path.split('/') : [];
-            openFile(name);
+        searchFolder(structure, []);
+        if (results.length === 0) {
+          grid.innerHTML =
+            '<div style="text-align:center; padding:60px; color:#999;">🔍 No files found</div>';
+        } else {
+          grid.innerHTML = results
+            .map(
+              (r) =>
+                `<div class="file-card" onclick="openSearchResult('${r.path.join("/")}', \`${
+                  r.name
+                }\`)"><div class="file-icon">📄</div><div class="item-name">${
+                  r.name
+                }</div><div class="item-meta">${r.path.join(" / ")} • ${r.item.date}</div></div>`
+            )
+            .join("");
         }
+      }
 
-        function clearSearch() {
-            document.getElementById('searchInput').value = '';
-            render();
-        }
-
-        window.onclick = (e) => {
-            if (e.target.id === 'docModal') closeDoc();
-        };
+      function openSearchResult(path, name) {
+        currentPath = path ? path.split("/") : [];
+        openFile(name);
+      }
+      function clearSearch() {
+        document.getElementById("searchInput").value = "";
+        render();
+      }
+      window.onclick = (e) => {
+        if (e.target.id === "docModal") closeDoc();
+      };
     </script>
-</body>
+  </body>
 </html>
