@@ -62,10 +62,6 @@
         border-radius: 8px;
         font-size: 1rem;
       }
-      .form-group input:focus {
-        outline: none;
-        border-color: #667eea;
-      }
       .login-btn {
         width: 100%;
         padding: 15px;
@@ -76,6 +72,11 @@
         font-size: 1.1rem;
         font-weight: bold;
         cursor: pointer;
+        transition: all 0.3s;
+      }
+      .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
       }
       .error-msg {
         background: #fee;
@@ -93,6 +94,10 @@
         color: #333;
         text-decoration: none;
         border-radius: 6px;
+        transition: background 0.3s;
+      }
+      .back-btn:hover {
+        background: #ccc;
       }
       .file-browser {
         padding: 30px;
@@ -139,6 +144,10 @@
         border: none;
         border-radius: 6px;
         cursor: pointer;
+        transition: background 0.3s;
+      }
+      .clear-btn:hover {
+        background: #5568d3;
       }
       .file-grid {
         display: grid;
@@ -160,11 +169,13 @@
         border-color: #ffc107;
         background: #fffbf0;
         transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
       }
       .file-card:hover {
         border-color: #667eea;
         background: #f0f4ff;
         transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
       }
       .folder-icon,
       .file-icon {
@@ -212,6 +223,7 @@
         font-size: 2rem;
         cursor: pointer;
         color: #999;
+        transition: color 0.3s;
       }
       .close-btn:hover {
         color: #333;
@@ -226,6 +238,27 @@
         margin-top: 20px;
         font-size: 0.9rem;
       }
+      .stats-banner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-around;
+        text-align: center;
+      }
+      .stat-item {
+        flex: 1;
+      }
+      .stat-number {
+        font-size: 1.8rem;
+        font-weight: bold;
+      }
+      .stat-label {
+        font-size: 0.85rem;
+        opacity: 0.9;
+      }
     </style>
   </head>
   <body>
@@ -234,8 +267,6 @@
         <h1>🔷 IEEE FSM Internal Portal</h1>
         <p>Faculty of Science of Monastir | Document Management System</p>
       </div>
-
-      <!-- Login -->
       <div class="login-section" id="loginSection">
         <h2>🔐 Secure Access Required</h2>
         <form onsubmit="login(event)">
@@ -248,10 +279,22 @@
         </form>
         <a href="index.html" class="back-btn">← Back</a>
       </div>
-
-      <!-- File Browser -->
       <div class="file-browser" id="fileBrowser">
         <h2 style="color: #333; margin-bottom: 20px">📂 Document Archive</h2>
+        <div class="stats-banner">
+          <div class="stat-item">
+            <div class="stat-number" id="totalFolders">0</div>
+            <div class="stat-label">Folders</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="totalFiles">0</div>
+            <div class="stat-label">Documents</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">2025-2026</div>
+            <div class="stat-label">Academic Year</div>
+          </div>
+        </div>
         <div class="breadcrumb" id="breadcrumb">
           <span class="breadcrumb-link" onclick="goHome()">📁 Home</span>
         </div>
@@ -269,7 +312,6 @@
         <a href="index.html" class="back-btn">← Back to Home</a>
       </div>
     </div>
-
     <div class="modal" id="docModal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeDoc()">&times;</span>
@@ -277,7 +319,6 @@
         <div class="doc-content" id="docContent"></div>
       </div>
     </div>
-
     <script>
       const PASSWORD = "aziz2025";
       let currentPath = [];
@@ -290,69 +331,1079 @@
             "EXCOM Meeting - December 10, 2025": {
               type: "file",
               date: "Dec 10, 2025",
-              size: "24 KB",
-              keywords: ["december", "dec 10", "meeting", "budget"],
+              size: "32 KB",
+              keywords: ["december", "dec 10", "meeting", "budget", "critical"],
               content: `════════════════════════════════════════════════════════════════
                     IEEE FSM STUDENT BRANCH
               EXECUTIVE COMMITTEE MEETING MINUTES
 ════════════════════════════════════════════════════════════════
 
 DATE: December 10, 2025
-TIME: 6:00 PM - 8:15 PM
+TIME: 6:00 PM - 8:15 PM (EXTENDED SESSION)
 LOCATION: IEEE Office, Faculty of Science of Monastir
+MEETING TYPE: Emergency Financial Review
 
-ATTENDEES:
-✓ Aziz Krifa - SB Chair (Presiding)
-✓ Ela Hassine - Treasurer
+ATTENDEES PRESENT:
+✓ Aziz Krifa - SB Chair (Presiding Officer)
+✓ Ela Hassine - Treasurer (Financial Reporting)
 ✓ Fares Klaii - Design Manager
-✓ Yassine Azzouz - CS Chair
-✓ Amine Zbaa - CS Vice Chair
-✓ Roua Mabrouk, Ikhlas Bahia, Yaakoub Benslimen
+✓ Yassine Azzouz - CS Chapter Chair
+✓ Amine Zbaa - CS Chapter Vice Chair
+✓ Roua Mabrouk - Secretary General (Minutes)
+✓ Ikhlas Bahia - Event Coordinator (Observer)
+✓ Yaakoub Benslimen - Web Master (Observer)
+
+ABSENT: None
 
 ══════════════════════════════════════════════════════════════
 
-AGENDA: FINANCIAL DISCREPANCY
+AGENDA ITEMS:
 
-Ela: "2,400 TND missing marked as WeHack payments. I never approved."
-
-Aziz: "Legitimate sponsor expenses."
-
-Ela: "That's embezzlement!"
-
-[HEATED ARGUMENT]
-
-Aziz exposes violations:
-- Amine: Consulting fees from CS funds (~1,200 TND)
-- Yassine: Fake equipment purchases (800 TND)
-- Fares: Personal freelance billing
-- Ela: Allegedly complicit
-
-Aziz: "We all have secrets. Stay quiet or burn together."
-
-Ela exits 8:10 PM: "Reporting everything tomorrow!"
-Aziz exits 8:13 PM
-
-[CHAOS]
+1. Call to Order - 6:00 PM
+2. Review of Q4 Financial Audit (Ela Hassine)
+3. WeHack 0.0 Budget Approval
+4. Other Business
+5. Adjournment
 
 ══════════════════════════════════════════════════════════════
 
-Notes (Ikhlas Bahia): "Most disturbing meeting. Bad things coming."
+PROCEEDINGS:
+
+[6:00 PM] CALL TO ORDER
+
+Aziz: "Good evening everyone. This is an emergency meeting
+called to address some concerning financial findings. Ela has
+requested urgent discussion time. Ela, the floor is yours."
+
+══════════════════════════════════════════════════════════════
+
+[6:05 PM] FINANCIAL AUDIT PRESENTATION
+
+Ela: "Thank you Aziz. I've been conducting our Q4 financial
+audit as required by IEEE headquarters. During this review,
+I discovered significant discrepancies that require immediate
+attention and explanation."
+
+Ela: "Specifically, I found 2,400 TND marked as 'WeHack 0.0
+advance sponsor payments' in our transaction log. These
+withdrawals were made on November 28, December 2, and
+December 5. I never approved these transactions."
+
+Aziz: "Those are legitimate advance payments to secure our
+primary sponsors for WeHack. Standard practice."
+
+Ela: "Standard practice requires TREASURER APPROVAL for any
+withdrawal over 500 TND. This is in our bylaws, Article 7,
+Section 3. You withdrew WITHOUT my signature. That's
+embezzlement, Aziz!"
+
+[ROOM TEMPERATURE RISES - VISIBLE TENSION]
+
+Aziz: "I had verbal approval from you at the November meeting."
+
+Ela: "That's a LIE! I never approved this! Show me the
+documentation!"
+
+Aziz: "We don't have time for this bureaucracy. The sponsors
+needed immediate payment or we'd lose them."
+
+Ela: "Then you should have called an emergency vote! You can't
+just take money without authorization!"
+
+══════════════════════════════════════════════════════════════
+
+[6:25 PM] ESCALATION - COUNTER ACCUSATIONS
+
+Aziz: "You want to talk about unauthorized transactions?
+Let's talk about ALL the unauthorized transactions."
+
+Aziz: "Let's discuss Amine's 'consulting fees' taken from CS
+Chapter funds. 1,200 TND over the past 3 months for 'technical
+consultation services' that were never rendered."
+
+Amine: "What?! Those were legitimate!"
+
+Aziz: "Really? Because I have the bank statements showing
+transfers to your personal account marked as 'website
+maintenance' for a website that hasn't been updated since
+September."
+
+Amine: "This is insane! I can explain-"
+
+Aziz: "And Yassine. Care to explain the 800 TND in equipment
+purchases from vendors that don't exist? I looked up these
+companies. CompTech Solutions? TechVendor Pro? They have no
+business registration, no physical address, nothing."
+
+Yassine: "You're making this up! Those are real companies!"
+
+Aziz: "Then explain why the invoices all have the same
+formatting errors and were all paid to the same bank account.
+YOUR bank account."
+
+Yassine: "This is FABRICATED! You're framing me!"
+
+══════════════════════════════════════════════════════════════
+
+[6:45 PM] ADDITIONAL ACCUSATIONS
+
+Aziz: "And Fares, your design invoices. You billed us 600 TND
+for 'WeHack promotional materials' in October. I found those
+EXACT designs on your freelance portfolio listed as work for
+your private clients. You billed them AND us for the same work."
+
+Fares: "I... those were templates I adapted..."
+
+Aziz: "Templates? The client testimonial says you delivered
+those designs in September. You delivered them to us in
+October. That's fraud."
+
+Fares: "You can't prove that!"
+
+Aziz: "I have the metadata from the files. Want me to share
+with everyone?"
+
+══════════════════════════════════════════════════════════════
+
+[7:10 PM] ELA'S INVOLVEMENT QUESTIONED
+
+Aziz: "And Ela, before you climb on your high horse, let's
+discuss YOUR role in all this. You've been treasurer for 8
+months. You're telling me you never noticed ANY of these
+irregularities?"
+
+Ela: "I'm discovering them NOW during the audit!"
+
+Aziz: "The audit you only started AFTER I requested WeHack
+funding? Convenient timing. Almost like you wanted leverage."
+
+Ela: "That's not true!"
+
+Aziz: "You approved Amine's website invoices. You approved
+Yassine's equipment purchases. You signed off on Fares'
+design work. Either you're complicit or you're incompetent.
+Which is it?"
+
+Ela: "I trusted the documentation! I didn't know it was fake!"
+
+Aziz: "That's your job as treasurer - to verify! But you
+didn't, did you? Because everyone here is dirty!"
+
+══════════════════════════════════════════════════════════════
+
+[7:35 PM] THREATS AND ULTIMATUM
+
+Aziz: "Here's what's going to happen. We all have secrets.
+We all have things we don't want exposed. We all benefited
+from loose financial oversight."
+
+Aziz: "So here's the deal: We all stay quiet, or we ALL burn
+together. I withdraw my WeHack funding from 'questionable'
+sources. Amine pays back his fees. Yassine explains his
+vendors. Fares refunds the duplicate billing. Ela pretends
+she saw nothing. And we all move forward."
+
+Ela: "Absolutely NOT! I'm reporting this!"
+
+Aziz: "To who? You're implicated too! You signed the
+approvals!"
+
+Ela: "I was DECEIVED! And I'm reporting EVERYTHING tomorrow
+morning. All of you!"
+
+Aziz: "You do that and you lose your treasurer position and
+your scholarship. Think carefully."
+
+Ela: "I don't care! This is WRONG!"
+
+══════════════════════════════════════════════════════════════
+
+[8:10 PM] MEETING DISSOLUTION
+
+Ela: "I'm done here. I'm reporting this to the faculty advisor,
+to IEEE headquarters, and if necessary, to the police. This is
+EMBEZZLEMENT and FRAUD!"
+
+[ELA HASSINE EXITS MEETING - DOOR SLAMS]
+
+Yassine: "Aziz, you've made this so much worse!"
+
+Aziz: "She won't report. She's bluffing."
+
+Fares: "You just threatened all of us!"
+
+Aziz: "I exposed the truth. Now everyone knows everyone's
+dirty. Mutual assured destruction."
+
+Amine: "This is insane..."
+
+[8:13 PM] AZIZ KRIFA EXITS MEETING
+
+Remaining members sit in stunned silence for 15 minutes
+before departing separately.
+
+══════════════════════════════════════════════════════════════
+
+MEETING NOTES (Recorded by Roua Mabrouk - Secretary General):
+
+This was the most contentious and disturbing EXCOM meeting
+in IEEE FSM history. What began as a financial audit
+discussion devolved into mutual accusations of fraud and
+corruption.
+
+Key Concerns:
+- Multiple unauthorized transactions discovered
+- Accusations of embezzlement against multiple members
+- Threats of legal/administrative reporting
+- Complete breakdown of executive leadership trust
+- Personal threats exchanged between members
+
+OBSERVER NOTES (Ikhlas Bahia - Event Coordinator):
+
+I have been with IEEE FSM for 2 years. I have never witnessed
+anything like this. The accusations, the threats, the anger.
+Aziz seemed almost prepared for this confrontation, like he
+had been gathering evidence deliberately.
+
+Ela was genuinely shocked and angry. Her threats to report
+seemed credible and immediate.
+
+The other members (Amine, Yassine, Fares) appeared defensive
+but also frightened.
+
+I fear something very bad is about to happen. The hostility
+in that room was dangerous.
+
+Personal recommendation: I am considering resigning from EXCOM
+if this is the culture we've developed.
+
+══════════════════════════════════════════════════════════════
+
+FINANCIAL SUMMARY ATTACHED:
+- Unauthorized transactions: 2,400 TND (Aziz)
+- Questionable consultant fees: 1,200 TND (Amine)
+- Suspicious equipment purchases: 800 TND (Yassine)
+- Duplicate billing: 600 TND (Fares)
+- TOTAL DISCREPANCIES: 5,000 TND
+
+IEEE FSM ANNUAL BUDGET: 4,400 TND
+DISCREPANCIES EXCEED ANNUAL BUDGET
+
+══════════════════════════════════════════════════════════════
+
+STATUS: MEETING ADJOURNED IN CHAOS - NO RESOLUTIONS
+FOLLOW-UP: Ela Hassine indicated intent to file formal
+complaints with multiple authorities
+
+Minutes submitted by: Roua Mabrouk
+Date: December 10, 2025, 9:45 PM
 
 ══════════════════════════════════════════════════════════════`,
             },
             "EXCOM Meeting - November 15, 2025": {
               type: "file",
               date: "Nov 15, 2025",
-              size: "18 KB",
-              content:
-                "[Generic meeting - November 15, 2025]\n\nStandard agenda items.\nNot critical for investigation.",
+              size: "24 KB",
+              keywords: ["november", "meeting", "planning"],
+              content: `════════════════════════════════════════════════════════════════
+                    IEEE FSM STUDENT BRANCH
+              EXECUTIVE COMMITTEE MEETING MINUTES
+════════════════════════════════════════════════════════════════
+
+DATE: November 15, 2025
+TIME: 6:00 PM - 7:30 PM
+LOCATION: IEEE Office, Faculty of Science of Monastir
+MEETING TYPE: Monthly Planning Session
+
+ATTENDEES PRESENT:
+✓ All executive board members present
+
+AGENDA:
+1. WeHack 0.0 Planning Update
+2. Workshop Schedule Review
+3. Budget Status
+4. New Member Recruitment
+
+══════════════════════════════════════════════════════════════
+
+PROCEEDINGS:
+
+[6:00 PM] CALL TO ORDER
+
+Aziz opens the meeting and welcomes everyone. Reviews the
+agenda for the evening. Notes that this is an important
+planning session for our major spring event.
+
+══════════════════════════════════════════════════════════════
+
+[6:10 PM] WEHACK 0.0 PLANNING UPDATE
+
+Yassine presents comprehensive timeline for WeHack 0.0:
+- Event Dates: February 15-16, 2026
+- Expected Participants: 150-200 students
+- Format: 24-hour hackathon with 4 challenge tracks
+- Prizes: Total 3,000 TND to be distributed
+
+Marketing Strategy Approved:
+- Social media campaign launch: December 1
+- University poster distribution: January 5
+- Email outreach to CS departments: January 10
+- Registration opens: January 15
+
+Sponsor Outreach Assignments:
+- Aziz: Technology companies (5 leads)
+- Amine: Local startups (8 leads)
+- Yassine: International sponsors (3 leads)
+- Fares: Design agency partnerships (4 leads)
+
+Venue Confirmation:
+- Main auditorium reserved for February 15-16
+- Breakout rooms: 4 additional spaces confirmed
+- 24-hour access approved by administration
+
+Vote: Motion to proceed with WeHack planning - APPROVED
+(Unanimous)
+
+══════════════════════════════════════════════════════════════
+
+[6:30 PM] WORKSHOP SCHEDULE REVIEW
+
+Upcoming workshops for Fall/Winter semester:
+
+AI/ML Workshop - November 18, 2025
+- Led by: Yassine Azzouz
+- Topics: Introduction to Machine Learning, Neural Networks
+- Expected attendance: 60 students
+- Budget allocated: 200 TND (refreshments, materials)
+
+Web Development Workshop - December 5, 2025
+- Coordinated by: Amine Zbaa
+- Topics: React.js, Modern Frontend Development
+- Expected attendance: 45 students
+- Budget allocated: 150 TND
+
+Design Thinking Workshop - January 10, 2026
+- Organized by: Fares Klaii
+- Topics: UX/UI Design, Prototyping Tools
+- Expected attendance: 40 students
+- Budget allocated: 180 TND
+
+All workshop proposals approved by committee.
+
+══════════════════════════════════════════════════════════════
+
+[6:50 PM] BUDGET REVIEW
+
+Ela presents Q3 Financial Status:
+- Q3 Budget: 1,800 TND allocated
+- Q3 Spending: 600 TND (workshops, events, materials)
+- Remaining Q3 Funds: 1,200 TND
+- Overall Financial Health: GOOD
+
+Revenue Sources:
+- IEEE Headquarters Allocation: 2,800 TND (annual)
+- Membership Fees: 1,200 TND (collected)
+- Workshop Registration: 400 TND (Q1-Q3 total)
+
+Projected Year-End Status:
+- Total Budget: 4,400 TND
+- Expected Expenditure: 3,800 TND
+- Projected Surplus: 600 TND
+
+No major concerns raised. Committee agrees to begin Q4
+detailed planning at next meeting.
+
+Ela notes: "Everything is on track. We're in good financial
+shape for the year."
+
+══════════════════════════════════════════════════════════════
+
+[7:15 PM] NEW MEMBER RECRUITMENT
+
+Roua reports on recruitment campaign results:
+- Applications received: 45 new submissions
+- Application period: October 15 - November 10
+- Positions available: 12 committee positions
+
+Selection Committee:
+- Roua Mabrouk (Chair)
+- Ikhlas Bahia (Member)
+- Yaakoub Benslimen (Member)
+
+Interview Schedule:
+- November 20-22, 2025
+- 15-minute interviews per candidate
+- Location: IEEE Office
+
+Criteria for selection:
+- Technical skills / Background
+- Commitment and availability
+- Previous volunteer experience
+- Alignment with IEEE values
+
+Target announcement date: November 25, 2025
+
+══════════════════════════════════════════════════════════════
+
+[7:25 PM] OTHER BUSINESS
+
+Roua raises concern about office supply inventory.
+Motion to allocate 150 TND for office supplies - APPROVED
+
+Yaakoub presents website analytics:
+- Monthly visitors: 2,400
+- Social media engagement: Up 35% from last month
+- Newsletter subscribers: 340
+
+Aziz commends the team on successful semester so far.
+
+══════════════════════════════════════════════════════════════
+
+[7:30 PM] ADJOURNMENT
+
+Meeting adjourned at 7:30 PM.
+
+Next meeting scheduled: December 15, 2025 at 6:00 PM
+
+════════════════════════════════════════════════════════════════
+
+MEETING ATMOSPHERE:
+
+This was a highly productive and positive meeting. All
+committee members were engaged and collaborative. Financial
+reports were clear and showed responsible management.
+Planning for WeHack 0.0 is proceeding ahead of schedule.
+
+Team morale appears excellent. No conflicts or disagreements
+during this session.
+
+════════════════════════════════════════════════════════════════
+
+Minutes submitted by: Roua Mabrouk
+Date: November 15, 2025, 8:15 PM
+Status: APPROVED
+
+════════════════════════════════════════════════════════════════`,
             },
             "EXCOM Meeting - October 20, 2025": {
               type: "file",
               date: "Oct 20, 2025",
+              size: "18 KB",
+              keywords: ["october", "meeting"],
+              content: `════════════════════════════════════════════════════════════════
+                    IEEE FSM STUDENT BRANCH
+              EXECUTIVE COMMITTEE MEETING MINUTES
+════════════════════════════════════════════════════════════════
+
+DATE: October 20, 2025
+TIME: 6:00 PM - 7:15 PM
+LOCATION: IEEE Office
+MEETING TYPE: Monthly General Session
+
+ATTENDEES: Full board present
+
+AGENDA:
+1. Review of September activities
+2. October event planning
+3. Budget check-in
+4. Membership update
+
+PROCEEDINGS:
+
+[6:00 PM] September Activities Review
+- Successful orientation week with 120 new student contacts
+- First workshop of semester completed (Python basics)
+- Social media engagement increased by 40%
+
+[6:20 PM] October Event Planning
+- Cybersecurity awareness workshop planned for Oct 28
+- Partnership with Computer Science department confirmed
+- Guest speaker from national cybersecurity agency invited
+
+[6:40 PM] Budget Status
+- September expenditures: 320 TND
+- Budget on track
+- No issues identified
+
+[6:55 PM] Membership Update
+- Active members: 87 students
+- Paid memberships: 65
+- Target for year-end: 100 active members
+
+[7:10 PM] Other Business
+- Discussion of potential partnership with local tech companies
+- Planning committee formed for spring hackathon
+
+[7:15 PM] Adjournment
+
+════════════════════════════════════════════════════════════════
+
+Meeting Notes: Standard monthly session with positive progress
+across all areas. Team working well together. Good momentum
+for the academic year.
+
+Minutes by: Roua Mabrouk
+Status: APPROVED
+
+════════════════════════════════════════════════════════════════`,
+            },
+            "EXCOM Meeting - September 15, 2025": {
+              type: "file",
+              date: "Sep 15, 2025",
+              size: "20 KB",
+              keywords: ["september", "meeting", "planning"],
+              content: `════════════════════════════════════════════════════════════════
+                    IEEE FSM STUDENT BRANCH
+              EXECUTIVE COMMITTEE MEETING MINUTES
+════════════════════════════════════════════════════════════════
+
+DATE: September 15, 2025
+TIME: 5:00 PM - 7:45 PM
+LOCATION: IEEE Office
+MEETING TYPE: Annual Planning Session
+
+ATTENDEES: All newly elected board members present
+
+WELCOME & INTRODUCTION:
+
+This marks the first official meeting of the 2025-2026
+IEEE FSM executive board. Aziz Krifa, newly elected Student
+Branch Chair, presides over the planning session.
+
+AGENDA:
+1. Board member introductions
+2. Annual goal setting
+3. Major event planning (including hackathon proposal)
+4. Budget allocation for academic year
+5. Committee assignments
+
+══════════════════════════════════════════════════════════════
+
+[5:00 PM] BOARD INTRODUCTIONS
+
+Each member introduces themselves and shares their vision:
+
+Aziz Krifa - Student Branch Chair
+"I want to make this the most impactful year in IEEE FSM
+history. We need bigger events, better workshops, and stronger
+industry connections."
+
+Ela Hassine - Treasurer
+"My priority is transparent financial management. Every dinar
+accounted for, every decision documented."
+
+Amine Zbaa - CS Chapter Vice Chair
+"Let's make the Computer Science chapter a hub for cutting-edge
+technical learning and innovation."
+
+Yassine Azzouz - CS Chapter Chair
+"I want to bring world-class speakers and create opportunities
+for students to showcase their skills."
+
+Fares Klaii - Design Manager
+"Visual identity matters. Let's make IEEE FSM the best-looking
+student organization on campus."
+
+Roua Mabrouk - Secretary General
+"Organization and communication are key. I'll make sure we're
+always on the same page."
+
+══════════════════════════════════════════════════════════════
+
+[5:30 PM] ANNUAL GOAL SETTING
+
+Committee establishes primary goals for 2025-2026:
+
+1. MEMBERSHIP GROWTH
+   - Target: 100+ active members
+   - Strategy: Aggressive recruitment during orientation
+   - Retention: Regular engagement events
+
+2. TECHNICAL WORKSHOPS
+   - Minimum: 8 workshops throughout the year
+   - Topics: AI/ML, Web Dev, Cybersecurity, Design
+   - Industry partnerships for guest speakers
+
+3. MAJOR EVENT: HACKATHON
+   - Proposal: WeHack 0.0 - First annual hackathon
+   - Timeline: February 2026
+   - Scale: 150-200 participants
+   - Budget: To be determined (estimated 3,000-4,000 TND)
+
+4. COMMUNITY OUTREACH
+   - High school coding workshops
+   - Women in tech initiatives
+   - Open-source project collaborations
+
+5. FINANCIAL SUSTAINABILITY
+   - Diversify revenue streams
+   - Build sponsor relationships
+   - Efficient budget management
+
+══════════════════════════════════════════════════════════════
+
+[6:15 PM] BUDGET ALLOCATION
+
+Total Annual Budget: 4,400 TND
+
+Proposed Allocation:
+- Workshops & Events: 2,200 TND (50%)
+- Major Event (Hackathon): 1,500 TND (34%)
+- Marketing & Materials: 400 TND (9%)
+- Administrative & Supplies: 300 TND (7%)
+
+Vote on budget allocation: APPROVED (Unanimous)
+
+Ela emphasizes importance of proper documentation for all
+expenditures. Introduces approval process for transactions
+over 500 TND.
+
+══════════════════════════════════════════════════════════════
+
+[6:45 PM] COMMITTEE ASSIGNMENTS
+
+The following committees are established:
+
+Event Planning Committee:
+- Chair: Roua Mabrouk
+- Members: Ikhlas Bahia, Yaakoub Benslimen
+
+Technical Workshop Committee:
+- Chair: Yassine Azzouz
+- Members: Amine Zbaa, 2 additional members TBD
+
+Marketing & Communications:
+- Chair: Fares Klaii
+- Members: Yaakoub Benslimen, 1 additional member TBD
+
+WeHack Planning Committee (Special):
+- Chair: Aziz Krifa
+- Members: Entire EXCOM (all hands on deck)
+
+══════════════════════════════════════════════════════════════
+
+[7:15 PM] DISCUSSION: HACKATHON VISION
+
+Extended discussion about the proposed WeHack 0.0 hackathon:
+
+Aziz presents vision: "This will put IEEE FSM on the map. A
+professional-grade hackathon with real prizes, real sponsors,
+and real opportunities for students."
+
+Concerns raised:
+- Amine: "Can we handle an event this large?"
+- Ela: "Budget seems ambitious. Where will funding come from?"
+- Yassine: "We need solid sponsor commitments before moving forward."
+
+Aziz addresses concerns: "I have contacts in the tech industry.
+We'll get sponsors. This is what IEEE FSM needs to grow."
+
+Committee agrees to develop detailed proposal by October.
+
+══════════════════════════════════════════════════════════════
+
+[7:30 PM] CLOSING REMARKS
+
+Aziz: "This is going to be an incredible year. We have the
+talent, the vision, and the drive. Let's make IEEE FSM the
+premier student organization at FSM."
+
+Team expresses enthusiasm and commitment.
+
+Next meeting scheduled: October 20, 2025
+
+══════════════════════════════════════════════════════════════
+
+[7:45 PM] ADJOURNMENT
+
+════════════════════════════════════════════════════════════════
+
+MEETING NOTES:
+
+Excellent energy and enthusiasm from all board members.
+Clear goals established. Some ambitious plans that will
+require careful execution and resource management.
+
+The proposed hackathon is exciting but represents a
+significant undertaking. Will require extensive planning
+and sponsor coordination.
+
+Overall assessment: Strong start to the academic year.
+High potential for success if team maintains focus and
+collaboration.
+
+════════════════════════════════════════════════════════════════
+
+Minutes submitted by: Roua Mabrouk
+Date: September 15, 2025
+Status: APPROVED
+
+════════════════════════════════════════════════════════════════`,
+            },
+            "EXCOM Meeting - August 30, 2025": {
+              type: "file",
+              date: "Aug 30, 2025",
+              size: "16 KB",
+              keywords: ["august", "orientation"],
+              content: `════════════════════════════════════════════════════════════════
+                    IEEE FSM STUDENT BRANCH
+                 EXECUTIVE BOARD ORIENTATION
+════════════════════════════════════════════════════════════════
+
+DATE: August 30, 2025
+TIME: 4:00 PM - 6:30 PM
+LOCATION: IEEE Office
+MEETING TYPE: New Board Orientation & Training
+
+FACILITATOR: Dr. Kamel Bousetta (Faculty Advisor)
+
+ATTENDEES:
+✓ All newly elected executive board members
+
+════════════════════════════════════════════════════════════════
+
+ORIENTATION AGENDA:
+
+1. Welcome and congratulations to new board
+2. IEEE organizational structure overview
+3. Student Branch bylaws and governance
+4. Financial management training
+5. Event planning best practices
+6. Ethics and professional conduct
+7. Q&A session
+
+════════════════════════════════════════════════════════════════
+
+[4:00 PM] WELCOME
+
+Dr. Bousetta: "Congratulations on your election to the IEEE
+FSM executive board. This is both an honor and a significant
+responsibility. You represent not just your fellow students,
+but the IEEE organization and the engineering profession."
+
+════════════════════════════════════════════════════════════════
+
+[4:15 PM] IEEE STRUCTURE OVERVIEW
+
+- Global organization with 420,000+ members
+- Student branches in 100+ countries
+- IEEE FSM chartered in 2018
+- Current membership: 87 active students
+
+Board responsibilities:
+- Uphold IEEE mission and values
+- Organize educational and professional development activities
+- Manage chapter finances responsibly
+- Foster inclusive and collaborative environment
+
+════════════════════════════════════════════════════════════════
+
+[4:45 PM] BYLAWS AND GOVERNANCE
+
+Dr. Bousetta reviews key bylaw provisions:
+
+ARTICLE 7 - FINANCIAL MANAGEMENT:
+Section 3: All expenditures exceeding 500 TND require
+treasurer approval AND two additional officer signatures.
+
+Section 5: Monthly financial reports must be submitted to
+faculty advisor and IEEE regional office.
+
+Section 7: Annual audit required at end of academic year.
+
+ARTICLE 9 - ETHICAL CONDUCT:
+All board members must maintain academic integrity, financial
+transparency, and professional behavior in all IEEE activities.
+
+ARTICLE 12 - CONFLICT OF INTEREST:
+Board members must disclose any personal financial interest
+in IEEE transactions or vendor relationships.
+
+Dr. Bousetta emphasizes: "These aren't just rules. They protect
+you, the organization, and ensure student funds are used
+appropriately."
+
+════════════════════════════════════════════════════════════════
+
+[5:15 PM] FINANCIAL MANAGEMENT TRAINING
+
+Ela Hassine (Treasurer) receives specialized training:
+
+- Budget tracking systems
+- Expense approval workflows
+- Documentation requirements
+- Bank account access and reconciliation
+- Reporting deadlines and formats
+
+Dr. Bousetta: "The treasurer role carries significant
+responsibility. Every transaction must be documented,
+approved, and traceable. No exceptions."
+
+════════════════════════════════════════════════════════════════
+
+[5:45 PM] EVENT PLANNING BEST PRACTICES
+
+Key principles:
+- Plan events 4-6 weeks in advance
+- Budget before committing
+- Get venue confirmations in writing
+- Market events through multiple channels
+- Collect feedback and metrics
+
+Case study: Successful hackathon organized by IEEE chapter
+at another university used as example.
+
+════════════════════════════════════════════════════════════════
+
+[6:00 PM] ETHICS AND PROFESSIONAL CONDUCT
+
+Dr. Bousetta addresses the board:
+
+"You will face ethical challenges this year. Temptations to
+cut corners, pressure to compromise standards, conflicts
+between friendships and responsibilities.
+
+Your integrity is not negotiable. If you're ever uncertain
+about the right course of action, ask yourself: Would I be
+comfortable explaining this decision publicly? Would this
+reflect well on IEEE?
+
+If the answer is no, don't do it."
+
+Discussion of scenarios:
+- Friend requests special treatment for event registration
+- Vendor offers personal incentive for contract
+- Pressure to approve expense without documentation
+- Temptation to use IEEE resources for personal projects
+
+════════════════════════════════════════════════════════════════
+
+[6:15 PM] Q&A SESSION
+
+Various questions answered about procedures, expectations,
+and specific scenarios.
+
+Aziz asks: "What if we need to make a quick decision for
+an urgent opportunity, like a sponsor who needs immediate
+commitment?"
+
+Dr. Bousetta: "Emergency situations happen, but they're rare.
+Even in urgency, follow proper approval processes. If you
+truly can't get required signatures, document everything
+and seek approval retroactively within 24 hours. But this
+should be exceptional, not routine."
+
+════════════════════════════════════════════════════════════════
+
+[6:30 PM] CLOSING
+
+Dr. Bousetta: "I'm excited to work with this board. You have
+great potential. Remember: Success isn't just about big events
+or impressive numbers. It's about integrity, collaboration,
+and serving your fellow students well.
+
+My door is always open. Use me as a resource. And remember
+the most important rule: When in doubt, ask."
+
+════════════════════════════════════════════════════════════════
+
+ORIENTATION MATERIALS PROVIDED:
+- IEEE Student Branch Bylaws (full document)
+- Financial management handbook
+- Event planning checklist
+- Contact list for IEEE regional support
+- Emergency procedures guide
+
+════════════════════════════════════════════════════════════════
+
+All board members signed acknowledgment forms confirming
+receipt of training and understanding of responsibilities.
+
+════════════════════════════════════════════════════════════════
+
+Notes prepared by: Dr. Kamel Bousetta
+Date: August 30, 2025
+
+════════════════════════════════════════════════════════════════`,
+            },
+            "Emergency Meeting - December 11, 2025": {
+              type: "file",
+              date: "Dec 11, 2025",
               size: "15 KB",
-              content:
-                "[Generic meeting - October 20, 2025]\n\nRoutine business.\nNot critical for investigation.",
+              keywords: ["december", "emergency", "aziz", "incident"],
+              content: `════════════════════════════════════════════════════════════════
+                    IEEE FSM STUDENT BRANCH
+                  EMERGENCY MEETING MINUTES
+════════════════════════════════════════════════════════════════
+
+DATE: December 11, 2025
+TIME: 2:00 PM - 3:15 PM
+LOCATION: IEEE Office
+MEETING TYPE: Emergency Session
+
+CALLED BY: Roua Mabrouk (Acting Chair)
+
+ATTENDEES PRESENT:
+✓ Roua Mabrouk - Secretary General (Acting Chair)
+✓ Ela Hassine - Treasurer
+✓ Fares Klaii - Design Manager
+✓ Yassine Azzouz - CS Chapter Chair
+✓ Amine Zbaa - CS Chapter Vice Chair
+✓ Ikhlas Bahia - Event Coordinator
+✓ Yaakoub Benslimen - Web Master
+✓ Dr. Kamel Bousetta - Faculty Advisor (Observer)
+
+ABSENT:
+✗ Aziz Krifa - Student Branch Chair (hospitalized)
+
+════════════════════════════════════════════════════════════════
+
+PURPOSE OF EMERGENCY MEETING:
+
+Following the tragic incident involving SB Chair Aziz Krifa
+late on December 10, 2025, this emergency session was called
+to address immediate organizational needs and coordinate with
+ongoing police investigation.
+
+════════════════════════════════════════════════════════════════
+
+[2:00 PM] OPENING REMARKS
+
+Roua: "Thank you all for coming on such short notice. I know
+we're all in shock. Before we begin, let me share what we know:
+
+Aziz Krifa was found unconscious in his apartment last night
+around 11:30 PM by his roommate Omar. He was immediately
+transported to Fattouma Bourguiba University Hospital in
+Monastir. He is currently in critical condition in the ICU.
+
+Police were called to the scene and have classified this as
+a suspicious incident. They are investigating."
+
+[Visible distress among all attendees]
+
+════════════════════════════════════════════════════════════════
+
+[2:10 PM] DR. BOUSETTA'S STATEMENT
+
+Dr. Bousetta: "I spoke with the police this morning. They
+are treating this as a potential assault. They have requested
+full cooperation from IEEE FSM, including access to our
+records and interviews with board members.
+
+I want to be very clear: You are all required to cooperate
+fully and honestly with the police investigation. This is not
+optional. If you have any information relevant to what
+happened to Aziz, you must come forward.
+
+Additionally, the university administration has been notified.
+They will be conducting their own inquiry into recent events
+within the organization."
+
+════════════════════════════════════════════════════════════════
+
+[2:20 PM] IMMEDIATE ORGANIZATIONAL ACTIONS
+
+Motion: Roua Mabrouk to serve as Acting Chair until further
+notice - APPROVED (Unanimous)
+
+Motion: All IEEE FSM activities suspended until December 20
+- APPROVED (Unanimous)
+
+Motion: Full cooperation with police and university
+investigations - APPROVED (Unanimous)
+
+════════════════════════════════════════════════════════════════
+
+[2:35 PM] FINANCIAL REVIEW DISCUSSION
+
+Ela: "I need to address something. Yesterday's meeting ended
+very badly. There were serious allegations made about financial
+improprieties. I had planned to file a formal complaint this
+morning with Dr. Bousetta and IEEE regional office.
+
+Given what's happened to Aziz, I don't know if I should
+proceed or wait."
+
+Dr. Bousetta: "The financial issues need to be addressed
+regardless of this tragedy. However, the police may want to
+review those records as part of their investigation. I
+recommend you share everything with them first."
+
+Ela: "Understood. I will provide the police with my complete
+audit findings."
+
+════════════════════════════════════════════════════════════════
+
+[2:45 PM] POLICE INTERVIEW SCHEDULE
+
+Dr. Bousetta: "Police will be conducting interviews with all
+of you over the next few days. They have specifically requested
+to speak with:
+
+- Ela Hassine (today at 4:00 PM)
+- Amine Zbaa (tomorrow at 10:00 AM)
+- Yassine Azzouz (tomorrow at 2:00 PM)
+- Fares Klaii (Friday at 10:00 AM)
+
+Additional interviews may be scheduled as needed."
+
+════════════════════════════════════════════════════════════════
+
+[2:55 PM] MEMBER COMMUNICATION
+
+Motion: Official statement to be sent to all IEEE FSM members
+informing them of situation and activity suspension - APPROVED
+
+Roua to draft statement in consultation with Dr. Bousetta.
+
+════════════════════════════════════════════════════════════════
+
+[3:05 PM] CLOSING REMARKS
+
+Dr. Bousetta: "I know this is incredibly difficult for all of
+you. Aziz is your friend and colleague. I want you to know
+that counseling services are available through the university.
+Please take care of yourselves.
+
+At the same time, I must emphasize the seriousness of this
+situation. The police are investigating a violent crime. Full
+honesty and cooperation are essential. Do not discuss your
+interviews with each other. Do not attempt to coordinate
+stories. Tell the truth.
+
+If anyone here has information about what happened to Aziz,
+this is not the time to protect yourselves or each other.
+This is the time to do the right thing."
+
+[Meeting concludes in somber silence]
+
+════════════════════════════════════════════════════════════════
+
+[3:15 PM] ADJOURNMENT
+
+════════════════════════════════════════════════════════════════
+
+NOTES:
+
+The atmosphere in this meeting was heavy with shock, grief,
+and fear. Several members were visibly emotional.
+
+The combination of yesterday's explosive financial meeting
+and today's tragic news has created a crisis situation for
+IEEE FSM.
+
+The organization's future is uncertain pending the outcomes
+of both the police investigation and the university's inquiry
+into financial allegations.
+
+════════════════════════════════════════════════════════════════
+
+Minutes submitted by: Roua Mabrouk
+Date: December 11, 2025, 4:30 PM
+Status: SUBMITTED TO POLICE INVESTIGATION
+
+════════════════════════════════════════════════════════════════`,
             },
           },
         },
@@ -364,19 +1415,398 @@ Notes (Ikhlas Bahia): "Most disturbing meeting. Bad things coming."
               type: "file",
               date: "Dec 8, 2025",
               size: "2.4 MB",
-              content: "[Design file - WeHack Poster]\n\nCreated by: Fares Klaii\nNot relevant.",
+              keywords: ["wehack", "poster", "design"],
+              content: `════════════════════════════════════════════════════════════════
+                  DESIGN PROJECT DOCUMENTATION
+                          WeHack 0.0 Poster
+════════════════════════════════════════════════════════════════
+
+PROJECT TITLE: WeHack 0.0 Official Event Poster
+DESIGNER: Fares Klaii
+DATE CREATED: December 8, 2025
+FILE FORMAT: Adobe Illustrator (.ai), PNG, PDF
+DIMENSIONS: A3 (297mm x 420mm)
+RESOLUTION: 300 DPI
+
+════════════════════════════════════════════════════════════════
+
+DESIGN CONCEPT:
+
+Modern, tech-focused design featuring:
+- Gradient background (blue to purple)
+- Geometric circuit board patterns
+- Bold typography for "WeHack 0.0"
+- Event details in clean, readable font
+
+COLOR PALETTE:
+- Primary: #667eea (IEEE Blue)
+- Secondary: #764ba2 (Purple gradient)
+- Accent: #00ff88 (Tech green)
+- Text: #ffffff (White)
+
+════════════════════════════════════════════════════════════════
+
+EVENT INFORMATION DISPLAYED:
+
+WeHack 0.0
+IEEE FSM Student Branch Presents
+Tunisia's Premier Student Hackathon
+
+DATE: February 15-16, 2026
+LOCATION: Faculty of Science, Monastir
+DURATION: 24 Hours
+
+PRIZES: 3,000 TND Total
+- 1st Place: 1,500 TND
+- 2nd Place: 1,000 TND
+- 3rd Place: 500 TND
+
+REGISTRATION: wehack.ieee-fsm.tn
+
+════════════════════════════════════════════════════════════════
+
+DELIVERABLES:
+
+1. Print Version (A3, 300 DPI)
+   - For campus poster distribution
+   - For sponsor presentation materials
+
+2. Digital Version (1080x1920, 72 DPI)
+   - Social media posts
+   - Instagram stories
+   - Facebook events
+
+3. Web Banner (1920x600, 72 DPI)
+   - Website header
+   - Email campaigns
+
+════════════════════════════════════════════════════════════════
+
+USAGE NOTES:
+
+Design approved by EXCOM on December 9, 2025.
+Ready for printing and digital distribution.
+
+Print quantity requested: 200 posters
+Estimated printing cost: 180 TND
+
+════════════════════════════════════════════════════════════════
+
+FILE LOCATION:
+/Design Assets/WeHack/Poster_v3_Final.ai
+
+════════════════════════════════════════════════════════════════`,
             },
-            "Logo Variants 2025": {
+            "IEEE FSM Logo 2025": {
               type: "file",
               date: "Sep 10, 2025",
               size: "1.8 MB",
-              content: "[Design file - Logo Variants]\n\nNot relevant.",
+              keywords: ["logo", "branding"],
+              content: `════════════════════════════════════════════════════════════════
+                     BRAND IDENTITY PACKAGE
+                       IEEE FSM Logo 2025
+════════════════════════════════════════════════════════════════
+
+ORGANIZATION: IEEE FSM Student Branch
+DESIGNER: Fares Klaii
+VERSION: 2025 Brand Refresh
+DATE: September 10, 2025
+
+════════════════════════════════════════════════════════════════
+
+LOGO VARIATIONS:
+
+1. PRIMARY LOGO
+   - Full color with IEEE symbol
+   - Blue and white color scheme
+   - Use on light backgrounds
+
+2. SECONDARY LOGO
+   - Monochrome version
+   - Black or white only
+   - Use when color not available
+
+3. ICON VERSION
+   - Simplified symbol only
+   - For social media profiles
+   - For small-scale applications
+
+════════════════════════════════════════════════════════════════
+
+COLOR SPECIFICATIONS:
+
+Primary Blue:
+- HEX: #00629B
+- RGB: 0, 98, 155
+- CMYK: 100, 60, 0, 0
+
+Secondary Blue:
+- HEX: #003A5D
+- RGB: 0, 58, 93
+- CMYK: 100, 80, 0, 40
+
+Accent Color:
+- HEX: #667eea
+- RGB: 102, 126, 234
+- CMYK: 60, 50, 0, 0
+
+════════════════════════════════════════════════════════════════
+
+TYPOGRAPHY:
+
+Primary Font: Montserrat Bold
+Secondary Font: Open Sans Regular
+
+Minimum Size: 25mm width (print)
+Clear Space: Equal to height of IEEE symbol
+
+════════════════════════════════════════════════════════════════
+
+USAGE GUIDELINES:
+
+DO:
+✓ Maintain proper clear space
+✓ Use approved color variations only
+✓ Scale proportionally
+✓ Use high-resolution files
+
+DON'T:
+✗ Alter colors or proportions
+✗ Add effects (shadows, gradients)
+✗ Rotate or distort
+✗ Place on busy backgrounds
+
+════════════════════════════════════════════════════════════════
+
+FILE FORMATS PROVIDED:
+
+- .AI (Adobe Illustrator - editable)
+- .EPS (Vector format)
+- .PNG (Transparent background)
+- .JPG (Web use)
+- .SVG (Web and mobile)
+
+════════════════════════════════════════════════════════════════`,
             },
             "Social Media Templates": {
               type: "file",
               date: "Nov 5, 2025",
               size: "3.2 MB",
-              content: "[Design templates]\n\nNot relevant.",
+              keywords: ["social", "media", "templates"],
+              content: `════════════════════════════════════════════════════════════════
+                   SOCIAL MEDIA DESIGN TEMPLATES
+                         IEEE FSM 2025-2026
+════════════════════════════════════════════════════════════════
+
+TEMPLATE PACKAGE: Social Media Graphics
+DESIGNER: Fares Klaii
+DATE: November 5, 2025
+PLATFORMS: Instagram, Facebook, Twitter, LinkedIn
+
+════════════════════════════════════════════════════════════════
+
+INCLUDED TEMPLATES:
+
+1. WORKSHOP ANNOUNCEMENTS
+   - Instagram Post: 1080x1080px
+   - Instagram Story: 1080x1920px
+   - Facebook Post: 1200x630px
+   - Editable text fields for event details
+
+2. EVENT COUNTDOWNS
+   - Daily countdown graphics
+   - Consistent branding
+   - Space for event information
+
+3. MEMBER SPOTLIGHTS
+   - Feature template for members
+   - Photo placeholder
+   - Bio section
+   - Achievement highlights
+
+4. QUOTE GRAPHICS
+   - Inspirational tech quotes
+   - Clean, minimal design
+   - IEEE FSM branding
+
+5. ACHIEVEMENT POSTS
+   - Event success announcements
+   - Statistics and numbers
+   - Photo gallery layouts
+
+════════════════════════════════════════════════════════════════
+
+DESIGN SPECIFICATIONS:
+
+Color Scheme: IEEE brand colors
+Fonts: Montserrat, Open Sans
+File Format: Adobe Photoshop (.psd)
+Resolution: 72 DPI (digital), 150 DPI (print backup)
+
+════════════════════════════════════════════════════════════════
+
+USAGE INSTRUCTIONS:
+
+1. Open template in Photoshop
+2. Replace placeholder text with event details
+3. Add event-specific photos if needed
+4. Export as PNG or JPG
+5. Post to appropriate platform
+
+════════════════════════════════════════════════════════════════
+
+CONTENT CALENDAR INTEGRATION:
+
+These templates are designed to work with the IEEE FSM
+content calendar maintained by the marketing committee.
+
+Weekly posting schedule:
+- Monday: Motivational quote
+- Wednesday: Event announcement or workshop info
+- Friday: Member spotlight or achievement
+
+════════════════════════════════════════════════════════════════`,
+            },
+            "Workshop Banners": {
+              type: "file",
+              date: "Oct 15, 2025",
+              size: "4.1 MB",
+              keywords: ["workshop", "banners"],
+              content: `════════════════════════════════════════════════════════════════
+                   WORKSHOP BANNER COLLECTION
+                       Fall/Winter 2025-2026
+════════════════════════════════════════════════════════════════
+
+COLLECTION: IEEE FSM Workshop Series Banners
+DESIGNER: Fares Klaii
+DATE: October 15, 2025
+PURPOSE: Event promotion and venue decoration
+
+════════════════════════════════════════════════════════════════
+
+BANNER DESIGNS INCLUDED:
+
+1. AI & MACHINE LEARNING WORKSHOP
+   - Main banner: 2m x 1m
+   - Side banners (2x): 1m x 2m vertical
+   - Design: Neural network visualization
+   - Colors: Blue gradient with tech elements
+
+2. WEB DEVELOPMENT WORKSHOP
+   - Main banner: 2m x 1m
+   - Design: Code snippets and browser mockups
+   - Colors: Green and blue tech theme
+
+3. CYBERSECURITY AWARENESS
+   - Main banner: 2m x 1m
+   - Design: Lock and shield imagery
+   - Colors: Red and black security theme
+
+4. UI/UX DESIGN WORKSHOP
+   - Main banner: 2m x 1m
+   - Design: Interface mockups and wireframes
+   - Colors: Purple and pink creative theme
+
+════════════════════════════════════════════════════════════════
+
+PRINTING SPECIFICATIONS:
+
+Material: Vinyl banner material
+Finish: Matte (indoor) / Glossy (outdoor)
+Grommets: Every 50cm for hanging
+Resolution: 150 DPI minimum
+Color: Full color CMYK
+
+════════════════════════════════════════════════════════════════
+
+ESTIMATED COSTS:
+
+Main banners (2m x 1m): 45 TND each
+Side banners (1m x 2m): 40 TND each
+
+Total for complete set: 250 TND
+
+════════════════════════════════════════════════════════════════
+
+VENDOR: PrintPro Monastir
+Contact: +216 73 123 456
+Turnaround: 5 business days
+
+════════════════════════════════════════════════════════════════`,
+            },
+            "Fares Portfolio Archive": {
+              type: "file",
+              date: "Sep 1, 2025",
+              size: "8.7 MB",
+              keywords: ["portfolio", "fares", "freelance"],
+              content: `════════════════════════════════════════════════════════════════
+                      FARES KLAII DESIGN PORTFOLIO
+                           Archived Projects
+════════════════════════════════════════════════════════════════
+
+PORTFOLIO PERIOD: January 2025 - August 2025
+DESIGNER: Fares Klaii
+PLATFORMS: Behance, Dribbble, Personal Website
+
+════════════════════════════════════════════════════════════════
+
+SELECTED PROJECTS:
+
+PROJECT 1: TechStart Tunisia Logo & Branding
+Client: Local startup incubator
+Date: September 2025
+Deliverables: Logo, business cards, letterhead
+Fee: 450 TND
+
+PROJECT 2: CaféConnect Mobile App UI
+Client: Coffee shop chain
+Date: August 2025
+Deliverables: App mockups, UI components
+Fee: 650 TND
+
+PROJECT 3: EduPlatform Website Redesign
+Client: Online learning platform
+Date: July 2025
+Deliverables: Website design, landing pages
+Fee: 800 TND
+
+PROJECT 4: EventHub Promotional Materials
+Client: Event management company
+Date: June 2025
+Deliverables: Posters, flyers, social media graphics
+Fee: 380 TND
+
+════════════════════════════════════════════════════════════════
+
+TESTIMONIALS:
+
+"Fares delivered exceptional work on our brand identity. His
+attention to detail and creative vision exceeded our
+expectations." - TechStart Tunisia
+
+"The app UI designs were exactly what we needed. Professional,
+modern, and user-friendly." - CaféConnect
+
+════════════════════════════════════════════════════════════════
+
+SKILLS DEMONSTRATED:
+
+✓ Logo design and branding
+✓ UI/UX design
+✓ Print design (posters, flyers)
+✓ Digital marketing graphics
+✓ Adobe Creative Suite proficiency
+✓ Client communication and project management
+
+════════════════════════════════════════════════════════════════
+
+NOTE: This archive represents freelance work completed
+prior to joining IEEE FSM Design Manager role in September 2025.
+
+All projects completed independently and billed separately
+from IEEE FSM activities.
+
+════════════════════════════════════════════════════════════════`,
             },
           },
         },
@@ -388,13 +1818,343 @@ Notes (Ikhlas Bahia): "Most disturbing meeting. Bad things coming."
               type: "file",
               date: "Nov 18, 2025",
               size: "45 MB",
-              content: "[Photo album]\n\n67 photos.\nNot relevant.",
+              keywords: ["workshop", "november", "ai"],
+              content: `════════════════════════════════════════════════════════════════
+                      EVENT PHOTO COLLECTION
+                 AI & Machine Learning Workshop
+                       November 18, 2025
+════════════════════════════════════════════════════════════════
+
+EVENT: Introduction to AI and Machine Learning
+DATE: November 18, 2025
+TIME: 2:00 PM - 6:00 PM
+LOCATION: Amphitheater A, Faculty of Science Monastir
+PHOTOGRAPHER: Yaakoub Benslimen
+
+════════════════════════════════════════════════════════════════
+
+PHOTO COLLECTION SUMMARY:
+
+Total Photos: 67 images
+Format: JPG (High Resolution)
+Total Size: 45 MB
+
+CATEGORIES:
+
+1. Setup & Preparation (8 photos)
+   - Venue setup before event
+   - Registration desk
+   - Banner and signage placement
+
+2. Registration & Welcome (12 photos)
+   - Attendees arriving and checking in
+   - Welcome table
+   - Badge distribution
+
+3. Presentation & Workshop (28 photos)
+   - Yassine Azzouz presenting
+   - Slides and demonstrations
+   - Interactive coding sessions
+   - Attendees working on laptops
+
+4. Group Activities (11 photos)
+   - Team exercises
+   - Peer collaboration
+   - Hands-on ML model training
+
+5. Breaks & Networking (8 photos)
+   - Coffee break interactions
+   - Networking sessions
+   - Informal discussions
+
+════════════════════════════════════════════════════════════════
+
+EVENT STATISTICS:
+
+Registered Attendees: 73 students
+Actual Attendance: 61 students
+Attendance Rate: 84%
+
+Demographics:
+- Computer Science: 42 students
+- Engineering: 14 students
+- Mathematics: 5 students
+
+Year Level:
+- 1st Year: 12 students
+- 2nd Year: 28 students
+- 3rd Year: 21 students
+
+════════════════════════════════════════════════════════════════
+
+FEEDBACK SUMMARY:
+
+Post-event survey responses: 45 participants
+
+Overall Satisfaction: 4.6/5.0
+Content Quality: 4.7/5.0
+Presentation Skills: 4.8/5.0
+Organization: 4.5/5.0
+Venue: 4.3/5.0
+
+Comments:
+"Excellent introduction to ML concepts"
+"Would love more hands-on coding time"
+"Yassine is a great presenter"
+"Please organize advanced AI workshop next"
+
+════════════════════════════════════════════════════════════════
+
+SOCIAL MEDIA PERFORMANCE:
+
+Instagram Post Reach: 2,340 accounts
+Facebook Event Views: 1,890
+Post Engagement: 340 likes, 45 comments, 28 shares
+
+Top Performing Photo: Group photo with all attendees
+(Posted Nov 18, 6:30 PM - 180 likes in 2 hours)
+
+════════════════════════════════════════════════════════════════`,
             },
             "EXCOM Team Photo": {
               type: "file",
               date: "Sep 1, 2025",
               size: "8 MB",
-              content: "[Group photo]\n\nAll members.\nNot relevant.",
+              keywords: ["team", "excom"],
+              content: `════════════════════════════════════════════════════════════════
+                    OFFICIAL TEAM PHOTOGRAPH
+                IEEE FSM Executive Committee 2025-2026
+════════════════════════════════════════════════════════════════
+
+PHOTO SESSION DATE: September 1, 2025
+LOCATION: IEEE Office
+PHOTOGRAPHER: Professional campus photographer
+PURPOSE: Official team photo for website and promotional materials
+
+════════════════════════════════════════════════════════════════
+
+PHOTO DETAILS:
+
+Format: High-resolution JPG
+Dimensions: 6000 x 4000 pixels
+Size: 8 MB
+Lighting: Professional studio setup
+
+════════════════════════════════════════════════════════════════
+
+TEAM MEMBERS PICTURED (Front Row, Left to Right):
+
+1. Roua Mabrouk - Secretary General
+2. Ela Hassine - Treasurer
+3. Aziz Krifa - Student Branch Chair (Center)
+4. Amine Zbaa - CS Chapter Vice Chair
+5. Fares Klaii - Design Manager
+
+BACK ROW (Left to Right):
+
+6. Yaakoub Benslimen - Web Master
+7. Yassine Azzouz - CS Chapter Chair
+8. Ikhlas Bahia - Event Coordinator
+
+════════════════════════════════════════════════════════════════
+
+USAGE:
+
+This official team photo is used on:
+- IEEE FSM website homepage
+- Social media profile images
+- Promotional materials
+- University publications
+- Annual reports
+
+════════════════════════════════════════════════════════════════
+
+NOTES:
+
+Professional attire was requested for this photo session.
+All team members present and accounted for.
+
+Photo represents the complete executive committee for the
+2025-2026 academic year as elected in August 2025.
+
+════════════════════════════════════════════════════════════════`,
+            },
+            "Orientation Day": {
+              type: "file",
+              date: "Sep 5, 2025",
+              size: "32 MB",
+              keywords: ["orientation", "september"],
+              content: `════════════════════════════════════════════════════════════════
+                       EVENT PHOTO ARCHIVE
+                      New Student Orientation
+                        September 5, 2025
+════════════════════════════════════════════════════════════════
+
+EVENT: IEEE FSM New Student Orientation & Recruitment
+DATE: September 5, 2025
+TIME: 9:00 AM - 4:00 PM
+LOCATION: Campus Main Hall
+
+════════════════════════════════════════════════════════════════
+
+PHOTO COLLECTION:
+
+Total Photos: 94 images
+Total Size: 32 MB
+Format: JPG
+
+COVERAGE BREAKDOWN:
+
+Morning Session (9:00 AM - 12:00 PM):
+- Booth setup: 12 photos
+- IEEE FSM display materials: 8 photos
+- Early visitors: 18 photos
+- Student interactions: 22 photos
+
+Afternoon Session (1:00 PM - 4:00 PM):
+- Peak crowd period: 20 photos
+- Registration activities: 14 photos
+
+════════════════════════════════════════════════════════════════
+
+EVENT STATISTICS:
+
+Total Student Contacts: 127 students
+Information Requests: 89
+Email List Signups: 76
+Membership Applications: 34
+
+Promotional Materials Distributed:
+- Flyers: 200
+- Brochures: 150
+- Business cards: 95
+- Stickers: 180
+
+════════════════════════════════════════════════════════════════
+
+TEAM MEMBERS WORKING EVENT:
+
+Morning Shift:
+- Aziz Krifa (Lead)
+- Ela Hassine
+- Roua Mabrouk
+- Yaakoub Benslimen
+
+Afternoon Shift:
+- Yassine Azzouz (Lead)
+- Amine Zbaa
+- Fares Klaii
+- Ikhlas Bahia
+
+════════════════════════════════════════════════════════════════
+
+SUCCESSFUL OUTCOMES:
+
+✓ Highest recruitment numbers in 3 years
+✓ Strong interest in upcoming workshops
+✓ Positive feedback on booth presentation
+✓ 34 membership applications exceeds target of 25
+
+FOLLOW-UP ACTIONS:
+
+- Send welcome emails to all signups
+- Schedule new member orientation for Sept 12
+- Process membership applications by Sept 10
+
+════════════════════════════════════════════════════════════════`,
+            },
+            "Web Dev Workshop Dec 2025": {
+              type: "file",
+              date: "Dec 5, 2025",
+              size: "38 MB",
+              keywords: ["workshop", "december", "web"],
+              content: `════════════════════════════════════════════════════════════════
+                      EVENT PHOTO COLLECTION
+                    Web Development Workshop
+                       December 5, 2025
+════════════════════════════════════════════════════════════════
+
+EVENT: Modern Web Development with React
+DATE: December 5, 2025
+TIME: 2:00 PM - 6:00 PM
+LOCATION: Computer Lab B
+INSTRUCTOR: Amine Zbaa
+PHOTOGRAPHER: Yaakoub Benslimen
+
+════════════════════════════════════════════════════════════════
+
+PHOTO COLLECTION:
+
+Total Photos: 52 images
+Format: JPG (High Resolution)
+Total Size: 38 MB
+
+PHOTO CATEGORIES:
+
+1. Setup (6 photos)
+   - Lab preparation
+   - Equipment check
+   - Material distribution
+
+2. Introduction Session (10 photos)
+   - Amine presenting React fundamentals
+   - Slide presentations
+   - Whiteboard explanations
+
+3. Hands-On Coding (22 photos)
+   - Students coding along
+   - Individual project work
+   - Screen captures of code examples
+
+4. Debugging & Assistance (8 photos)
+   - One-on-one help sessions
+   - Group problem-solving
+   - Code reviews
+
+5. Final Projects & Demos (6 photos)
+   - Students presenting their work
+   - Completed mini-projects
+   - Group celebration
+
+════════════════════════════════════════════════════════════════
+
+ATTENDANCE:
+
+Registered: 49 students
+Attended: 43 students
+Completion Rate: 88%
+
+════════════════════════════════════════════════════════════════
+
+WORKSHOP CONTENT COVERED:
+
+- React fundamentals and JSX
+- Component architecture
+- State management with hooks
+- API integration
+- Styling with Tailwind CSS
+- Building a simple web app
+
+════════════════════════════════════════════════════════════════
+
+PARTICIPANT FEEDBACK:
+
+Overall Rating: 4.7/5.0
+
+"Amine explained complex concepts very clearly"
+"Hands-on approach was perfect for learning"
+"Would love more advanced React workshops"
+"Best workshop I've attended this semester"
+
+════════════════════════════════════════════════════════════════
+
+SOCIAL MEDIA:
+
+Posted 8 photos to Instagram: 1,450 reach
+Posted 1 album to Facebook: 890 views
+Engagement: 220 total interactions
+
+════════════════════════════════════════════════════════════════`,
             },
           },
         },
@@ -406,15 +2166,612 @@ Notes (Ikhlas Bahia): "Most disturbing meeting. Bad things coming."
               type: "file",
               date: "Dec 5, 2025",
               size: "22 KB",
-              keywords: ["wehack", "budget"],
-              content:
-                "[Budget proposal]\n\nProposed budget for WeHack.\nStatus: Rejected Dec 10.\nNot critical.",
+              keywords: ["wehack", "budget", "proposal"],
+              content: `════════════════════════════════════════════════════════════════
+                        BUDGET PROPOSAL
+                          WeHack 0.0
+                    Tunisia's Premier Student Hackathon
+════════════════════════════════════════════════════════════════
+
+SUBMITTED BY: Aziz Krifa (SB Chair)
+DATE: December 5, 2025
+EVENT DATE: February 15-16, 2026
+REQUESTED AMOUNT: 3,500 TND
+
+════════════════════════════════════════════════════════════════
+
+EXECUTIVE SUMMARY:
+
+WeHack 0.0 represents an ambitious initiative to establish
+the first major student hackathon in the Monastir region.
+This event will position IEEE FSM as the leading technical
+student organization and create valuable opportunities for
+150-200 participating students.
+
+════════════════════════════════════════════════════════════════
+
+DETAILED BUDGET BREAKDOWN:
+
+1. PRIZES & AWARDS: 1,800 TND (51%)
+   - First Place: 800 TND
+   - Second Place: 600 TND
+   - Third Place: 400 TND
+   - Special Category Awards (3x): 300 TND total
+
+2. CATERING: 1,200 TND (34%)
+   - Day 1 Lunch: 400 TND (200 meals @ 2 TND)
+   - Day 1 Dinner: 450 TND (200 meals @ 2.25 TND)
+   - Continuous Refreshments: 200 TND
+   - Day 2 Breakfast: 150 TND
+
+3. VENUE & EQUIPMENT: 300 TND (9%)
+   - Extended access fees: 100 TND
+   - Additional power strips/cables: 80 TND
+   - WiFi enhancement: 120 TND
+
+4. MARKETING & MATERIALS: 200 TND (6%)
+   - Posters (200 units): 100 TND
+   - T-shirts for organizers (15 units): 75 TND
+   - Badges and lanyards: 25 TND
+
+TOTAL: 3,500 TND
+
+════════════════════════════════════════════════════════════════
+
+REVENUE SOURCES (PROJECTED):
+
+Expected Sponsorships:
+- Tier 1 Sponsor (1): 1,500 TND
+- Tier 2 Sponsors (2): 1,000 TND (500 each)
+- Tier 3 Sponsors (4): 800 TND (200 each)
+
+TOTAL PROJECTED REVENUE: 3,300 TND
+
+IEEE FSM Funding Needed: 200 TND
+(Sponsors will cover 94% of costs)
+
+════════════════════════════════════════════════════════════════
+
+SPONSORSHIP STATUS (as of Dec 5):
+
+CONFIRMED:
+- None (negotiations in progress)
+
+IN NEGOTIATION:
+- TechCorp Tunisia (Tier 1 - 1,500 TND)
+- DataSystems Inc (Tier 2 - 500 TND)
+- CodeHub Monastir (Tier 2 - 500 TND)
+- Three local tech companies (Tier 3)
+
+EXPECTED CONFIRMATION: December 15-20, 2025
+
+════════════════════════════════════════════════════════════════
+
+RISK ASSESSMENT:
+
+PRIMARY RISK: Sponsor commitments may not materialize
+MITIGATION:
+- Multiple sponsor prospects identified
+- Backup funding plan if needed
+- Can reduce prize amounts if necessary
+
+CONTINGENCY PLAN:
+If full sponsorship not secured by January 15:
+- Scale back event to 100 participants
+- Reduce prize pool to 1,200 TND
+- Simplify catering options
+- Required IEEE FSM funding: 1,500 TND maximum
+
+════════════════════════════════════════════════════════════════
+
+EXPECTED OUTCOMES:
+
+✓ 150-200 student participants
+✓ Regional recognition for IEEE FSM
+✓ Valuable networking opportunities
+✓ Skill development for participants
+✓ Potential for annual recurring event
+✓ Strengthened industry partnerships
+
+════════════════════════════════════════════════════════════════
+
+TIMELINE:
+
+December 15: Final sponsor commitments
+December 20: Budget approval from EXCOM
+January 5: Marketing campaign launch
+January 15: Registration opens
+February 1: Registration closes
+February 15-16: EVENT
+
+════════════════════════════════════════════════════════════════
+
+RECOMMENDATION:
+
+Approve 3,500 TND budget allocation with the understanding
+that actual IEEE FSM expenditure will be minimal (200 TND)
+if sponsorships proceed as projected.
+
+If sponsors do not commit by December 20, reconvene to
+discuss contingency options.
+
+════════════════════════════════════════════════════════════════
+
+STATUS: PROPOSAL REJECTED AT DECEMBER 10 MEETING
+
+The December 10 emergency financial meeting resulted in
+rejection of this proposal and broader organizational crisis.
+WeHack 0.0 planning indefinitely suspended.
+
+════════════════════════════════════════════════════════════════`,
             },
             "Spring 2026 Calendar": {
               type: "file",
               date: "Nov 25, 2025",
               size: "16 KB",
-              content: "[Event calendar]\n\nPlanned events.\nNot relevant.",
+              keywords: ["spring", "calendar", "events"],
+              content: `════════════════════════════════════════════════════════════════
+                  IEEE FSM EVENT CALENDAR
+                      Spring Semester 2026
+════════════════════════════════════════════════════════════════
+
+PLANNING PERIOD: February - June 2026
+PREPARED BY: Roua Mabrouk (Secretary General)
+DATE: November 25, 2025
+STATUS: TENTATIVE (Subject to EXCOM approval)
+
+════════════════════════════════════════════════════════════════
+
+FEBRUARY 2026:
+
+Week 1 (Feb 1-7):
+- WeHack 0.0 Final Preparations
+- Marketing campaign peak
+
+Week 2 (Feb 8-14):
+- WeHack 0.0 Registration closes (Feb 13)
+- Final logistics confirmation
+
+Week 3 (Feb 15-21):
+- **WEHACK 0.0 - February 15-16** (FLAGSHIP EVENT)
+- Post-event debrief (Feb 19)
+
+Week 4 (Feb 22-28):
+- Recovery week
+- Thank you communications to sponsors
+
+════════════════════════════════════════════════════════════════
+
+MARCH 2026:
+
+Week 1 (Mar 1-7):
+- New member orientation session
+- Committee restructuring if needed
+
+Week 2 (Mar 8-14):
+- Workshop: Introduction to Cloud Computing
+- Date: March 12, 2:00-6:00 PM
+- Budget: 200 TND
+
+Week 3 (Mar 15-21):
+- International Women's Day event (Mar 8 related)
+- "Women in Technology" panel discussion
+- Date: March 19
+- Budget: 180 TND
+
+Week 4 (Mar 22-28):
+- Mid-semester break (Mar 25-28)
+
+════════════════════════════════════════════════════════════════
+
+APRIL 2026:
+
+Week 1 (Apr 1-7):
+- Workshop: Mobile App Development (React Native)
+- Date: April 3, 2:00-6:00 PM
+- Budget: 220 TND
+
+Week 2 (Apr 8-14):
+- IEEE Day Preparations begin
+- Committee meetings
+
+Week 3 (Apr 15-21):
+- Networking Event: Industry Professionals Meetup
+- Date: April 17, 6:00-8:00 PM
+- Expected attendance: 80 students + 10 professionals
+- Budget: 350 TND
+
+Week 4 (Apr 22-28):
+- Workshop: Data Science & Analytics
+- Date: April 24
+- Budget: 200 TND
+
+════════════════════════════════════════════════════════════════
+
+MAY 2026:
+
+Week 1 (May 1-7):
+- Labor Day holiday (May 1)
+- Workshop: Blockchain Fundamentals
+- Date: May 5
+- Budget: 180 TND
+
+Week 2 (May 8-14):
+- Final exam preparation begins
+- Reduced activity week
+
+Week 3 (May 15-21):
+- Study sessions for members
+- IEEE office open for group study
+
+Week 4 (May 22-28):
+- Exam period
+- No events scheduled
+
+════════════════════════════════════════════════════════════════
+
+JUNE 2026:
+
+Week 1 (Jun 1-7):
+- Exam period continues
+- Year-end planning begins
+
+Week 2 (Jun 8-14):
+- End-of-Year Celebration & Awards
+- Date: June 12, 6:00 PM
+- Budget: 400 TND
+- Format: Awards ceremony + dinner
+
+Week 3 (Jun 15-21):
+- Transition planning for new board
+- Documentation handover preparations
+
+Week 4 (Jun 22-28):
+- Summer planning session
+- Archive organization
+
+════════════════════════════════════════════════════════════════
+
+BUDGET SUMMARY:
+
+WeHack 0.0: 200 TND (IEEE portion)
+Workshops (6 total): 1,180 TND
+Networking Event: 350 TND
+Women in Tech Panel: 180 TND
+End-of-Year Event: 400 TND
+Contingency: 190 TND
+
+TOTAL SPRING BUDGET: 2,500 TND
+
+════════════════════════════════════════════════════════════════
+
+NOTES:
+
+This calendar assumes WeHack 0.0 proceeds as planned.
+All dates and budgets are tentative pending EXCOM approval.
+
+Workshops require 3 weeks advance planning minimum.
+All events subject to venue availability and budget constraints.
+
+════════════════════════════════════════════════════════════════
+
+APPROVAL STATUS: PENDING
+
+To be discussed at December 15 EXCOM meeting.
+
+════════════════════════════════════════════════════════════════`,
+            },
+            "Partnership Proposals": {
+              type: "file",
+              date: "Nov 10, 2025",
+              size: "14 KB",
+              keywords: ["partnerships", "sponsors"],
+              content: `════════════════════════════════════════════════════════════════
+                    CORPORATE PARTNERSHIP PROPOSALS
+                      IEEE FSM Student Branch
+                        Academic Year 2025-2026
+════════════════════════════════════════════════════════════════
+
+PREPARED BY: Aziz Krifa (SB Chair) & Amine Zbaa
+DATE: November 10, 2025
+PURPOSE: Expand corporate relationships and sponsorships
+
+════════════════════════════════════════════════════════════════
+
+PARTNERSHIP TIERS:
+
+PLATINUM TIER (1,500+ TND annually):
+- Logo on all major event materials
+- Speaking opportunity at WeHack 0.0
+- Dedicated recruitment session
+- Social media featuring (monthly)
+- Access to student resume database
+
+GOLD TIER (1,000 TND annually):
+- Logo on event materials
+- Booth at WeHack 0.0
+- Social media featuring (quarterly)
+- Student email newsletter featuring
+
+SILVER TIER (500 TND annually):
+- Logo on select materials
+- Social media mention
+- Newsletter acknowledgment
+
+BRONZE TIER (200 TND annually):
+- Website listing
+- Event program acknowledgment
+
+════════════════════════════════════════════════════════════════
+
+TARGET COMPANIES:
+
+TIER 1 PROSPECTS (Platinum/Gold):
+
+1. TechCorp Tunisia
+   - IT consulting firm
+   - 200+ employees
+   - Contact: Karim Mansour (HR Director)
+   - Status: Initial meeting scheduled Nov 18
+   - Projected: 1,500 TND
+
+2. DataSystems International
+   - Software development company
+   - 150+ employees
+   - Contact: Sarah Dridi (Recruitment Manager)
+   - Status: Proposal sent Nov 5
+   - Projected: 1,000 TND
+
+3. CloudHub MENA
+   - Cloud services provider
+   - Regional headquarters in Tunis
+   - Contact: Ahmed Trabelsi (MENA Director)
+   - Status: Awaiting response
+   - Projected: 1,500 TND
+
+════════════════════════════════════════════════════════════════
+
+TIER 2 PROSPECTS (Silver/Bronze):
+
+4. CodeAcademy Monastir
+   - Local coding bootcamp
+   - Contact: Leila Hamdi (Director)
+   - Projected: 500 TND
+
+5. StartupHub Tunisia
+   - Startup incubator
+   - Contact: Mehdi Gharbi
+   - Projected: 500 TND
+
+6. DesignStudio Plus
+   - Digital agency
+   - Contact: Faten Bouaziz
+   - Projected: 300 TND
+
+7-12. Six additional local tech companies
+   - Various specializations
+   - Projected: 200 TND each (1,200 TND total)
+
+════════════════════════════════════════════════════════════════
+
+TOTAL PROJECTED PARTNERSHIPS:
+
+Optimistic Scenario: 6,500 TND annually
+Realistic Scenario: 4,200 TND annually
+Conservative Scenario: 2,800 TND annually
+
+════════════════════════════════════════════════════════════════
+
+BENEFITS FOR PARTNERS:
+
+✓ Access to talented engineering students
+✓ Brand visibility on campus
+✓ Recruitment pipeline
+✓ Community goodwill
+✓ Tax deduction (educational support)
+
+════════════════════════════════════════════════════════════════
+
+BENEFITS FOR IEEE FSM:
+
+✓ Financial sustainability
+✓ Enhanced event quality
+✓ Industry connections for students
+✓ Internship/job opportunities
+✓ Guest speakers and mentors
+
+════════════════════════════════════════════════════════════════
+
+ACTION PLAN:
+
+November 15-30: Initial outreach to all prospects
+December 1-15: Follow-up meetings and proposals
+December 20: Target for initial commitments
+January 5: Finalize partnership agreements
+January 15: Public announcement of partners
+
+════════════════════════════════════════════════════════════════
+
+RESPONSIBLE PARTIES:
+
+Tier 1 Outreach: Aziz Krifa
+Tier 2 Outreach: Amine Zbaa, Yassine Azzouz
+Contract Negotiation: Aziz Krifa, Ela Hassine
+Legal Review: Dr. Bousetta (Faculty Advisor)
+
+════════════════════════════════════════════════════════════════
+
+RISK FACTORS:
+
+- Economic conditions may affect corporate budgets
+- Competition from other student organizations
+- Lengthy approval processes in large corporations
+- Need for compelling value proposition
+
+MITIGATION:
+- Early outreach (November vs December)
+- Professional proposal materials
+- Clear ROI demonstration
+- Multiple prospects per tier
+
+════════════════════════════════════════════════════════════════
+
+APPROVAL: To be discussed at November 15 EXCOM meeting
+
+════════════════════════════════════════════════════════════════`,
+            },
+            "Summer Initiative Ideas": {
+              type: "file",
+              date: "Nov 20, 2025",
+              size: "11 KB",
+              keywords: ["summer", "ideas", "planning"],
+              content: `════════════════════════════════════════════════════════════════
+                    SUMMER INITIATIVE PROPOSALS
+                      IEEE FSM Student Branch
+                          Summer 2026
+════════════════════════════════════════════════════════════════
+
+BRAINSTORMING SESSION: November 18, 2025
+PARTICIPANTS: Full EXCOM team
+COMPILED BY: Roua Mabrouk
+
+════════════════════════════════════════════════════════════════
+
+PROPOSAL 1: SUMMER CODING BOOTCAMP
+
+Duration: 4 weeks (July 2026)
+Target: High school students (ages 15-18)
+Capacity: 30 students
+Topics: Web development basics, Python, Project building
+
+Budget: 800 TND
+- Materials and supplies
+- Instructor compensation
+- Venue costs
+- Certificate printing
+
+Revenue: 1,500 TND (50 TND per student x 30)
+Net: +700 TND for IEEE FSM
+
+Benefits:
+✓ Community outreach
+✓ Builds high school pipeline
+✓ Generates revenue
+✓ Develops teaching experience for members
+
+════════════════════════════════════════════════════════════════
+
+PROPOSAL 2: IEEE FSM TECH INTERNSHIP PROGRAM
+
+Concept: Partner with local companies for summer internships
+Target: IEEE FSM members
+Goal: 15-20 internship placements
+
+Program Elements:
+- Company matching service
+- Resume workshop (May)
+- Interview prep sessions (May)
+- Weekly check-ins during internships
+- End-of-summer presentation
+
+Budget: 300 TND (workshops and materials)
+Revenue: Potential partnership fees from companies
+         (100 TND per placement = 1,500-2,000 TND)
+
+════════════════════════════════════════════════════════════════
+
+PROPOSAL 3: OPEN SOURCE CONTRIBUTION CHALLENGE
+
+Duration: June-August 2026
+Format: Monthly challenges to contribute to open source projects
+Target: IEEE FSM members (all levels)
+
+Structure:
+- Month 1: Bug fixes and documentation
+- Month 2: Feature implementations
+- Month 3: Own project creation
+
+Prizes:
+- Most contributions: 200 TND
+- Best quality: 150 TND
+- Most helpful: 100 TND
+
+Budget: 450 TND (prizes)
+Benefits: Skill building, portfolio development, community engagement
+
+════════════════════════════════════════════════════════════════
+
+PROPOSAL 4: INDUSTRY MENTORSHIP PROGRAM
+
+Concept: Pair students with tech professionals for summer mentorship
+Duration: 8 weeks
+Target: 20 IEEE FSM members
+
+Requirements:
+- Weekly 1-hour virtual meetings
+- Project-based learning
+- Final presentation to organization
+
+Budget: 200 TND (platform costs, certificates)
+Value: Career development, networking, guidance
+
+════════════════════════════════════════════════════════════════
+
+PROPOSAL 5: HACKATHON MINI-SERIES
+
+Format: Three mini-hackathons (24 hours each)
+Dates: Late June, mid-July, late August
+Themes:
+1. Social Impact Technology
+2. Gaming & Entertainment
+3. Productivity Tools
+
+Budget per event: 300 TND
+Total: 900 TND
+
+Participation: 40-50 students each
+Prizes: Smaller scale (300 TND per event)
+
+════════════════════════════════════════════════════════════════
+
+RECOMMENDED PRIORITIES:
+
+PRIMARY FOCUS:
+1. Summer Coding Bootcamp (high impact, generates revenue)
+2. Tech Internship Program (valuable for members)
+
+SECONDARY FOCUS:
+3. Open Source Challenge (low cost, high value)
+
+IF BUDGET ALLOWS:
+4. Mentorship Program
+5. Hackathon Mini-Series
+
+════════════════════════════════════════════════════════════════
+
+TOTAL ESTIMATED BUDGET:
+
+Conservative approach: 1,100 TND
+(Bootcamp + Internship Program + Open Source Challenge)
+
+Aggressive approach: 2,650 TND
+(All five initiatives)
+
+════════════════════════════════════════════════════════════════
+
+NEXT STEPS:
+
+1. Vote on priority initiatives (December meeting)
+2. Develop detailed plans for approved items (January)
+3. Secure venues and partnerships (February-March)
+4. Market programs to members and community (April-May)
+5. Execute summer programs (June-August)
+
+════════════════════════════════════════════════════════════════
+
+STATUS: Preliminary ideas - Requires EXCOM discussion and approval
+
+════════════════════════════════════════════════════════════════`,
             },
           },
         },
@@ -426,28 +2783,88 @@ Notes (Ikhlas Bahia): "Most disturbing meeting. Bad things coming."
               type: "file",
               date: "Dec 9, 2025",
               size: "28 KB",
-              keywords: ["budget", "financial"],
-              content: `Q4 Budget Report
-By: Ela Hassine
-Date: Dec 9, 2025
+              keywords: ["budget", "financial", "audit"],
+              content: `IEEE FSM - Q4 2025 Financial Audit Report
+Prepared by: Ela Hassine (Treasurer)
+Audit Period: October 1 - December 9, 2025
+Report Date: December 9, 2025
 
-Annual Budget: 4,400 TND
+ANNUAL BUDGET: 4,400 TND
+EXPENDITURES Q4 (Oct-Dec):
+- October Events: 450 TND
+- November Events: 680 TND
+- Administrative: 120 TND
 
-⚠ CRITICAL DISCREPANCY:
-Unauthorized: 2,400 TND
-Marked as: "WeHack advance payments"
-Approved by: NONE
+⚠️ CRITICAL DISCREPANCIES DISCOVERED:
 
-Status: EMERGENCY
-Action: Meeting called for Dec 10
+UNAUTHORIZED WITHDRAWALS: 2,400 TND
+Dates: November 28, December 2, December 5
+Marked as: "WeHack 0.0 advance sponsor payments"
+Approved by: NONE (No treasurer signature)
 
-[This report triggered the emergency meeting]`,
+Remaining Budget: 750 TND
+
+STATUS: EMERGENCY - IMMEDIATE ACTION REQUIRED
+
+This report triggered December 10 emergency meeting.
+
+Treasurer's Note: These transactions violate IEEE FSM bylaws
+Article 7, Section 3 requiring treasurer approval for
+withdrawals exceeding 500 TND.`,
             },
-            "November Transactions": {
+            "Q3 2025 Report": {
+              type: "file",
+              date: "Sep 30, 2025",
+              size: "24 KB",
+              content: "[Q3 financial summary]\nNo issues found.\nNot relevant.",
+            },
+            "Transaction Log Nov": {
               type: "file",
               date: "Nov 30, 2025",
               size: "31 KB",
-              content: "[Transaction log]\n\nAll approved transactions.\nNot relevant.",
+              content: "[November transactions]\nDetailed transaction list.\nNot relevant.",
+            },
+          },
+        },
+        "Member Documents": {
+          type: "folder",
+          icon: "👥",
+          files: {
+            "Member Roster 2025": {
+              type: "file",
+              date: "Sep 15, 2025",
+              size: "12 KB",
+              content: "[Member list]\nCurrent active members.\nNot relevant.",
+            },
+            "Committee Assignments": {
+              type: "file",
+              date: "Sep 20, 2025",
+              size: "8 KB",
+              content: "[Committee structure]\nRole assignments.\nNot relevant.",
+            },
+            "Contact Directory": {
+              type: "file",
+              date: "Oct 1, 2025",
+              size: "6 KB",
+              content: "[Contact information]\nMember phone/email list.\nNot relevant.",
+            },
+          },
+        },
+        "Workshop Materials": {
+          type: "folder",
+          icon: "📚",
+          files: {
+            "AI Workshop Slides": {
+              type: "file",
+              date: "Nov 18, 2025",
+              size: "5.2 MB",
+              content: "[Presentation]\nAI/ML workshop content.\nNot relevant.",
+            },
+            "Web Dev Resources": {
+              type: "file",
+              date: "Dec 5, 2025",
+              size: "3.8 MB",
+              content: "[Tutorial materials]\nWeb development workshop.\nNot relevant.",
             },
           },
         },
