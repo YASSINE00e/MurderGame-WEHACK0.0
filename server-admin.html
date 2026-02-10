@@ -267,8 +267,6 @@
             <button class="tool-btn" onclick="showLogs()">📋 View Server Logs</button>
             <button class="tool-btn" onclick="showKeycard()">🔑 Key Card Access</button>
             <button class="tool-btn" onclick="showActivity()">📊 User Activity</button>
-            <button class="tool-btn" onclick="showSecurity()">🔒 Security Cameras</button>
-            <button class="tool-btn" onclick="showWitness()">👥 Witness Statements</button>
             <button class="tool-btn danger" onclick="logout()">⚠ Logout</button>
           </div>
 
@@ -1067,8 +1065,6 @@
           name: "Marwen Ben Salem",
           location: "IEEE Office - Main Door",
           action: "GRANTED",
-          warning: false,
-          note: "Regular evening work session",
         },
         {
           date: "Dec 13",
@@ -1077,8 +1073,6 @@
           name: "Marwen Ben Salem",
           location: "IEEE Office - Main Door",
           action: "EXIT",
-          warning: false,
-          note: "Left before victim arrived",
         },
         {
           date: "Dec 13",
@@ -1087,9 +1081,6 @@
           name: "Ela Hassine",
           location: "IEEE Office - Main Door",
           action: "GRANTED",
-          warning: false,
-          critical: true,
-          note: "🔴 VICTIM ARRIVAL",
         },
         {
           date: "Dec 13",
@@ -1098,8 +1089,6 @@
           name: "Nour Elhouda Abidi",
           location: "IEEE Office - Main Door",
           action: "GRANTED",
-          warning: false,
-          note: "Workshop planning meeting",
         },
         {
           date: "Dec 13",
@@ -1108,8 +1097,6 @@
           name: "Nour Elhouda Abidi",
           location: "IEEE Office - Main Door",
           action: "EXIT",
-          warning: false,
-          note: "Last person to see victim alive",
         },
         {
           date: "Dec 13",
@@ -1118,9 +1105,6 @@
           name: "Yassine Azzouz",
           location: "IEEE Office - Main Door",
           action: "GRANTED",
-          warning: true,
-          critical: true,
-          note: "⚠️ ENTERED DURING MURDER TIMEFRAME",
         },
         {
           date: "Dec 13",
@@ -1129,9 +1113,6 @@
           name: "Yassine Azzouz",
           location: "IEEE Office - Main Door",
           action: "EXIT",
-          warning: true,
-          critical: true,
-          note: "⚠️ LEFT AFTER MURDER - 45 min inside",
         },
         // December 14, 2025 - DISCOVERY
         {
@@ -1141,9 +1122,6 @@
           name: "Ikhlas Bahia",
           location: "IEEE Office - Main Door",
           action: "GRANTED",
-          warning: false,
-          critical: true,
-          note: "🔴 DISCOVERED BODY - First arrival",
         },
         {
           date: "Dec 14",
@@ -1152,8 +1130,6 @@
           name: "Campus Security",
           location: "IEEE Office - Main Door",
           action: "GRANTED",
-          warning: false,
-          note: "Emergency response - crime scene secured",
         },
         {
           date: "Dec 14",
@@ -1162,8 +1138,6 @@
           name: "Forensics Team",
           location: "IEEE Office - Main Door",
           action: "GRANTED",
-          warning: false,
-          note: "Crime scene investigation",
         },
         {
           date: "Dec 14",
@@ -1172,8 +1146,6 @@
           name: "Detective Mahmoud",
           location: "IEEE Office - Main Door",
           action: "GRANTED",
-          warning: false,
-          note: "Lead investigator arrival",
         },
         // December 15, 2025
         {
@@ -1183,8 +1155,6 @@
           name: "Campus Security",
           location: "IEEE Office - Main Door",
           action: "GRANTED",
-          warning: false,
-          note: "Office remains under investigation",
         },
         {
           date: "Dec 15",
@@ -1193,8 +1163,6 @@
           name: "Forensics Team",
           location: "IEEE Office - Main Door",
           action: "GRANTED",
-          warning: false,
-          note: "Additional evidence collection",
         },
       ];
 
@@ -1455,7 +1423,6 @@
             action: "VPN Connection",
             ip: "41.230.###.67 → VPN Server",
             details: "Connected to NordVPN (Netherlands server)",
-            warning: true,
           },
           {
             time: "20:39:05",
@@ -1464,7 +1431,6 @@
             action: "IP Changed",
             ip: "185.###.###.42 (NL)",
             details: "All traffic now routed through VPN",
-            warning: true,
           },
           {
             time: "21:58:00",
@@ -1473,7 +1439,6 @@
             action: "VPN Disconnected",
             ip: "Return to 41.230.###.67",
             details: "VPN session terminated before leaving home",
-            warning: true,
           },
           {
             time: "23:15:47",
@@ -1482,8 +1447,6 @@
             action: "Video search",
             ip: "41.230.###.67",
             details: "Searched: 'how to clear digital footprints'",
-            warning: true,
-            critical: true,
           },
           {
             time: "23:28:33",
@@ -1492,8 +1455,6 @@
             action: "Search query",
             ip: "41.230.###.67",
             details: "Searched: 'forensic evidence in emails'",
-            warning: true,
-            critical: true,
           },
           {
             time: "23:52:18",
@@ -1502,8 +1463,6 @@
             action: "Search query",
             ip: "41.230.###.67",
             details: "Searched: 'do security cameras store footage'",
-            warning: true,
-            critical: true,
           },
         ],
         // December 11, 2025 - Nour Elhouda Abidi
@@ -1764,198 +1723,6 @@
         ],
       };
 
-      const securityFootage = [
-        {
-          camera: "CAM-01",
-          location: "Main Building Entrance",
-          time: "20:18:15",
-          event: "Ela Hassine enters building",
-          details: "Carrying laptop bag, appears normal",
-          warning: false,
-        },
-        {
-          camera: "CAM-02",
-          location: "Hallway 2nd Floor",
-          time: "20:19:42",
-          event: "Ela Hassine walks to IEEE office",
-          details: "Alone, no signs of distress",
-          warning: false,
-        },
-        {
-          camera: "CAM-01",
-          location: "Main Building Entrance",
-          time: "20:35:28",
-          event: "Nour Elhouda Abidi enters building",
-          details: "Holding folders and tablet",
-          warning: false,
-        },
-        {
-          camera: "CAM-02",
-          location: "Hallway 2nd Floor",
-          time: "20:36:55",
-          event: "Nour enters IEEE office",
-          details: "Ela visible inside through door window",
-          warning: false,
-        },
-        {
-          camera: "CAM-02",
-          location: "Hallway 2nd Floor",
-          time: "21:11:48",
-          event: "Nour exits IEEE office",
-          details: "Waves goodbye to Ela (visible through window)",
-          warning: false,
-        },
-        {
-          camera: "CAM-01",
-          location: "Main Building Entrance",
-          time: "21:12:35",
-          event: "Nour exits building",
-          details: "Normal departure, talking on phone",
-          warning: false,
-        },
-        {
-          camera: "CAM-01",
-          location: "Main Building Entrance",
-          time: "21:58:22",
-          event: "Yassine Azzouz enters building",
-          details: "Wearing hoodie, head down, avoiding camera",
-          warning: true,
-          critical: true,
-        },
-        {
-          camera: "CAM-03",
-          location: "Stairwell West",
-          time: "21:59:05",
-          event: "Yassine uses stairs (avoiding main hallway)",
-          details: "Takes unusual route to 2nd floor",
-          warning: true,
-          critical: true,
-        },
-        {
-          camera: "CAM-02",
-          location: "Hallway 2nd Floor",
-          time: "22:38:15",
-          event: "Yassine exits IEEE office",
-          details: "Looking around nervously, checking hallway",
-          warning: true,
-          critical: true,
-        },
-        {
-          camera: "CAM-03",
-          location: "Stairwell West",
-          time: "22:39:02",
-          event: "Yassine descends stairs quickly",
-          details: "Again avoiding main hallway cameras",
-          warning: true,
-          critical: true,
-        },
-        {
-          camera: "CAM-01",
-          location: "Main Building Entrance",
-          time: "22:43:08",
-          event: "Yassine exits building",
-          details: "Hoodie still up, hands in pockets, rapid walk",
-          warning: true,
-          critical: true,
-        },
-        {
-          camera: "CAM-PARKING",
-          location: "Faculty Parking Lot",
-          time: "22:44:33",
-          event: "Yassine's car departs",
-          details: "Black Peugeot 208, license partially visible",
-          warning: true,
-        },
-        {
-          camera: "CAM-01",
-          location: "Main Building Entrance",
-          time: "07:27:52",
-          event: "Ikhlas Bahia enters building (Dec 14)",
-          details: "First person to arrive morning after",
-          warning: false,
-        },
-        {
-          camera: "CAM-02",
-          location: "Hallway 2nd Floor",
-          time: "07:28:33",
-          event: "Ikhlas approaches IEEE office",
-          details: "Notices door slightly ajar",
-          warning: false,
-        },
-      ];
-
-      const witnessStatements = [
-        {
-          time: "Dec 14 - 08:15",
-          witness: "Ikhlas Bahia",
-          statement: "Email to campus security",
-          content:
-            "I arrived at 7:28 AM to prepare for the morning meeting. The IEEE office door was unlocked and slightly open, which was unusual. When I entered, I found Ela collapsed near her desk. I immediately called emergency services.",
-          warning: false,
-        },
-        {
-          time: "Dec 14 - 09:30",
-          witness: "Nour Elhouda Abidi",
-          statement: "Text message to Investigation Team",
-          content:
-            "I was with Ela from 8:36 PM until 9:11 PM discussing the upcoming workshop. She seemed perfectly fine. We talked about event logistics and she was excited about the project. I left her working on her laptop. Everything seemed completely normal.",
-          warning: false,
-        },
-        {
-          time: "Dec 13 - 17:22",
-          witness: "Nour Elhouda Abidi",
-          statement: "Email to Ela Hassine",
-          content:
-            "Hey Ela! I'll come by the office around 8:30 PM tonight to go over the workshop details. I have the budget breakdown and vendor contacts ready. See you then!",
-          warning: false,
-        },
-        {
-          time: "Dec 14 - 10:45",
-          witness: "Marwen Ben Salem",
-          statement: "Police interview transcript",
-          content:
-            "I was at the office earlier that evening, left around 7:22 PM. Ela wasn't there when I left. I had no idea she was coming in later. I went home and spent the evening gaming online with friends - they can verify the timestamps.",
-          warning: false,
-        },
-        {
-          time: "Dec 14 - 11:20",
-          witness: "Yassine Azzouz",
-          statement: "Initial police statement",
-          content:
-            "I heard about what happened this morning. I can't believe it. I was at home all evening yesterday. I didn't go anywhere. This is absolutely shocking. Ela was a great person and colleague.",
-          warning: true,
-          critical: true,
-        },
-        {
-          time: "Dec 14 - 14:33",
-          witness: "Anonymous Student",
-          statement: "Security tip submission",
-          content:
-            "I saw someone matching Yassine's build entering the science building around 10 PM last night. He was wearing a dark hoodie and seemed to be in a hurry. I thought it was weird because most people had left by then.",
-          warning: true,
-        },
-        {
-          time: "Dec 13 - 21:22",
-          witness: "Telegram Message",
-          statement: "From 'Amine Zbaa' to Ela Hassine",
-          content:
-            "[VOICE MESSAGE - 23 seconds] 'Ela, we need to talk tonight. It's urgent. Come to the office around 10. Don't tell anyone. This is important.'",
-          warning: true,
-          critical: true,
-          note: "FORENSIC ANALYSIS: Voice synthesis artifacts detected. Message scheduled for delayed send.",
-        },
-        {
-          time: "Dec 13 - 21:47",
-          witness: "Email Draft",
-          statement: "From amine.zbaa@ieee-fsm.tn to ela.hassine@ieee-fsm.tn",
-          content:
-            "Subject: We need to talk - URGENT\n\nEla, I know what you did. You can't keep hiding this. Meet me tonight or everyone will know about your involvement in the budget discrepancy. This is your last chance.\n\n- Amine\n\n[DRAFT - NEVER SENT]",
-          warning: true,
-          critical: true,
-          note: "Created from remote desktop session by admin_02",
-        },
-      ];
-
       function adminLogin(e) {
         e.preventDefault();
         const user = document.getElementById("username").value;
@@ -1977,20 +1744,23 @@
         document.getElementById("logsSection").style.display = "block";
 
         const container = document.getElementById("logsContainer");
-        container.innerHTML = serverLogs
-          .map(
-            (log) => `
+        container.innerHTML =
+          serverLogs
+            .map(
+              (log) => `
                 <div class="log-entry ${log.warning ? "log-warning" : ""} ${
-              log.critical ? "log-critical" : ""
-            }">
+                log.critical ? "log-critical" : ""
+              }">
                     <span class="log-time">[${log.time}]</span>
                     <span class="log-user">${log.user}</span>
                     ${log.ip ? `<span class="ip-address">(${log.ip})</span>` : ""}
                     | <span class="log-action">${log.action}:</span> ${log.details}
                 </div>
             `
-          )
-          .join("");
+            )
+            .join("") +
+          `
+            `;
       }
 
       function showKeycard() {
@@ -2030,27 +1800,6 @@
           });
 
         html += `
-                <div class="highlight-box">
-                    <h4 style="color: #f44747; margin-bottom: 15px;">⚠ KEY FINDINGS - 7-DAY ACCESS PATTERN ANALYSIS:</h4>
-                    <ul style="color: #d4d4d4; line-height: 2; list-style-position: inside;">
-                        <li>Dec 6-12: Normal office access patterns for all members</li>
-                        <li>Amine Zbaa: Regular attendance Dec 6, 8, 9, 10, 11, 12 - NO ACCESS on Dec 13</li>
-                        <li>Ela Hassine: Regular attendance throughout week - entered Dec 13 at 20:18</li>
-                        <li>Yassine Azzouz: Regular daytime access Dec 7, 9, 10, 11, 12</li>
-                        <li>Marwen Ben Salem: Entered Dec 13 at 18:45, Exited 19:22 - LEFT BEFORE VICTIM</li>
-                        <li>Nour Elhouda Abidi: Entered Dec 13 at 20:35, Exited 21:12 - LAST TO SEE VICTIM ALIVE</li>
-                        <li><strong style="color: #f44747;">Yassine Azzouz: Entered Dec 13 at 21:58 (unusual late access)</strong></li>
-                        <li><strong style="color: #f44747;">Yassine Azzouz: Exited Dec 13 at 22:43 (45 minutes inside during murder window)</strong></li>
-                        <li>Dec 13 was the ONLY evening access for Yassine in the entire week</li>
-                        <li>Yassine was physically present at crime scene during time of death</li>
-                        <li>No record of Amine Zbaa accessing IEEE office on Dec 13</li>
-                        <li>Timeline gap: 46 minutes between Nour's exit (21:12) and Yassine's entry (21:58)</li>
-                    </ul>
-                    <div style="margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 4px;">
-                        <strong style="color: #f44747;">ACCESS PATTERN CONCLUSION:</strong><br>
-                        <span style="color: #ce9178;">Yassine's Dec 13 evening access was unprecedented in his weekly pattern. His late arrival at 21:58 PM occurred during the only window when Ela would be alone after fabricating the fake message. This demonstrates calculated timing and premeditation.</span>
-                    </div>
-                </div>
             `;
 
         container.innerHTML = html;
@@ -2065,13 +1814,10 @@
         let html = "";
 
         Object.keys(userActivity).forEach((dayUser) => {
-          const isCritical = dayUser.includes("Dec 13");
           const isYassine = dayUser.includes("Yassine Azzouz");
           const isAmine = dayUser.includes("Amine Zbaa");
 
-          html += `<div class="date-header" style="${
-            isCritical ? "border-left: 4px solid #f44747;" : ""
-          }">${dayUser}</div>`;
+          html += `<div class="date-header">${dayUser}</div>`;
 
           html += userActivity[dayUser]
             .map(
@@ -2090,44 +1836,6 @@
         });
 
         html += `
-                <div class="highlight-box">
-                    <h4 style="color: #4ec9b0; margin-bottom: 15px;">✓ AMINE ZBAA - PROVEN INNOCENT (Multi-Day Analysis):</h4>
-                    <ul style="color: #d4d4d4; line-height: 2; list-style-position: inside;">
-                        <li>Dec 11: Home gaming and Discord voice chat (verified timestamps)</li>
-                        <li>Dec 12: Steam gaming session and social media from home IP</li>
-                        <li>Dec 13: Continuous internet activity from home IP throughout evening</li>
-                        <li>Netflix streaming with manual interactions at 20:18, 20:34, 21:22</li>
-                        <li>Active YouTube browsing at time of forged message (21:22)</li>
-                        <li>Reddit commenting activity during time of murder (22:47, 23:12)</li>
-                        <li>All activity from same home IP address (197.27.###.142)</li>
-                        <li>Physically impossible to be at IEEE office and home simultaneously</li>
-                        <li><strong style="color: #4ec9b0;">CONCLUSION: Amine was home during both message send time and murder</strong></li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box" style="border-left-color: #ffa500;">
-                    <h4 style="color: #ffa500; margin-bottom: 15px;">⚠ YASSINE AZZOUZ - SUSPICIOUS BEHAVIOR (Multi-Day Analysis):</h4>
-                    <ul style="color: #d4d4d4; line-height: 2; list-style-position: inside;">
-                        <li>Dec 11-12: Normal social media and browsing activity</li>
-                        <li>Dec 13: VPN connection activated at 20:38 (during evidence fabrication)</li>
-                        <li>Dec 13: VPN disconnected at 21:58 (right before leaving for crime scene)</li>
-                        <li>Dec 13: 2-hour gap in internet activity (21:58-23:15) - AT CRIME SCENE</li>
-                        <li>Dec 13: Post-crime searches about covering digital tracks (23:15)</li>
-                        <li>Dec 13: Researched forensic email evidence (23:28)</li>
-                        <li>Dec 13: Searched about security camera footage storage (23:52)</li>
-                        <li>Behavior consistent with attempting to hide digital footprint</li>
-                        <li><strong style="color: #ffa500;">PATTERN: Calculated preparation, execution, and cover-up</strong></li>
-                    </ul>
-                </div>
-
-                <div class="info-box" style="border-left-color: #4ec9b0;">
-                    <h4 style="color: #4ec9b0; margin-bottom: 10px;">✓ OTHER MEMBERS - VERIFIED ALIBIS:</h4>
-                    <p style="color: #d4d4d4; line-height: 1.8;">
-                        <strong>Nour Elhouda Abidi:</strong> Uber records, email timestamps, and home activity perfectly match her statement. Left scene at 21:12, home by 21:24.<br><br>
-                        <strong>Marwen Ben Salem:</strong> Gaming platform timestamps show continuous online play from 19:35-23:48. Could not have been at crime scene.<br><br>
-                        <strong>Ela Hassine:</strong> Last tracked activity at 19:58 (Uber arrival). No activity after entering office.
-                    </p>
-                </div>
             `;
 
         container.innerHTML = html;
@@ -2138,13 +1846,12 @@
         document.getElementById("securitySection").style.display = "block";
 
         const container = document.getElementById("securityContainer");
-        container.innerHTML =
-          securityFootage
-            .map(
-              (footage) => `
+        container.innerHTML = securityFootage
+          .map(
+            (footage) => `
                 <div class="log-entry ${footage.warning ? "log-warning" : ""} ${
-                footage.critical ? "log-critical" : ""
-              }">
+              footage.critical ? "log-critical" : ""
+            }">
                     <span class="log-time">[${footage.time}]</span>
                     <span style="color: #ce9178; font-weight: bold;">${footage.camera}</span>
                     | <span style="color: #608b4e;">${footage.location}</span>
@@ -2152,32 +1859,8 @@
                     <br><span style="color: #d4d4d4; font-size: 0.85rem;">${footage.details}</span>
                 </div>
             `
-            )
-            .join("") +
-          `
-                <div class="highlight-box">
-                    <h4 style="color: #f44747; margin-bottom: 15px;">⚠ SECURITY FOOTAGE ANALYSIS:</h4>
-                    <ul style="color: #d4d4d4; line-height: 2; list-style-position: inside;">
-                        <li>Yassine deliberately avoided main hallway cameras (used west stairwell)</li>
-                        <li>Wore hoodie with head down - attempting to obscure face</li>
-                        <li>Entered building at 21:58, exited at 22:43 (45 minutes inside)</li>
-                        <li>Nervous behavior observed when exiting (looking around, checking hallway)</li>
-                        <li>Chose unusual route both entering and exiting building</li>
-                        <li>Car departure captured on parking camera (22:44:33)</li>
-                        <li>Timeline perfectly aligns with keycard access logs</li>
-                        <li><strong>No footage of Amine Zbaa entering or exiting building</strong></li>
-                    </ul>
-                </div>
-
-                <div class="info-box" style="margin-top: 20px;">
-                    <h4 style="color: #4ec9b0; margin-bottom: 10px;">WITNESS CORROBORATION:</h4>
-                    <p style="color: #d4d4d4; line-height: 1.8;">
-                        Nour Elhouda Abidi's account is fully supported by camera footage. She entered at 20:35:28,
-                        spent time with Ela (visible through office window), and departed at 21:12:35 while Ela was
-                        still alive and working. Her Uber records match the timeline perfectly.
-                    </p>
-                </div>
-            `;
+          )
+          .join("");
       }
 
       function showWitness() {
