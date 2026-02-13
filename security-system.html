@@ -734,7 +734,7 @@
       function accessSystem(e) {
         e.preventDefault();
         const id = (document.getElementById("officerId").value || "").trim().toLowerCase();
-        const code = (document.getElementById("accessCode").value || "").toLowerCase();
+        const code = (document.getElementById("accessCode").value || "").trim();
         const valid = Object.entries(VALID_CODES).some(
           ([k, v]) => (id === k || id === "") && code === v
         );
