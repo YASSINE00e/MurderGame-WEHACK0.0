@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Evidence Board</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+      }
+      .header {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+      .content {
+        padding: 40px;
+      }
+      .section {
+        margin-bottom: 40px;
+      }
+      .section h2 {
+        color: #e74c3c;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #e74c3c;
+      }
+      .suspects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+      .suspect-card {
+        background: #fff;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+      }
+      .suspect-avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        font-weight: bold;
+      }
+      .answer-form {
+        background: #e8f5e9;
+        border: 3px solid #4caf50;
+        border-radius: 10px;
+        padding: 30px;
+      }
+      .form-group {
+        margin-bottom: 25px;
+      }
+      .form-label {
+        display: block;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+      }
+      .form-select,
+      .form-input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+      .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #4caf50, #388e3c);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #95a5a6;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔍 Evidence Board 🔍</h1>
+        <p>Organize your findings and solve the mystery</p>
+      </div>
+      <div class="content">
+        <div class="section">
+          <h2>👥 Key Suspects</h2>
+          <div class="suspects-grid">
+            <div class="suspect-card">
+              <div class="suspect-avatar">A</div>
+              <div style="font-weight: 600">Aziz Krifa</div>
+              <div style="font-size: 0.9rem; color: #7f8c8d">SB Chair - Victim #1</div>
+            </div>
+            <div class="suspect-card">
+              <div class="suspect-avatar">E</div>
+              <div style="font-weight: 600">Ela Hassine</div>
+              <div style="font-size: 0.9rem; color: #7f8c8d">Treasurer - Victim #2</div>
+            </div>
+            <div class="suspect-card">
+              <div class="suspect-avatar">Y</div>
+              <div style="font-weight: 600">Yassine Azzouz</div>
+              <div style="font-size: 0.9rem; color: #7f8c8d">CS Chair</div>
+            </div>
+            <div class="suspect-card">
+              <div class="suspect-avatar">AM</div>
+              <div style="font-weight: 600">Amine Zbaa</div>
+              <div style="font-size: 0.9rem; color: #7f8c8d">CS Vice Chair - Arrested</div>
+            </div>
+            <div class="suspect-card">
+              <div class="suspect-avatar">F</div>
+              <div style="font-weight: 600">Fares Klaii</div>
+              <div style="font-size: 0.9rem; color: #7f8c8d">Design Manager</div>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <h2>✅ Submit Your Conclusions</h2>
+          <div class="answer-form">
+            <form onsubmit="submitAnswers(event)">
+              <div class="form-group">
+                <label class="form-label">1. Who killed Aziz Krifa?</label>
+                <select class="form-select" id="azizKiller" required>
+                  <option value="">Select suspect...</option>
+                  <option value="fares">Fares Klaii</option>
+                  <option value="amine">Amine Zbaa</option>
+                  <option value="yassine">Yassine Azzouz</option>
+                  <option value="roua">Roua Mabrouk</option>
+                  <option value="ikhlas">ikhlas behia</option>
+                  <option value="yaakoub">Yaakoub benslimen</option>
+                  <option value="aziz">Aziz Krifa</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Was Aziz's death murder or accidental?</label>
+                <select class="form-select" id="azizDeath" required>
+                  <option value="">Select...</option>
+                  <option value="murder">Intentional Murder</option>
+                  <option value="accident">Accidental / Manslaughter</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">2. Who killed Ela Hassine?</label>
+                <select class="form-select" id="elaKiller" required>
+                  <option value="">Select suspect...</option>
+                  <option value="fares">Fares Klaii</option>
+                  <option value="amine">Amine Zbaa</option>
+                  <option value="yassine">Yassine Azzouz</option>
+                  <option value="roua">Roua Mabrouk</option>
+                  <option value="ikhlas">ikhlas behia</option>
+                  <option value="yaakoub">Yaakoub benslimen</option>
+                  <option value="aziz">Aziz Krifa</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">3. Who is THE LIAR? (Provided false alibi)</label>
+                <select class="form-select" id="liar" required>
+                  <option value="">Select suspect...</option>
+                  <option value="fares">Fares Klaii</option>
+                  <option value="amine">Amine Zbaa</option>
+                  <option value="yassine">Yassine Azzouz</option>
+                  <option value="roua">Roua Mabrouk</option>
+                  <option value="ikhlas">ikhlas behia</option>
+                  <option value="yaakoub">Yaakoub benslimen</option>
+                  <option value="aziz">Aziz Krifa</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">4. Who is THE DECOY? (Innocent but framed)</label>
+                <select class="form-select" id="decoy" required>
+                  <option value="">Select suspect...</option>
+                  <option value="fares">Fares Klaii</option>
+                  <option value="amine">Amine Zbaa</option>
+                  <option value="yassine">Yassine Azzouz</option>
+                  <option value="roua">Roua Mabrouk</option>
+                  <option value="ikhlas">ikhlas behia</option>
+                  <option value="yaakoub">Yaakoub benslimen</option>
+                  <option value="aziz">Aziz Krifa</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">5. What evidence is FORGED?</label>
+                <select class="form-select" id="forged" required>
+                  <option value="">Select evidence...</option>
+                  <option value="voice">Voice Message (AI-generated)</option>
+                  <option value="email">Email Draft</option>
+                  <option value="meeting">Meeting Minutes</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">6. Who should go to PRISON for murder?</label>
+                <select class="form-select" id="prison" required>
+                  <option value="">Select suspect...</option>
+                  <option value="fares">Fares Klaii</option>
+                  <option value="amine">Amine Zbaa</option>
+                  <option value="yassine">Yassine Azzouz</option>
+                  <option value="roua">Roua Mabrouk</option>
+                  <option value="ikhlas">ikhlas behia</option>
+                  <option value="yaakoub">Yaakoub benslimen</option>
+                  <option value="aziz">Aziz Krifa</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Explain your reasoning:</label>
+                <textarea
+                  class="form-input"
+                  id="explanation"
+                  rows="4"
+                  required
+                  placeholder="Briefly explain your conclusions..."
+                ></textarea>
+              </div>
+              <!-- <button type="submit" class="submit-btn">🎯 SUBMIT FINAL ANSWERS</button> -->
+            </form>
+          </div>
+        </div>
+        <a href="index.html" class="back-btn">← Back to Home</a>
+      </div>
+    </div>
+    <script>
+      function submitAnswers(e) {
+        e.preventDefault();
+        const answers = {
+          azizKiller: document.getElementById("azizKiller").value,
+          azizDeath: document.getElementById("azizDeath").value,
+          elaKiller: document.getElementById("elaKiller").value,
+          liar: document.getElementById("liar").value,
+          decoy: document.getElementById("decoy").value,
+          forged: document.getElementById("forged").value,
+          prison: document.getElementById("prison").value,
+        };
+        const correct = {
+          azizKiller: "yassine",
+          azizDeath: "accident",
+          elaKiller: "yassine",
+          liar: "fares",
+          decoy: "amine",
+          forged: "voice",
+          prison: "yassine",
+        };
+        let score = 0,
+          feedback = "📊 YOUR RESULTS:\n\n";
+        if (answers.azizKiller === correct.azizKiller && answers.azizDeath === correct.azizDeath) {
+          score += 15;
+          feedback += "✅ Aziz killer: CORRECT\n";
+        } else {
+          feedback += "❌ Aziz killer: INCORRECT\n";
+        }
+        if (answers.elaKiller === correct.elaKiller) {
+          score += 20;
+          feedback += "✅ Ela killer: CORRECT\n";
+        } else {
+          feedback += "❌ Ela killer: INCORRECT\n";
+        }
+        if (answers.liar === correct.liar) {
+          score += 15;
+          feedback += "✅ The Liar: CORRECT\n";
+        } else {
+          feedback += "❌ The Liar: INCORRECT\n";
+        }
+        if (answers.decoy === correct.decoy) {
+          score += 15;
+          feedback += "✅ The Decoy: CORRECT\n";
+        } else {
+          feedback += "❌ The Decoy: INCORRECT\n";
+        }
+        if (answers.forged === correct.forged) {
+          score += 10;
+          feedback += "✅ Forged Evidence: CORRECT\n";
+        } else {
+          feedback += "❌ Forged Evidence: INCORRECT\n";
+        }
+        if (answers.prison === correct.prison) {
+          score += 10;
+          feedback += "✅ Prison: CORRECT\n";
+        } else {
+          feedback += "❌ Prison: INCORRECT\n";
+        }
+        feedback += "\n🎯 TOTAL SCORE: " + score + "/85 points";
+        if (score === 85) feedback += "\n\n🏆 PERFECT! You solved it!";
+        else if (score >= 60) feedback += "\n\n⭐ GOOD JOB!";
+        else feedback += "\n\n📚 Review the evidence!";
+        alert(feedback);
+        if (confirm("See the complete solution?")) window.location.href = "solution.html";
+      }
+    </script>
+  </body>
+</html>
