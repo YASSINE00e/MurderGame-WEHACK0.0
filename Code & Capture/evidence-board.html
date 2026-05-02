@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FINAL NODE // EVIDENCE BOARD</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --green: #00ff41;
+        --green-dim: #00cc33;
+        --green-dark: #003300;
+        --red: #ff3333;
+        --amber: #ffb700;
+        --blue: #00b4ff;
+        --font: "Share Tech Mono", monospace;
+      }
+      body {
+        background: #000;
+        color: var(--green);
+        font-family: var(--font);
+        min-height: 100vh;
+        cursor: crosshair;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 65, 0.012) 2px,
+          rgba(0, 255, 65, 0.012) 4px
+        );
+        pointer-events: none;
+        z-index: 9999;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      .header {
+        border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(0, 0, 0, 0.97);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .back-btn {
+        color: var(--green-dim);
+        text-decoration: none;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 6px 12px;
+        transition: all 0.2s;
+      }
+      .back-btn:hover {
+        border-color: var(--green);
+      }
+      .header-title {
+        font-size: 0.85rem;
+        letter-spacing: 4px;
+      }
+      .main {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 40px 24px 80px;
+      }
+      .page-title {
+        font-size: 1.4rem;
+        letter-spacing: 6px;
+        margin-bottom: 6px;
+      }
+      .page-sub {
+        font-size: 0.72rem;
+        color: #555;
+        letter-spacing: 3px;
+        margin-bottom: 12px;
+      }
+
+      .intro {
+        background: #050a05;
+        border: 1px solid rgba(0, 255, 65, 0.15);
+        padding: 20px;
+        margin-bottom: 32px;
+        font-size: 0.78rem;
+        color: #888;
+        line-height: 1.9;
+      }
+      .intro strong {
+        color: var(--green-dim);
+      }
+
+      /* FORM */
+      .question-block {
+        background: #030803;
+        border: 1px solid rgba(0, 255, 65, 0.1);
+        padding: 24px;
+        margin-bottom: 16px;
+        border-radius: 2px;
+        transition: border-color 0.2s;
+      }
+      .question-block:hover {
+        border-color: rgba(0, 255, 65, 0.2);
+      }
+      .question-block.answered {
+        border-color: rgba(0, 255, 65, 0.25);
+      }
+      .q-num {
+        font-size: 0.62rem;
+        color: var(--green-dim);
+        letter-spacing: 3px;
+        margin-bottom: 6px;
+      }
+      .q-text {
+        font-size: 0.85rem;
+        color: var(--green);
+        margin-bottom: 16px;
+        line-height: 1.6;
+      }
+      .q-points {
+        font-size: 0.62rem;
+        color: var(--amber);
+        margin-bottom: 12px;
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 12px 14px;
+        background: #000;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        color: var(--green);
+        font-family: var(--font);
+        font-size: 0.78rem;
+        cursor: pointer;
+        appearance: none;
+        outline: none;
+        border-radius: 1px;
+      }
+      .form-select:focus {
+        border-color: var(--green);
+      }
+      .form-select option {
+        background: #050f05;
+        color: var(--green);
+      }
+      .form-textarea {
+        width: 100%;
+        padding: 12px 14px;
+        background: #000;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        color: #aaa;
+        font-family: var(--font);
+        font-size: 0.75rem;
+        resize: vertical;
+        min-height: 100px;
+        outline: none;
+        border-radius: 1px;
+        line-height: 1.8;
+      }
+      .form-textarea:focus {
+        border-color: var(--green);
+      }
+      .form-textarea::placeholder {
+        color: #333;
+      }
+
+      /* PROGRESS */
+      .progress-bar {
+        background: #000;
+        border: 1px solid rgba(0, 255, 65, 0.1);
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .progress-track {
+        flex: 1;
+        height: 6px;
+        background: #0a0a0a;
+        border: 1px solid rgba(0, 255, 65, 0.1);
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--green);
+        transition: width 0.3s;
+        width: 0%;
+      }
+      .progress-text {
+        font-size: 0.7rem;
+        color: var(--green-dim);
+        min-width: 60px;
+        text-align: right;
+      }
+
+      /* SUBMIT */
+      .submit-section {
+        margin-top: 24px;
+        text-align: center;
+      }
+      .submit-btn {
+        background: rgba(0, 255, 65, 0.05);
+        border: 2px solid var(--green);
+        color: var(--green);
+        font-family: var(--font);
+        font-size: 1rem;
+        letter-spacing: 4px;
+        padding: 16px 48px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .submit-btn:hover {
+        background: rgba(0, 255, 65, 0.1);
+        box-shadow: 0 0 24px rgba(0, 255, 65, 0.2);
+      }
+      .submit-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      /* RESULT MODAL */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 1000;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .modal-overlay.show {
+        display: flex;
+      }
+      .modal {
+        background: #050f05;
+        border: 2px solid var(--green);
+        max-width: 680px;
+        width: 100%;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .modal-header {
+        background: #000;
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.15);
+      }
+      .modal-header h2 {
+        font-size: 1.1rem;
+        letter-spacing: 4px;
+        color: var(--green);
+      }
+      .modal-body {
+        padding: 28px;
+      }
+      .score-display {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .score-number {
+        font-size: 3.5rem;
+        color: var(--green);
+        letter-spacing: 4px;
+      }
+      .score-total {
+        font-size: 1rem;
+        color: var(--green-dim);
+      }
+      .score-label {
+        font-size: 0.8rem;
+        color: #555;
+        margin-top: 8px;
+        letter-spacing: 3px;
+      }
+      .result-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+      .result-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.75rem;
+      }
+      .result-icon {
+        width: 24px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .result-question {
+        color: #888;
+        flex: 1;
+      }
+      .result-pts {
+        color: var(--green-dim);
+        min-width: 60px;
+        text-align: right;
+      }
+      .result-row.wrong .result-question {
+        color: #555;
+      }
+      .result-row.wrong .result-pts {
+        color: var(--red);
+      }
+      .verdict-box {
+        background: #000;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 16px;
+        margin-bottom: 20px;
+        font-size: 0.78rem;
+        color: #888;
+        line-height: 1.8;
+        text-align: center;
+      }
+      .verdict-box .verdict-text {
+        font-size: 1rem;
+        color: var(--green);
+        letter-spacing: 2px;
+      }
+      .modal-btns {
+        display: flex;
+        gap: 12px;
+      }
+      .modal-btn {
+        flex: 1;
+        padding: 14px;
+        font-family: var(--font);
+        font-size: 0.8rem;
+        letter-spacing: 3px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid;
+        background: none;
+      }
+      .btn-solution {
+        color: var(--amber);
+        border-color: var(--amber);
+      }
+      .btn-solution:hover {
+        background: rgba(255, 183, 0, 0.1);
+      }
+      .btn-retry {
+        color: var(--green-dim);
+        border-color: rgba(0, 255, 65, 0.3);
+      }
+      .btn-retry:hover {
+        background: rgba(0, 255, 65, 0.05);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <a href="index.html" class="back-btn">← BACK</a>
+      <div class="header-title">FINAL NODE // EVIDENCE BOARD — SUBMIT CONCLUSIONS</div>
+    </div>
+
+    <div class="main">
+      <div class="page-title">&gt;_ EVIDENCE BOARD</div>
+      <div class="page-sub">SUBMIT YOUR FINAL CONCLUSIONS — CASE #CC-2025-0001</div>
+
+      <div class="intro">
+        You have reviewed all 8 investigation portals. Now submit your conclusions.
+        <strong>10 questions — 100 points total.</strong> You must answer all questions before
+        submitting. The questions cover the killer, the victims, the decoy, the liar, both side
+        stories, and the specific evidence that breaks the case open.
+      </div>
+
+      <div class="progress-bar">
+        <span style="font-size: 0.65rem; color: #555; letter-spacing: 2px">PROGRESS</span>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <span class="progress-text" id="progressText">0 / 10</span>
+      </div>
+
+      <!-- Q1 -->
+      <div class="question-block" id="qb1">
+        <div class="q-num">QUESTION 01 / 10</div>
+        <div class="q-text">Who killed Mohi — and how was his death staged?</div>
+        <div class="q-points">▸ 12 POINTS (6 for killer + 6 for method)</div>
+        <select class="form-select" id="q1" onchange="updateProgress()">
+          <option value="">Select the killer...</option>
+          <option value="hazem">Hazem</option>
+          <option value="yassine">Yassine</option>
+          <option value="fares">Fares</option>
+          <option value="ahmed">Ahmed</option>
+          <option value="amine">Amine</option>
+          <option value="ela">Ela</option>
+          <option value="le_blanc">Le Blanc</option>
+          <option value="chadi">Chadi</option>
+          <option value="aya">Aya</option>
+          <option value="darine">Darine</option>
+        </select>
+        <select class="form-select" id="q1b" style="margin-top: 8px" onchange="updateProgress()">
+          <option value="">Select the staging method...</option>
+          <option value="electrical">
+            Staged as electrical accident — modified power cable placed post-mortem
+          </option>
+          <option value="fall">Staged as accidental fall from server rack</option>
+          <option value="medical">Staged as medical episode / cardiac event</option>
+          <option value="none">No staging — murder left as-is</option>
+        </select>
+      </div>
+
+      <!-- Q2 -->
+      <div class="question-block" id="qb2">
+        <div class="q-num">QUESTION 02 / 10</div>
+        <div class="q-text">
+          Who killed Ghofrane — and what specifically triggered the second murder?
+        </div>
+        <div class="q-points">▸ 12 POINTS</div>
+        <select class="form-select" id="q2" onchange="updateProgress()">
+          <option value="">Select the killer...</option>
+          <option value="hazem">Hazem</option>
+          <option value="yassine">Yassine</option>
+          <option value="fares">Fares</option>
+          <option value="ahmed">Ahmed</option>
+          <option value="amine">Amine</option>
+          <option value="ela">Ela</option>
+          <option value="le_blanc">Le Blanc</option>
+          <option value="darine">Darine</option>
+        </select>
+        <select class="form-select" id="q2b" style="margin-top: 8px" onchange="updateProgress()">
+          <option value="">Select the trigger...</option>
+          <option value="badge">
+            She discovered the unregistered badge log entry and identified the killer
+          </option>
+          <option value="camera">She reviewed camera footage and identified the killer</option>
+          <option value="server">She found the keylogger on the server</option>
+          <option value="yassine">She confronted Yassine and he silenced her</option>
+        </select>
+      </div>
+
+      <!-- Q3 -->
+      <div class="question-block" id="qb3">
+        <div class="q-num">QUESTION 03 / 10</div>
+        <div class="q-text">
+          Who is THE DECOY — the innocent person deliberately framed for the murders?
+        </div>
+        <div class="q-points">▸ 10 POINTS</div>
+        <select class="form-select" id="q3" onchange="updateProgress()">
+          <option value="">Select the decoy...</option>
+          <option value="fares">Fares</option>
+          <option value="amine">Amine</option>
+          <option value="chadi">Chadi</option>
+          <option value="ela">Ela</option>
+          <option value="le_blanc">Le Blanc</option>
+          <option value="yassine">Yassine</option>
+          <option value="ahmed">Ahmed</option>
+        </select>
+      </div>
+
+      <!-- Q4 -->
+      <div class="question-block" id="qb4">
+        <div class="q-num">QUESTION 04 / 10</div>
+        <div class="q-text">
+          What broke the frame on the decoy — what single piece of evidence cleared them?
+        </div>
+        <div class="q-points">▸ 8 POINTS</div>
+        <select class="form-select" id="q4" onchange="updateProgress()">
+          <option value="">Select the alibi-breaker...</option>
+          <option value="twitch">A Twitch livestream — timestamped, continuous, shows face</option>
+          <option value="amine">
+            Amine's CTF submission logs proving they were at the keyboard
+          </option>
+          <option value="camera">CCTV footage showing them elsewhere</option>
+          <option value="witness">A witness placing them at another location</option>
+        </select>
+      </div>
+
+      <!-- Q5 -->
+      <div class="question-block" id="qb5">
+        <div class="q-num">QUESTION 05 / 10</div>
+        <div class="q-text">
+          Who is THE LIAR — who lied to investigators and what were they actually hiding?
+        </div>
+        <div class="q-points">▸ 10 POINTS</div>
+        <select class="form-select" id="q5" onchange="updateProgress()">
+          <option value="">Select the liar...</option>
+          <option value="darine">Darine</option>
+          <option value="ela">Ela</option>
+          <option value="yassine">Yassine</option>
+          <option value="rihab">Rihab</option>
+          <option value="rahma">Rahma</option>
+          <option value="chadi">Chadi</option>
+        </select>
+        <select class="form-select" id="q5b" style="margin-top: 8px" onchange="updateProgress()">
+          <option value="">What were they hiding?</option>
+          <option value="panic">
+            She panicked — feared implication in the murders due to her anonymous exposé blog
+          </option>
+          <option value="hint">She was running an unauthorized hint-selling operation</option>
+          <option value="relationship">She was hiding a secret relationship</option>
+          <option value="data">She was involved in the data exfiltration scheme</option>
+        </select>
+      </div>
+
+      <!-- Q6 -->
+      <div class="question-block" id="qb6">
+        <div class="q-num">QUESTION 06 / 10</div>
+        <div class="q-text">
+          What is SIDE STORY A — what was actually happening and who was involved?
+        </div>
+        <div class="q-points">▸ 8 POINTS</div>
+        <select class="form-select" id="q6" onchange="updateProgress()">
+          <option value="">Select the correct explanation...</option>
+          <option value="hints">
+            Unauthorized CTF hint-selling operation — Ela & Le Blanc selling hints for crypto, Rihab
+            a buyer
+          </option>
+          <option value="espionage">
+            Corporate espionage — Ela & Le Blanc stealing data for a third party
+          </option>
+          <option value="blackmail">
+            Blackmail operation — Le Blanc blackmailing participants
+          </option>
+          <option value="cheating">
+            Organized cheating ring — sharing full solutions between teams
+          </option>
+        </select>
+      </div>
+
+      <!-- Q7 -->
+      <div class="question-block" id="qb7">
+        <div class="q-num">QUESTION 07 / 10</div>
+        <div class="q-text">
+          What is SIDE STORY B — what was actually happening and who was involved?
+        </div>
+        <div class="q-points">▸ 8 POINTS</div>
+        <select class="form-select" id="q7" onchange="updateProgress()">
+          <option value="">Select the correct explanation...</option>
+          <option value="relationship">
+            Secret relationship — Aya & Chadi secretly dating, met 3 times at night, alibis
+            contradicted each other
+          </option>
+          <option value="theft">
+            Organized flag theft — Aya & Chadi stealing solutions from other teams
+          </option>
+          <option value="planning">
+            Planning to expose the event's data practices — Aya & Chadi coordinating a whistleblower
+            action
+          </option>
+          <option value="gambling">Running an illegal betting pool on the CTF outcomes</option>
+        </select>
+      </div>
+
+      <!-- Q8 -->
+      <div class="question-block" id="qb8">
+        <div class="q-num">QUESTION 08 / 10</div>
+        <div class="q-text">
+          How did Hazem's fake alibi — the scoreboard — actually prove he was guilty?
+        </div>
+        <div class="q-points">▸ 10 POINTS</div>
+        <select class="form-select" id="q8" onchange="updateProgress()">
+          <option value="">Select the correct explanation...</option>
+          <option value="interval">
+            His flag submissions arrived at exactly 480-second intervals for 2+ hours —
+            statistically impossible for human play — proven automated
+          </option>
+          <option value="wrong">He submitted flags for challenges that weren't released yet</option>
+          <option value="ip">
+            His submissions came from a different IP address than his registered terminal
+          </option>
+          <option value="duplicate">
+            He submitted the same flag twice — suggesting copy-paste from a stolen list
+          </option>
+        </select>
+      </div>
+
+      <!-- Q9 -->
+      <div class="question-block" id="qb9">
+        <div class="q-num">QUESTION 09 / 10</div>
+        <div class="q-text">
+          What was the single piece of evidence Ghofrane left behind that named the killer —
+          recovered from her wiped tablet?
+        </div>
+        <div class="q-points">▸ 10 POINTS</div>
+        <select class="form-select" id="q9" onchange="updateProgress()">
+          <option value="">Select the evidence...</option>
+          <option value="voice">
+            A 4-minute 12-second voice memo where she narrates her findings and names Hazem at the
+            3:47 mark
+          </option>
+          <option value="photo">
+            A photo of the keylogger she took before the killer found her
+          </option>
+          <option value="email">
+            A draft email addressed to authorities that auto-saved to cache
+          </option>
+          <option value="note">A handwritten note she left in the records room</option>
+        </select>
+      </div>
+
+      <!-- Q10 -->
+      <div class="question-block" id="qb10">
+        <div class="q-num">QUESTION 10 / 10</div>
+        <div class="q-text">
+          What was Yassine's role — and what was his single greatest failure?
+        </div>
+        <div class="q-points">▸ 12 POINTS</div>
+        <select class="form-select" id="q10" onchange="updateProgress()">
+          <option value="">Select Yassine's role...</option>
+          <option value="innocent">
+            Innocent director — negligent but not criminal — forwarded Hazem's background flag TO
+            Hazem, and read Ghofrane's distress message 5 minutes before her death but did not act
+          </option>
+          <option value="accomplice">
+            Willing accomplice — knew about the data exfiltration and covered it up
+          </option>
+          <option value="killer">
+            The real killer — staged the entire investigation as misdirection
+          </option>
+          <option value="mastermind">Mastermind — hired Hazem to run the data operation</option>
+        </select>
+      </div>
+
+      <div class="question-block" id="qb_explain">
+        <div class="q-num">BONUS — REASONING</div>
+        <div class="q-text">
+          Briefly explain the full chain of events — from Hazem's plan to both deaths to his
+          exposure. How does it all connect?
+        </div>
+        <div class="q-points">▸ NO POINTS — BUT REQUIRED TO SUBMIT</div>
+        <textarea
+          class="form-textarea"
+          id="q_explain"
+          placeholder="Explain your full reconstruction of events..."
+          onkeyup="updateProgress()"
+        ></textarea>
+      </div>
+
+      <div class="submit-section">
+        <button class="submit-btn" id="submitBtn" onclick="submitAnswers()" disabled>
+          &gt;_ SUBMIT FINAL VERDICT
+        </button>
+        <div style="font-size: 0.65rem; color: #333; margin-top: 12px; letter-spacing: 2px">
+          ANSWER ALL 10 QUESTIONS TO UNLOCK SUBMISSION
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT MODAL -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>&gt;_ CASE VERDICT — RESULTS</h2>
+        </div>
+        <div class="modal-body">
+          <div class="score-display">
+            <div class="score-number" id="scoreNum">0</div>
+            <div class="score-total">/ 100 points</div>
+            <div class="score-label" id="scoreLabel">CALCULATING...</div>
+          </div>
+          <div class="result-grid" id="resultGrid"></div>
+          <div class="verdict-box"><div class="verdict-text" id="verdictText"></div></div>
+          <div class="modal-btns">
+            <button class="modal-btn btn-solution" onclick="window.location.href = 'solution.html'">
+              VIEW FULL SOLUTION
+            </button>
+            <button
+              class="modal-btn btn-retry"
+              onclick="document.getElementById('modalOverlay').classList.remove('show')"
+            >
+              REVIEW & RETRY
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const ANSWERS = {
+        q1: "hazem",
+        q1b: "electrical",
+        q2: "hazem",
+        q2b: "badge",
+        q3: "fares",
+        q4: "twitch",
+        q5: "darine",
+        q5b: "panic",
+        q6: "hints",
+        q7: "relationship",
+        q8: "interval",
+        q9: "voice",
+        q10: "innocent",
+      };
+
+      const POINTS = {
+        q1: 6,
+        q1b: 6,
+        q2: 6,
+        q2b: 6,
+        q3: 10,
+        q4: 8,
+        q5: 5,
+        q5b: 5,
+        q6: 8,
+        q7: 8,
+        q8: 10,
+        q9: 10,
+        q10: 12,
+      };
+
+      const QUESTIONS = [
+        { id: "q1", label: "Killer of Mohi" },
+        { id: "q1b", label: "Death staging method" },
+        { id: "q2", label: "Killer of Ghofrane" },
+        { id: "q2b", label: "Trigger for 2nd murder" },
+        { id: "q3", label: "The Decoy identity" },
+        { id: "q4", label: "Frame-breaking alibi" },
+        { id: "q5", label: "The Liar identity" },
+        { id: "q5b", label: "Liar's real secret" },
+        { id: "q6", label: "Side Story A explanation" },
+        { id: "q7", label: "Side Story B explanation" },
+        { id: "q8", label: "Scoreboard alibi flaw" },
+        { id: "q9", label: "Ghofrane's final evidence" },
+        { id: "q10", label: "Yassine's role & failure" },
+      ];
+
+      function updateProgress() {
+        const fields = [
+          "q1",
+          "q1b",
+          "q2",
+          "q2b",
+          "q3",
+          "q4",
+          "q5",
+          "q5b",
+          "q6",
+          "q7",
+          "q8",
+          "q9",
+          "q10",
+          "q_explain",
+        ];
+        let filled = 0;
+        fields.forEach((f) => {
+          const el = document.getElementById(f);
+          if (el && el.value && el.value.trim() !== "") filled++;
+        });
+        const pct = Math.round((filled / fields.length) * 100);
+        document.getElementById("progressFill").style.width = pct + "%";
+        document.getElementById("progressText").textContent = filled + " / " + fields.length;
+        const allDone = fields.every((f) => {
+          const el = document.getElementById(f);
+          return el && el.value && el.value.trim() !== "";
+        });
+        document.getElementById("submitBtn").disabled = !allDone;
+      }
+
+      function submitAnswers() {
+        let total = 0;
+        const results = [];
+        QUESTIONS.forEach((q) => {
+          const val = document.getElementById(q.id)?.value;
+          const correct = val === ANSWERS[q.id];
+          const pts = correct ? POINTS[q.id] : 0;
+          total += pts;
+          results.push({ label: q.label, correct, pts, max: POINTS[q.id] });
+        });
+        // Build result grid
+        const grid = document.getElementById("resultGrid");
+        grid.innerHTML = "";
+        results.forEach((r) => {
+          const row = document.createElement("div");
+          row.className = "result-row" + (r.correct ? "" : " wrong");
+          row.innerHTML = `<span class="result-icon">${r.correct ? "✅" : "❌"}</span><span class="result-question">${r.label}</span><span class="result-pts">${r.correct ? "+" + r.pts + " pts" : "0 / " + r.max}</span>`;
+          grid.appendChild(row);
+        });
+        document.getElementById("scoreNum").textContent = total;
+        let verdict, label;
+        if (total === 100) {
+          verdict = "🏆 PERFECT SOLVE — MASTER DETECTIVE";
+          label = "PERFECT SCORE";
+        } else if (total >= 80) {
+          verdict = "⭐ EXCELLENT — YOU CRACKED THE CASE";
+          label = "CASE SOLVED";
+        } else if (total >= 60) {
+          verdict = "🔍 GOOD — CLOSE BUT GAPS REMAIN";
+          label = "PARTIAL SOLVE";
+        } else if (total >= 40) {
+          verdict = "📋 INCOMPLETE — REVIEW THE PORTALS";
+          label = "NEEDS REVIEW";
+        } else {
+          verdict = "🔴 TRY AGAIN — THE KILLER IS STILL WINNING";
+          label = "CASE UNSOLVED";
+        }
+        document.getElementById("verdictText").textContent = verdict;
+        document.getElementById("scoreLabel").textContent = label;
+        document.getElementById("modalOverlay").classList.add("show");
+      }
+    </script>
+  </body>
+</html>

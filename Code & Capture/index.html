@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CODE & CAPTURE // ZERO DAY</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --green: #00ff41;
+        --green-dim: #00cc33;
+        --green-dark: #003300;
+        --red: #ff3333;
+        --amber: #ffb700;
+        --bg: #000;
+        --bg2: #050505;
+        --border: rgba(0, 255, 65, 0.25);
+        --font: "Share Tech Mono", monospace;
+      }
+      body {
+        background: var(--bg);
+        color: var(--green);
+        font-family: var(--font);
+        min-height: 100vh;
+        overflow-x: hidden;
+        cursor: crosshair;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 65, 0.015) 2px,
+          rgba(0, 255, 65, 0.015) 4px
+        );
+        pointer-events: none;
+        z-index: 9999;
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.8));
+        pointer-events: none;
+        z-index: 9998;
+      }
+
+      /* HEADER */
+      .site-header {
+        border-bottom: 1px solid var(--border);
+        padding: 16px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 100;
+        backdrop-filter: blur(4px);
+      }
+      .logo {
+        font-size: 1.1rem;
+        letter-spacing: 4px;
+        color: var(--green);
+      }
+      .logo span {
+        color: var(--red);
+      }
+      .header-status {
+        font-size: 0.7rem;
+        color: var(--red);
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* HERO */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        text-align: center;
+        position: relative;
+      }
+      .glitch {
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        letter-spacing: 8px;
+        position: relative;
+        color: var(--green);
+        text-transform: uppercase;
+      }
+      .glitch::before,
+      .glitch::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 0;
+        width: 100%;
+      }
+      .glitch::before {
+        color: #ff0040;
+        clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+        animation: glitch1 3s infinite linear;
+      }
+      .glitch::after {
+        color: #00f7ff;
+        clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        animation: glitch2 3s infinite linear;
+      }
+      @keyframes glitch1 {
+        0%,
+        94% {
+          transform: none;
+        }
+        95% {
+          transform: translate(-3px, 1px);
+        }
+        96% {
+          transform: translate(3px, -1px);
+        }
+        100% {
+          transform: none;
+        }
+      }
+      @keyframes glitch2 {
+        0%,
+        94% {
+          transform: none;
+        }
+        95% {
+          transform: translate(3px, -1px);
+        }
+        96% {
+          transform: translate(-3px, 1px);
+        }
+        100% {
+          transform: none;
+        }
+      }
+      .subtitle {
+        font-size: 0.85rem;
+        letter-spacing: 6px;
+        color: var(--green-dim);
+        margin: 16px 0 8px;
+        opacity: 0.7;
+      }
+      .tagline {
+        font-size: 0.9rem;
+        color: var(--amber);
+        margin: 8px 0 40px;
+        font-style: italic;
+      }
+
+      /* TERMINAL BOX */
+      .terminal-box {
+        background: #050f05;
+        border: 1px solid var(--green);
+        max-width: 780px;
+        width: 100%;
+        border-radius: 2px;
+        text-align: left;
+        margin: 0 auto 40px;
+      }
+      .term-header {
+        background: var(--green-dark);
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      .term-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .term-dot.red {
+        background: #ff5f57;
+      }
+      .term-dot.amber {
+        background: #febc2e;
+      }
+      .term-dot.green {
+        background: #28c840;
+      }
+      .term-title {
+        font-size: 0.7rem;
+        color: var(--green-dim);
+        margin-left: 8px;
+        letter-spacing: 2px;
+      }
+      .term-body {
+        padding: 24px;
+        font-size: 0.82rem;
+        line-height: 2;
+      }
+      .term-line {
+        display: block;
+        margin-bottom: 4px;
+      }
+      .prompt {
+        color: var(--green-dim);
+      }
+      .output {
+        color: #aaa;
+        padding-left: 20px;
+      }
+      .output.warn {
+        color: var(--amber);
+      }
+      .output.danger {
+        color: var(--red);
+      }
+      .output.key {
+        color: var(--green);
+      }
+      .cursor {
+        display: inline-block;
+        width: 8px;
+        height: 14px;
+        background: var(--green);
+        animation: blink 1s step-end infinite;
+        vertical-align: middle;
+        margin-left: 4px;
+      }
+
+      /* INCIDENT BANNER */
+      .incident-banner {
+        background: rgba(255, 51, 51, 0.08);
+        border: 1px solid var(--red);
+        border-left: 4px solid var(--red);
+        padding: 20px 28px;
+        max-width: 780px;
+        width: 100%;
+        margin: 0 auto 40px;
+        border-radius: 2px;
+      }
+      .incident-banner h2 {
+        color: var(--red);
+        font-size: 1rem;
+        letter-spacing: 3px;
+        margin-bottom: 12px;
+      }
+      .incident-banner p {
+        font-size: 0.78rem;
+        color: #ccc;
+        line-height: 1.9;
+      }
+      .victim-row {
+        display: flex;
+        gap: 16px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+      .victim-card {
+        flex: 1;
+        min-width: 200px;
+        background: rgba(255, 51, 51, 0.05);
+        border: 1px solid rgba(255, 51, 51, 0.3);
+        padding: 14px;
+        border-radius: 2px;
+      }
+      .victim-card .name {
+        color: var(--red);
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        margin-bottom: 6px;
+      }
+      .victim-card .detail {
+        font-size: 0.72rem;
+        color: #999;
+        line-height: 1.7;
+      }
+
+      /* PORTALS GRID */
+      .portals-section {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 32px 80px;
+      }
+      .section-header {
+        font-size: 0.7rem;
+        letter-spacing: 4px;
+        color: var(--green-dim);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 12px;
+        margin-bottom: 28px;
+      }
+      .portals-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 16px;
+      }
+      .portal-card {
+        background: #030a03;
+        border: 1px solid var(--border);
+        padding: 24px;
+        border-radius: 2px;
+        text-decoration: none;
+        display: block;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+      .portal-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(0, 255, 65, 0.03), transparent);
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .portal-card:hover {
+        border-color: var(--green);
+        transform: translateY(-2px);
+        box-shadow: 0 0 24px rgba(0, 255, 65, 0.1);
+      }
+      .portal-card:hover::before {
+        opacity: 1;
+      }
+      .portal-icon {
+        font-size: 1.4rem;
+        margin-bottom: 12px;
+      }
+      .portal-num {
+        font-size: 0.65rem;
+        color: var(--green-dim);
+        letter-spacing: 2px;
+        margin-bottom: 6px;
+      }
+      .portal-name {
+        font-size: 0.95rem;
+        color: var(--green);
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+      }
+      .portal-desc {
+        font-size: 0.72rem;
+        color: #666;
+        line-height: 1.7;
+      }
+      .portal-status {
+        font-size: 0.65rem;
+        margin-top: 12px;
+        padding: 4px 8px;
+        display: inline-block;
+        border-radius: 2px;
+      }
+      .status-open {
+        color: var(--green);
+        border: 1px solid var(--green-dark);
+      }
+      .status-locked {
+        color: var(--amber);
+        border: 1px solid rgba(255, 183, 0, 0.3);
+      }
+
+      /* WARNING */
+      .warning-strip {
+        background: rgba(255, 183, 0, 0.05);
+        border-top: 1px solid rgba(255, 183, 0, 0.2);
+        border-bottom: 1px solid rgba(255, 183, 0, 0.2);
+        padding: 12px 32px;
+        text-align: center;
+        font-size: 0.72rem;
+        color: var(--amber);
+        letter-spacing: 3px;
+        margin-bottom: 40px;
+      }
+
+      /* FOOTER */
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 24px 32px;
+        text-align: center;
+        font-size: 0.65rem;
+        color: #333;
+        letter-spacing: 2px;
+      }
+      footer span {
+        color: var(--green-dim);
+      }
+
+      /* SCROLL ANIMATION */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-up {
+        animation: fadeUp 0.6s ease forwards;
+      }
+      .delay-1 {
+        animation-delay: 0.1s;
+        opacity: 0;
+      }
+      .delay-2 {
+        animation-delay: 0.2s;
+        opacity: 0;
+      }
+      .delay-3 {
+        animation-delay: 0.3s;
+        opacity: 0;
+      }
+      .delay-4 {
+        animation-delay: 0.4s;
+        opacity: 0;
+      }
+
+      /* YASSINE SPOTLIGHT */
+      .director-note {
+        background: #080808;
+        border: 1px solid rgba(255, 183, 0, 0.3);
+        border-left: 3px solid var(--amber);
+        max-width: 780px;
+        width: 100%;
+        margin: 0 auto 32px;
+        padding: 20px 24px;
+        border-radius: 2px;
+      }
+      .director-note .speaker {
+        font-size: 0.7rem;
+        color: var(--amber);
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+      }
+      .director-note p {
+        font-size: 0.8rem;
+        color: #bbb;
+        line-height: 1.9;
+      }
+      .director-note .signature {
+        font-size: 0.7rem;
+        color: var(--amber);
+        margin-top: 12px;
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo">
+        CODE<span>&</span>CAPTURE
+        <span style="color: var(--green-dim); font-size: 0.8rem">// ZERO DAY</span>
+      </div>
+      <div class="header-status">⚠ INCIDENT ACTIVE — INVESTIGATION OPEN</div>
+    </header>
+
+    <section class="hero">
+      <div class="glitch fade-up" data-text="ZERO DAY">ZERO DAY</div>
+      <div class="subtitle fade-up delay-1">CODE & CAPTURE — MURDER MYSTERY INVESTIGATION</div>
+      <div class="tagline fade-up delay-2">
+        "Every system has a backdoor. So does every person."
+      </div>
+
+      <div class="terminal-box fade-up delay-3">
+        <div class="term-header">
+          <div class="term-dot red"></div>
+          <div class="term-dot amber"></div>
+          <div class="term-dot green"></div>
+          <div class="term-title">INCIDENT_TERMINAL — SESSION 001 — MAY 02 04:31:07</div>
+        </div>
+        <div class="term-body">
+          <span class="term-line"
+            ><span class="prompt">&gt;_</span>
+            <span class="output key">INITIALIZING CASE FILE... ZERO_DAY.CASE</span></span
+          >
+          <span class="term-line"
+            ><span class="prompt">&gt;_</span>
+            <span class="output">Date: May 02–03 | Duration: 12h CTF event</span></span
+          >
+          <span class="term-line"
+            ><span class="prompt">&gt;_</span>
+            <span class="output">Venue: FSM Faculty — Code & Capture venue</span></span
+          >
+          <span class="term-line"
+            ><span class="prompt">&gt;_</span>
+            <span class="output">Registered participants: 80</span></span
+          >
+          <span class="term-line"
+            ><span class="prompt">&gt;_</span>
+            <span class="output danger">STATUS: 2 FATALITIES CONFIRMED</span></span
+          >
+          <span class="term-line"
+            ><span class="prompt">&gt;_</span>
+            <span class="output warn">Active suspects: 17 | Persons of interest: 6</span></span
+          >
+          <span class="term-line"
+            ><span class="prompt">&gt;_</span>
+            <span class="output">Portals unlocked: 9 / 9</span></span
+          >
+          <span class="term-line"
+            ><span class="prompt">&gt;_</span>
+            <span class="output"
+              >Killer status:
+              <span style="color: var(--red)">UNIDENTIFIED — STILL ON PREMISES</span></span
+            ></span
+          >
+          <span class="term-line"
+            ><span class="prompt">&gt;_</span>
+            <span class="output key">BEGIN INVESTIGATION. ACCESS PORTALS BELOW.</span
+            ><span class="cursor"></span
+          ></span>
+        </div>
+      </div>
+
+      <div class="director-note fade-up delay-4">
+        <div class="speaker">// BROADCAST FROM: YASSINE — EVENT DIRECTOR — 04:15 AM</div>
+        <p>
+          I need everyone to stop what they're doing. Two people are dead. Mohi was found in Server
+          Room B at 03:52 AM. Ghofrane was found in the fire exit corridor on the 3rd floor at 03:41
+          AM. This is not a drill. This is not part of the event.<br /><br />
+          Nobody leaves this building. The portals below contain every piece of evidence we've
+          collected so far. Work through them. Find out what happened. I am cooperating fully with
+          the investigation. I have nothing to hide.<br /><br />
+          I want answers as badly as you do.
+        </p>
+        <div class="signature">— Y.A. | Director, Code & Capture | IEEE CS FSM Student Branch</div>
+      </div>
+    </section>
+
+    <div class="warning-strip">
+      ⚠ CLASSIFIED — ACTIVE HOMICIDE INVESTIGATION — UNAUTHORIZED ACCESS IS A CRIMINAL OFFENSE ⚠
+    </div>
+
+    <section class="portals-section">
+      <div class="section-header">
+        &gt;_ INVESTIGATION PORTALS // ACCESS ALL NODES TO RECONSTRUCT THE TIMELINE
+      </div>
+      <div class="portals-grid">
+        <a href="messenger.html" class="portal-card">
+          <div class="portal-icon">💬</div>
+          <div class="portal-num">NODE 01</div>
+          <div class="portal-name">MESSENGER LOGS</div>
+          <div class="portal-desc">
+            Recovered group chats, private messages, and deleted communications. Ghofrane's final
+            message to Yassine. Aya & Chadi's coded exchanges. Side Story A fragments.
+          </div>
+          <span class="portal-status status-open">&gt; ACCESS GRANTED</span>
+        </a>
+
+        <a href="police-database.html" class="portal-card">
+          <div class="portal-icon">🚔</div>
+          <div class="portal-num">NODE 02</div>
+          <div class="portal-name">POLICE DATABASE</div>
+          <div class="portal-desc">
+            Incident reports, suspect profiles, Rahma's vending machine timestamp. Medical examiner
+            preliminary findings. First responder logs.
+          </div>
+          <span class="portal-status status-open">&gt; ACCESS GRANTED</span>
+        </a>
+
+        <a href="security-system.html" class="portal-card">
+          <div class="portal-icon">📹</div>
+          <div class="portal-num">NODE 03</div>
+          <div class="portal-name">SECURITY SYSTEM</div>
+          <div class="portal-desc">
+            CCTV logs, camera buffer clearance records, Ayhem's 22-minute gap. Darine's photo
+            archive — 01:52 AM stairwell capture. Manually adjusted camera angles.
+          </div>
+          <span class="portal-status status-open">&gt; ACCESS GRANTED</span>
+        </a>
+
+        <a href="server-admin.html" class="portal-card">
+          <div class="portal-icon">🖥️</div>
+          <div class="portal-num">NODE 04</div>
+          <div class="portal-name">SERVER ADMIN</div>
+          <div class="portal-desc">
+            Ahmed's full access log query. 3 unregistered badge swipes. Suppressed alert system.
+            Hazem's pre-event admin credentials. Infrastructure panel commands.
+          </div>
+          <span class="portal-status status-open">&gt; ACCESS GRANTED</span>
+        </a>
+
+        <a href="ieee-portal.html" class="portal-card">
+          <div class="portal-icon">📂</div>
+          <div class="portal-num">NODE 05</div>
+          <div class="portal-name">IEEE ORGANIZER PORTAL</div>
+          <div class="portal-desc">
+            Volunteer management system. Ghofrane Mabrouk's background flag report. Hazem's
+            inconsistent registration history. Yassine's forwarded email chain.
+          </div>
+          <span class="portal-status status-open">&gt; ACCESS GRANTED</span>
+        </a>
+
+        <a href="terminal.html" class="portal-card">
+          <div class="portal-icon">📱</div>
+          <div class="portal-num">NODE 06</div>
+          <div class="portal-name">LOCKED DEVICE — MOHI'S PHONE</div>
+          <div class="portal-desc">
+            Mohi's personal phone — locked. The PIN is his employee number, found elsewhere in the
+            investigation. Contains the keylogger photograph. Timestamped 01:28 AM.
+          </div>
+          <span class="portal-status status-locked">🔒 PIN REQUIRED</span>
+        </a>
+
+        <a href="source-leak.html" class="portal-card">
+          <div class="portal-icon">💾</div>
+          <div class="portal-num">NODE 07</div>
+          <div class="portal-name">TABLET CACHE RECOVERY</div>
+          <div class="portal-desc">
+            Ghofrane's wiped tablet — partially recovered. Reconstructed access log. A 4:12 voice
+            memo she recorded narrating her own findings. She says a name at 3:47.
+          </div>
+          <span class="portal-status status-open">&gt; PARTIAL RECOVERY</span>
+        </a>
+
+        <a href="wireshark.html" class="portal-card">
+          <div class="portal-icon">📊</div>
+          <div class="portal-num">NODE 08</div>
+          <div class="portal-name">SCOREBOARD AUDIT</div>
+          <div class="portal-desc">
+            CTF backend submission logs. Timestamp analysis. One competitor's flags arrive every 8
+            minutes — inhuman precision. Automated scripts don't take bathroom breaks.
+          </div>
+          <span class="portal-status status-open">&gt; ACCESS GRANTED</span>
+        </a>
+
+        <a
+          href="evidence-board.html"
+          class="portal-card"
+          style="border-color: rgba(0, 255, 65, 0.5)"
+        >
+          <div class="portal-icon">🎯</div>
+          <div class="portal-num">FINAL NODE</div>
+          <div class="portal-name">EVIDENCE BOARD</div>
+          <div class="portal-desc">
+            Submit your conclusions. 10 questions. Identify the killer, the victims, the decoy, the
+            liar, both side stories, and the evidence that breaks everything open.
+          </div>
+          <span
+            class="portal-status status-open"
+            style="color: var(--amber); border-color: rgba(255, 183, 0, 0.3)"
+            >&gt; SUBMIT ANSWERS</span
+          >
+        </a>
+      </div>
+    </section>
+
+    <footer>
+      <span>CODE & CAPTURE // ZERO DAY</span> — IEEE CS FSM STUDENT BRANCH — MAY 2025<br />
+      <span style="opacity: 0.4; font-size: 0.6rem; margin-top: 6px; display: block"
+        >codeandcapture.website | ieee.cs.fsm@gmail.com</span
+      >
+    </footer>
+
+    <script>
+      // Typing effect for terminal
+      document.addEventListener("DOMContentLoaded", () => {
+        const outputs = document.querySelectorAll(".output");
+        outputs.forEach((el, i) => {
+          const txt = el.innerHTML;
+          el.innerHTML = "";
+          setTimeout(() => {
+            let j = 0;
+            const iv = setInterval(() => {
+              if (j <= txt.length) {
+                el.innerHTML = txt.slice(0, j);
+                j++;
+              } else clearInterval(iv);
+            }, 18);
+          }, i * 120);
+        });
+      });
+    </script>
+  </body>
+</html>

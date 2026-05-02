@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NODE 06 // LOCKED DEVICE</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *{margin:0;padding:0;box-sizing:border-box;}
+      :root{--green:#00ff41;--green-dim:#00cc33;--green-dark:#003300;--red:#ff3333;--amber:#ffb700;--blue:#00b4ff;--font:'Share Tech Mono',monospace;}
+      body{background:#000;color:var(--green);font-family:var(--font);min-height:100vh;cursor:crosshair;display:flex;flex-direction:column;}
+      body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.012) 2px,rgba(0,255,65,0.012) 4px);pointer-events:none;z-index:9999;}
+      .header{border-bottom:1px solid rgba(0,255,65,0.2);padding:14px 28px;display:flex;align-items:center;gap:16px;background:rgba(0,0,0,0.97);position:sticky;top:0;z-index:100;}
+      .back-btn{color:var(--green-dim);text-decoration:none;font-size:0.75rem;letter-spacing:2px;border:1px solid rgba(0,255,65,0.2);padding:6px 12px;transition:all 0.2s;}
+      .back-btn:hover{border-color:var(--green);}
+      .header-title{font-size:0.85rem;letter-spacing:4px;}
+      .header-badge{font-size:0.65rem;color:var(--amber);margin-left:auto;animation:blink 1s step-end infinite;}
+      @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+      .main{max-width:700px;margin:0 auto;padding:60px 24px;flex:1;display:flex;flex-direction:column;align-items:center;}
+      .page-title{font-size:1.2rem;letter-spacing:6px;margin-bottom:6px;text-align:center;}
+      .page-sub{font-size:0.72rem;color:#555;letter-spacing:3px;margin-bottom:48px;text-align:center;}
+
+      /* PHONE MOCKUP */
+      .phone-wrap{position:relative;display:flex;flex-direction:column;align-items:center;margin-bottom:48px;}
+      .phone{width:260px;background:#0a0a0a;border:2px solid #222;border-radius:28px;padding:16px;box-shadow:0 0 60px rgba(0,0,0,0.8),0 0 20px rgba(0,255,65,0.05);position:relative;}
+      .phone::before{content:'';position:absolute;top:20px;left:50%;transform:translateX(-50%);width:60px;height:5px;background:#111;border-radius:3px;}
+      .phone-screen{background:#050f05;border-radius:18px;padding:28px 20px 20px;min-height:420px;display:flex;flex-direction:column;align-items:center;border:1px solid #111;position:relative;overflow:hidden;}
+      .phone-screen::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.02) 2px,rgba(0,255,65,0.02) 4px);}
+      .phone-time{font-size:2rem;color:var(--green);margin-bottom:4px;letter-spacing:4px;}
+      .phone-date{font-size:0.65rem;color:var(--green-dim);letter-spacing:2px;margin-bottom:24px;opacity:0.6;}
+      .phone-label{font-size:0.62rem;color:#444;letter-spacing:3px;margin-bottom:16px;}
+
+      /* PIN INPUT */
+      .pin-display{display:flex;gap:12px;margin-bottom:24px;}
+      .pin-dot{width:18px;height:18px;border-radius:50%;border:2px solid rgba(0,255,65,0.3);background:transparent;transition:all 0.2s;}
+      .pin-dot.filled{background:var(--green);border-color:var(--green);box-shadow:0 0 8px rgba(0,255,65,0.5);}
+      .pin-dot.error{background:var(--red);border-color:var(--red);animation:shake 0.4s ease;}
+      .pin-dot.success{background:var(--green);border-color:var(--green);}
+      @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}
+
+      /* NUMPAD */
+      .numpad{display:grid;grid-template-columns:repeat(3,64px);gap:10px;}
+      .num-btn{width:64px;height:64px;background:rgba(0,255,65,0.05);border:1px solid rgba(0,255,65,0.15);border-radius:50%;font-family:var(--font);font-size:1rem;color:var(--green);cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
+      .num-btn:hover{background:rgba(0,255,65,0.12);border-color:var(--green);}
+      .num-btn:active{transform:scale(0.92);}
+      .num-btn .sub{font-size:0.45rem;color:var(--green-dim);letter-spacing:1px;}
+      .num-btn.del{font-size:0.8rem;}
+      .num-btn.empty{background:transparent;border:none;cursor:default;}
+      .num-btn.empty:hover{background:transparent;}
+
+      /* UNLOCKED STATE */
+      .phone-unlocked{display:none;flex-direction:column;width:100%;}
+      .phone-unlocked.show{display:flex;}
+      .phone-locked-view{display:flex;flex-direction:column;align-items:center;width:100%;}
+      .phone-locked-view.hide{display:none;}
+
+      .phone-app-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+      .phone-app{background:rgba(0,255,65,0.05);border:1px solid rgba(0,255,65,0.1);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;font-size:0.55rem;color:#555;}
+      .phone-app:hover{background:rgba(0,255,65,0.1);border-color:var(--green);color:var(--green);}
+      .phone-app .app-icon{font-size:1.2rem;display:block;margin-bottom:4px;}
+      .phone-app.highlight{border-color:rgba(255,183,0,0.4);background:rgba(255,183,0,0.05);}
+      .phone-app.highlight:hover{background:rgba(255,183,0,0.1);}
+
+      /* PHOTO VIEWER */
+      .photo-viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:1000;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+      .photo-viewer.show{display:flex;}
+      .photo-frame{background:#000;border:1px solid rgba(255,183,0,0.4);max-width:520px;width:100%;padding:0;}
+      .photo-top-bar{background:#0a0a0a;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:0.65rem;color:#555;}
+      .photo-top-bar .close-btn{color:var(--green);cursor:pointer;padding:4px 8px;border:1px solid rgba(0,255,65,0.2);}
+      .photo-image-mock{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#050a05,#020502);display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid rgba(255,183,0,0.15);}
+      .photo-scene{font-size:0.72rem;color:#333;text-align:center;line-height:2.2;padding:20px;}
+      .photo-scene .device{color:var(--amber);font-size:0.85rem;display:block;margin-bottom:12px;}
+      .photo-scene .detail{color:#555;}
+      .photo-exif{padding:16px;font-size:0.65rem;color:#555;line-height:2;}
+      .photo-exif span{color:var(--green-dim);}
+      .photo-exif .key-line{color:var(--amber);}
+
+      /* EVIDENCE BOX */
+      .evidence-reveal{background:#050a00;border:2px solid rgba(0,255,65,0.3);padding:24px;max-width:600px;width:100%;margin-top:24px;border-radius:2px;display:none;}
+      .evidence-reveal.show{display:block;}
+      .evidence-reveal h2{color:var(--green);font-size:0.9rem;letter-spacing:4px;margin-bottom:16px;}
+      .evidence-reveal p{font-size:0.77rem;color:#aaa;line-height:1.9;margin-bottom:12px;}
+      .flag{display:inline-block;background:rgba(255,51,51,0.1);border:1px solid rgba(255,51,51,0.3);color:var(--red);font-size:0.65rem;padding:3px 8px;letter-spacing:1px;margin:4px 0;}
+      .flag.amber{background:rgba(255,183,0,0.1);border-color:rgba(255,183,0,0.3);color:var(--amber);}
+
+      /* ERROR STATE */
+      .error-msg{font-size:0.7rem;color:var(--red);text-align:center;margin-top:8px;min-height:20px;}
+      .attempts-left{font-size:0.62rem;color:#444;text-align:center;margin-top:4px;}
+
+      /* LOCKED HINT */
+      .hint-box{background:#040804;border:1px solid rgba(0,255,65,0.1);padding:16px;font-size:0.72rem;color:#555;line-height:1.8;max-width:600px;width:100%;text-align:center;margin-bottom:24px;}
+      .hint-box strong{color:var(--green-dim);}
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <a href="index.html" class="back-btn">← BACK</a>
+      <div class="header-title">NODE 06 // MOHI'S LOCKED DEVICE</div>
+      <div class="header-badge">🔒 PIN REQUIRED</div>
+    </div>
+
+    <div class="main">
+      <div class="page-title">&gt;_ LOCKED DEVICE</div>
+      <div class="page-sub">EVIDENCE ITEM #MH-01 — MOHI'S PERSONAL PHONE — RETRIEVED 03:58 AM</div>
+
+      <div class="hint-box">
+        The PIN is <strong>Mohi's volunteer ID number</strong>. Volunteer ID numbers are 3-digit
+        sequences. The volunteer roster is in
+        <strong>NODE 05 — IEEE Organizer Portal</strong>.<br />
+        Find CC-00<strong>X</strong> where X = Mohi's position on the roster.
+      </div>
+
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-screen">
+            <!-- LOCKED VIEW -->
+            <div class="phone-locked-view" id="lockedView">
+              <div class="phone-time" id="phoneTime">03:52</div>
+              <div class="phone-date">MAY 03 — EVIDENCE ITEM #MH-01</div>
+              <div class="phone-label">ENTER VOLUNTEER ID PIN</div>
+              <div class="pin-display" id="pinDisplay">
+                <div class="pin-dot" id="dot0"></div>
+                <div class="pin-dot" id="dot1"></div>
+                <div class="pin-dot" id="dot2"></div>
+              </div>
+              <div class="numpad">
+                <button class="num-btn" onclick="addDigit('1')">1<span class="sub"></span></button>
+                <button class="num-btn" onclick="addDigit('2')">
+                  2<span class="sub">ABC</span>
+                </button>
+                <button class="num-btn" onclick="addDigit('3')">
+                  3<span class="sub">DEF</span>
+                </button>
+                <button class="num-btn" onclick="addDigit('4')">
+                  4<span class="sub">GHI</span>
+                </button>
+                <button class="num-btn" onclick="addDigit('5')">
+                  5<span class="sub">JKL</span>
+                </button>
+                <button class="num-btn" onclick="addDigit('6')">
+                  6<span class="sub">MNO</span>
+                </button>
+                <button class="num-btn" onclick="addDigit('7')">
+                  7<span class="sub">PQRS</span>
+                </button>
+                <button class="num-btn" onclick="addDigit('8')">
+                  8<span class="sub">TUV</span>
+                </button>
+                <button class="num-btn" onclick="addDigit('9')">
+                  9<span class="sub">WXYZ</span>
+                </button>
+                <button class="num-btn empty"></button>
+                <button class="num-btn" onclick="addDigit('0')">0</button>
+                <button class="num-btn del" onclick="delDigit()">⌫</button>
+              </div>
+              <div class="error-msg" id="errorMsg"></div>
+              <div class="attempts-left" id="attemptsLeft"></div>
+            </div>
+
+            <!-- UNLOCKED VIEW -->
+            <div class="phone-unlocked" id="unlockedView">
+              <div
+                style="
+                  font-size: 0.62rem;
+                  color: var(--green-dim);
+                  letter-spacing: 2px;
+                  margin-bottom: 4px;
+                  text-align: center;
+                "
+              >
+                UNLOCKED ✓
+              </div>
+              <div
+                style="
+                  font-size: 0.55rem;
+                  color: #333;
+                  letter-spacing: 1px;
+                  margin-bottom: 16px;
+                  text-align: center;
+                "
+              >
+                MOHI — VOLUNTEER CC-006
+              </div>
+              <div class="phone-app-grid">
+                <div class="phone-app"><span class="app-icon">📞</span>CALLS</div>
+                <div class="phone-app"><span class="app-icon">💬</span>MESSAGES</div>
+                <div class="phone-app"><span class="app-icon">📧</span>EMAIL</div>
+                <div class="phone-app highlight" onclick="openPhoto()">
+                  <span class="app-icon">📷</span>CAMERA<br />⚠ NEW
+                </div>
+                <div class="phone-app"><span class="app-icon">🗺️</span>MAPS</div>
+                <div class="phone-app"><span class="app-icon">⚙️</span>SETTINGS</div>
+              </div>
+              <div
+                style="
+                  font-size: 0.55rem;
+                  color: var(--amber);
+                  text-align: center;
+                  letter-spacing: 2px;
+                  animation: blink 1s step-end infinite;
+                "
+              >
+                TAP CAMERA — 1 NEW PHOTO
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EVIDENCE REVEAL -->
+      <div class="evidence-reveal" id="evidenceReveal">
+        <h2>📷 PHOTO EVIDENCE UNLOCKED</h2>
+        <p>
+          Mohi's phone contains one photo taken at <strong>01:28:14 AM</strong> — 19 minutes before
+          his death. The photo shows the interior of Server Room B — specifically the USB hub on the
+          primary competition server. A small device is visible plugged between ports 3 and 4.
+        </p>
+        <p>
+          This is a <strong>hardware keylogger</strong>. The photo timestamp places it 19 minutes
+          before Mohi's death, confirming his discovery preceded the murder. He took this photo,
+          then immediately went to find Hazem.
+        </p>
+        <div class="flag amber">
+          📷 PHOTO METADATA: 01:28:14 AM | LOCATION: SERVER ROOM B | DEVICE: MOHI'S PERSONAL PHONE
+        </div>
+        <div class="flag">
+          ⚠ MOHI FOUND THE DEVICE. MOHI TOLD HAZEM. HAZEM KILLED HIM 16 MINUTES LATER.
+        </div>
+        <p style="margin-top: 12px">
+          Cross-reference: The keylogger firmware signature (KL-DAEMON-v3, BATCH: PRIV-INT-07) found
+          in NODE 04 matches this device. Fares recognizes this firmware from HackTN 2024. This is
+          the same operator.
+        </p>
+      </div>
+    </div>
+
+    <!-- PHOTO VIEWER OVERLAY -->
+    <div class="photo-viewer" id="photoViewer">
+      <div class="photo-frame">
+        <div class="photo-top-bar">
+          <span>📷 CAMERA — 1 PHOTO — 01:28 AM</span>
+          <span class="close-btn" onclick="closePhoto()">✕ CLOSE</span>
+        </div>
+        <div class="photo-image-mock">
+          <div class="photo-scene">
+            <span class="device">[ SERVER ROOM B — PRIMARY RACK ]</span>
+            USB HUB — PORT 3 → PORT 4<br />
+            <span style="color: var(--amber)">⚠ FOREIGN DEVICE VISIBLE</span><br />
+            <span class="detail">Small black device — USB pass-through</span><br />
+            <span class="detail">Between standard USB connections</span><br />
+            <span style="color: var(--red); font-size: 0.85rem; margin-top: 8px; display: block"
+              >HARDWARE KEYLOGGER</span
+            >
+          </div>
+        </div>
+        <div class="photo-exif">
+          <span>Timestamp:</span> 01:28:14 AM — May 03<br />
+          <span>Device:</span> MOHI's personal phone<br />
+          <span>Location:</span> Server Room B — Basement Level<br />
+          <span>Flash:</span> OFF — ambient server light only<br />
+          <span class="key-line">Firmware visible on device:</span>
+          <span style="color: var(--red)">KL-DAEMON-v3 // BATCH: PRIV-INT-07</span><br />
+          <span>Notes:</span> Photo taken 19 minutes before estimated time of death
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let entered = "";
+      let attempts = 0;
+      const MAX_ATTEMPTS = 7;
+      const CORRECT = "006";
+
+      function updateDots() {
+        for (let i = 0; i < 3; i++) {
+          const d = document.getElementById("dot" + i);
+          d.classList.remove("filled", "error");
+          if (i < entered.length) d.classList.add("filled");
+        }
+      }
+
+      function addDigit(d) {
+        if (entered.length >= 3) return;
+        entered += d;
+        updateDots();
+        if (entered.length === 3) setTimeout(checkPin, 300);
+      }
+
+      function delDigit() {
+        entered = entered.slice(0, -1);
+        document.getElementById("errorMsg").textContent = "";
+        updateDots();
+      }
+
+      function checkPin() {
+        if (entered === CORRECT) {
+          // SUCCESS
+          for (let i = 0; i < 3; i++) document.getElementById("dot" + i).classList.add("success");
+          setTimeout(() => {
+            document.getElementById("lockedView").classList.add("hide");
+            document.getElementById("unlockedView").classList.add("show");
+            document.getElementById("evidenceReveal").classList.add("show");
+            document.querySelector(".header-badge").textContent = "✓ DEVICE UNLOCKED";
+            document.querySelector(".header-badge").style.color = "var(--green)";
+            document.querySelector(".header-badge").style.animation = "none";
+          }, 600);
+        } else {
+          attempts++;
+          for (let i = 0; i < 3; i++) document.getElementById("dot" + i).classList.add("error");
+          const remaining = MAX_ATTEMPTS - attempts;
+          document.getElementById("errorMsg").textContent = "✗ INCORRECT PIN";
+          if (remaining <= 3 && remaining > 0) {
+            document.getElementById("attemptsLeft").textContent =
+              `${remaining} attempt${remaining > 1 ? "s" : ""} remaining before lockout`;
+          } else if (remaining <= 0) {
+            document.getElementById("errorMsg").textContent =
+              "⚠ DEVICE LOCKED — MAX ATTEMPTS REACHED";
+            document.querySelectorAll(".num-btn").forEach((b) => (b.disabled = true));
+            return;
+          }
+          setTimeout(() => {
+            entered = "";
+            updateDots();
+            for (let i = 0; i < 3; i++) {
+              document.getElementById("dot" + i).classList.remove("error");
+            }
+            document.getElementById("errorMsg").textContent = "";
+          }, 800);
+        }
+      }
+
+      function openPhoto() {
+        document.getElementById("photoViewer").classList.add("show");
+      }
+      function closePhoto() {
+        document.getElementById("photoViewer").classList.remove("show");
+      }
+
+      // Clock
+      function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, "0");
+        const m = String(now.getMinutes()).padStart(2, "0");
+        document.getElementById("phoneTime").textContent = h + ":" + m;
+      }
+      updateClock();
+      setInterval(updateClock, 30000);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NODE 04 // SERVER ADMIN</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --green: #00ff41;
+        --green-dim: #00cc33;
+        --green-dark: #003300;
+        --red: #ff3333;
+        --amber: #ffb700;
+        --blue: #00b4ff;
+        --font: "Share Tech Mono", monospace;
+      }
+      body {
+        background: #000;
+        color: var(--green);
+        font-family: var(--font);
+        min-height: 100vh;
+        cursor: crosshair;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 65, 0.012) 2px,
+          rgba(0, 255, 65, 0.012) 4px
+        );
+        pointer-events: none;
+        z-index: 9999;
+      }
+      .header {
+        border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(0, 0, 0, 0.97);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .back-btn {
+        color: var(--green-dim);
+        text-decoration: none;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 6px 12px;
+        transition: all 0.2s;
+      }
+      .back-btn:hover {
+        border-color: var(--green);
+      }
+      .header-title {
+        font-size: 0.85rem;
+        letter-spacing: 4px;
+      }
+      .header-badge {
+        font-size: 0.65rem;
+        color: var(--red);
+        margin-left: auto;
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      .main {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 32px 24px 60px;
+      }
+      .page-title {
+        font-size: 1.4rem;
+        letter-spacing: 6px;
+        margin-bottom: 6px;
+      }
+      .page-sub {
+        font-size: 0.72rem;
+        color: #555;
+        letter-spacing: 3px;
+        margin-bottom: 32px;
+      }
+
+      .section {
+        background: #030803;
+        border: 1px solid rgba(0, 255, 65, 0.12);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 2px;
+      }
+      .section h2 {
+        font-size: 0.82rem;
+        letter-spacing: 4px;
+        color: var(--green);
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+        padding-bottom: 10px;
+      }
+
+      /* LOG TERMINAL */
+      .log-terminal {
+        background: #000;
+        border: 1px solid rgba(0, 255, 65, 0.1);
+        padding: 20px;
+        font-size: 0.72rem;
+        line-height: 2;
+        overflow-x: auto;
+        margin-bottom: 12px;
+      }
+      .log-line {
+        display: block;
+        color: #555;
+      }
+      .log-line .ts {
+        color: #333;
+        margin-right: 12px;
+      }
+      .log-line .action {
+        color: #777;
+      }
+      .log-line .user {
+        color: var(--green-dim);
+      }
+      .log-line.warn .action {
+        color: var(--amber);
+      }
+      .log-line.warn .user {
+        color: var(--amber);
+      }
+      .log-line.critical {
+        background: rgba(255, 51, 51, 0.05);
+        border-left: 2px solid var(--red);
+        padding-left: 8px;
+      }
+      .log-line.critical .action {
+        color: var(--red);
+      }
+      .log-line.critical .user {
+        color: var(--red);
+      }
+      .log-line.highlight {
+        background: rgba(255, 183, 0, 0.04);
+        border-left: 2px solid var(--amber);
+        padding-left: 8px;
+      }
+      .log-line.highlight .action {
+        color: var(--amber);
+      }
+
+      .flag {
+        display: inline-block;
+        background: rgba(255, 51, 51, 0.1);
+        border: 1px solid rgba(255, 51, 51, 0.3);
+        color: var(--red);
+        font-size: 0.65rem;
+        padding: 3px 8px;
+        letter-spacing: 1px;
+        margin: 6px 0;
+      }
+      .flag.amber {
+        background: rgba(255, 183, 0, 0.1);
+        border-color: rgba(255, 183, 0, 0.3);
+        color: var(--amber);
+      }
+      .flag.green {
+        background: rgba(0, 255, 65, 0.05);
+        border-color: rgba(0, 255, 65, 0.2);
+        color: var(--green-dim);
+      }
+
+      .annotation {
+        background: rgba(255, 183, 0, 0.04);
+        border: 1px solid rgba(255, 183, 0, 0.2);
+        border-left: 3px solid var(--amber);
+        padding: 14px 18px;
+        margin: 16px 0;
+        font-size: 0.75rem;
+        color: #bbb;
+        line-height: 1.8;
+      }
+      .annotation .label {
+        color: var(--amber);
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.7rem;
+        margin: 12px 0;
+      }
+      .data-table th {
+        padding: 8px 12px;
+        background: #050f05;
+        color: var(--green-dim);
+        text-align: left;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.15);
+        letter-spacing: 1px;
+        font-size: 0.62rem;
+      }
+      .data-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.05);
+        color: #666;
+      }
+      .data-table td.mono {
+        font-family: var(--font);
+      }
+      .data-table td.red {
+        color: var(--red);
+      }
+      .data-table td.amber {
+        color: var(--amber);
+      }
+      .data-table td.green {
+        color: var(--green-dim);
+      }
+      .data-table tr.critical td {
+        background: #080200;
+        color: #aaa;
+      }
+      .data-table tr:hover td {
+        background: #030803;
+      }
+
+      /* AHMED STATEMENT */
+      .statement {
+        background: #050508;
+        border: 1px solid rgba(0, 180, 255, 0.12);
+        border-left: 3px solid var(--blue);
+        padding: 20px;
+        font-size: 0.78rem;
+        color: #aaa;
+        line-height: 1.9;
+      }
+      .statement .speaker {
+        font-size: 0.65rem;
+        color: var(--blue);
+        letter-spacing: 3px;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      /* KEYLOGGER ANALYSIS */
+      .device-analysis {
+        background: #080300;
+        border: 2px solid rgba(255, 183, 0, 0.25);
+        padding: 20px;
+        margin-top: 12px;
+      }
+      .device-analysis h3 {
+        color: var(--amber);
+        font-size: 0.78rem;
+        letter-spacing: 3px;
+        margin-bottom: 14px;
+      }
+      .device-field {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 8px;
+        font-size: 0.72rem;
+      }
+      .device-field .key {
+        color: var(--green-dim);
+        min-width: 220px;
+      }
+      .device-field .val {
+        color: #aaa;
+      }
+      .device-field .val.red {
+        color: var(--red);
+      }
+      .device-field .val.amber {
+        color: var(--amber);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <a href="index.html" class="back-btn">← BACK</a>
+      <div class="header-title">NODE 04 // SERVER ADMIN PANEL</div>
+      <div class="header-badge">⚠ ROOT ACCESS REQUIRED</div>
+    </div>
+
+    <div class="main">
+      <div class="page-title">&gt;_ SERVER ADMIN PANEL</div>
+      <div class="page-sub">
+        ACCESS LOGS // INFRASTRUCTURE COMMANDS // KEYLOGGER ANALYSIS — CASE #CC-2025-0001
+      </div>
+
+      <!-- ACCESS LOG -->
+      <div class="section">
+        <h2>🔐 FULL ACCESS LOG — AHMED'S COMPLETE QUERY — 04:38 AM</h2>
+        <div class="annotation">
+          <span class="label">&gt;_ AHMED'S NOTE</span>
+          Standard access log only shows registered badge swipes. I ran a full query including
+          unregistered events — something the default UI doesn't surface. Found three unregistered
+          entries total across the night. All in the basement. All within Hazem's confirmed movement
+          windows. Also found: the badge alert suppression at 22:48 and the infrastructure panel
+          commands. Sharing the raw output below.
+        </div>
+        <div class="log-terminal">
+          <span class="log-line"
+            ><span class="ts">[22:00:03]</span><span class="user">SYSTEM</span>
+            <span class="action"
+              >— EVENT_START: All door systems nominal. Badge alert: ACTIVE</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[22:48:03]</span
+            ><span class="log-line critical"
+              ><span class="user">ADMIN_HZ</span>
+              <span class="action"
+                >— CMD: SUPPRESS_ALERT(type=badge_unregistered) | SCOPE: ALL_DOORS | STATUS:
+                EXECUTED</span
+              ></span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[22:49:14]</span><span class="user">AHMED</span>
+            <span class="action">— QUERY: server_status() | RESPONSE: nominal</span></span
+          >
+          <span class="log-line"
+            ><span class="ts">[23:05:22]</span><span class="user">AHMED</span>
+            <span class="action">— DEPLOY: scoreboard_sync_v2 | STATUS: OK</span></span
+          >
+          <span class="log-line warn"
+            ><span class="ts">[23:41:17]</span><span class="user">ADMIN_HZ</span>
+            <span class="action"
+              >— INSTALL: keylog_daemon_v3.bin → /srv/ctf/hidden/.sys | PROCESS: bg | SILENT:
+              true</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[00:12:41]</span><span class="user">MOHI</span>
+            <span class="action"
+              >— ACCESS: SERVER_ROOM_B (physical badge) | ENTRY: routine_check</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[00:31:09]</span><span class="user">MOHI</span>
+            <span class="action">— EXIT: SERVER_ROOM_B</span></span
+          >
+          <span class="log-line warn"
+            ><span class="ts">[01:14:55]</span><span class="user">ADMIN_HZ</span>
+            <span class="action"
+              >— TRIGGER_ALERT(zone=HallB, type=power_fluctuation) → DEVICE: AYHEM_STATION</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[01:30:02]</span
+            ><span class="log-line critical"
+              ><span class="user">ADMIN_HZ</span>
+              <span class="action"
+                >— CMD: CLEAR_BUFFER(cam_id=01) | CAM: BASEMENT-CORRIDOR | STATUS: EXECUTED</span
+              ></span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[01:32:17]</span
+            ><span class="log-line critical"
+              ><span class="user">ADMIN_HZ</span>
+              <span class="action"
+                >— CMD: ADJUST_ANGLE(cam_id=07, delta_degrees=-12) | STATUS: EXECUTED</span
+              ></span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[01:38:04]</span><span class="user">MOHI</span>
+            <span class="action"
+              >— ACCESS: SERVER_ROOM_B (physical badge) | ENTRY: cable_check_B</span
+            ></span
+          >
+          <span class="log-line critical"
+            ><span class="ts">[01:44:11]</span><span class="user">UNREGISTERED_BADGE_0x7F3A</span>
+            <span class="action"
+              >— ACCESS: SERVER_ROOM_B | NO ID MATCH | ALERT: SUPPRESSED</span
+            ></span
+          >
+          <span class="log-line critical"
+            ><span class="ts">[01:51:03]</span><span class="user">UNREGISTERED_BADGE_0x7F3A</span>
+            <span class="action">— EXIT: SERVER_ROOM_B</span></span
+          >
+          <span class="log-line warn"
+            ><span class="ts">[01:55:00]</span><span class="user">HAZEM_COMP</span>
+            <span class="action"
+              >— SCOREBOARD: flag_submit(challenge=04, value=CTF{r3v3rs3_3ng1n33r}) |
+              AUTO_SCRIPT_DETECTED ⚠</span
+            ></span
+          >
+          <span class="log-line warn"
+            ><span class="ts">[02:03:00]</span><span class="user">HAZEM_COMP</span>
+            <span class="action"
+              >— SCOREBOARD: flag_submit(challenge=06, value=CTF{buff3r_0v3rfl0w}) |
+              AUTO_SCRIPT_DETECTED ⚠</span
+            ></span
+          >
+          <span class="log-line warn"
+            ><span class="ts">[02:11:00]</span><span class="user">HAZEM_COMP</span>
+            <span class="action"
+              >— SCOREBOARD: flag_submit(challenge=08, value=CTF{sql_1nj3ct10n}) |
+              AUTO_SCRIPT_DETECTED ⚠</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[02:36:07]</span><span class="user">CHAHD</span>
+            <span class="action">— QUERY: network_traffic_analysis | ANOMALY_FLAG: true</span></span
+          >
+          <span class="log-line critical"
+            ><span class="ts">[03:10:44]</span><span class="user">ADMIN_HZ</span>
+            <span class="action"
+              >— CMD: CLEAR_BUFFER(cam_id=12) | CAM: 3F-FIRE-EXIT | STATUS: EXECUTED</span
+            ></span
+          >
+          <span class="log-line critical"
+            ><span class="ts">[03:11:09]</span><span class="user">ADMIN_HZ</span>
+            <span class="action"
+              >— READ: coordinator_channel | MSG_ID: GHF-3311 | SENDER: GHOFRANE | CONTENT: badge
+              anomaly</span
+            ></span
+          >
+          <span class="log-line highlight"
+            ><span class="ts">[03:14:07]</span><span class="user">YASSINE</span>
+            <span class="action"
+              >— READ: MSG_ID: GHF-3311 | STATUS: READ_RECEIPT_CONFIRMED</span
+            ></span
+          >
+          <span class="log-line critical"
+            ><span class="ts">[03:16:00]</span><span class="user">UNREGISTERED_BADGE_0x7F3A</span>
+            <span class="action"
+              >— ACCESS: CORRIDOR_3F_FIRE_EXIT | NO ID MATCH | ALERT: SUPPRESSED</span
+            ></span
+          >
+          <span class="log-line critical"
+            ><span class="ts">[03:21:44]</span><span class="user">UNREGISTERED_BADGE_0x7F3A</span>
+            <span class="action">— EXIT: CORRIDOR_3F_FIRE_EXIT</span></span
+          >
+          <span class="log-line"
+            ><span class="ts">[03:33:15]</span><span class="user">YASSINE</span>
+            <span class="action"
+              >— MESSAGE: coordinator_channel | REPLY: MSG_ID: GHF-3311 | TEXT: "just saw this.
+              where are you?"</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[03:41:22]</span><span class="user">AHMED</span>
+            <span class="action"
+              >— ALERT: body_found_3f_exit | EMERGENCY_PROTOCOL: INITIATED</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[03:52:07]</span><span class="user">CHAHD</span>
+            <span class="action"
+              >— ALERT: body_found_server_room_b | EMERGENCY_PROTOCOL: ACTIVE</span
+            ></span
+          >
+        </div>
+        <div class="flag">
+          ☠ UNREGISTERED_BADGE_0x7F3A APPEARS 3 TIMES — BOTH MURDER SCENES, EXACT WINDOWS. THIS IS
+          HAZEM'S CLONED BADGE.
+        </div>
+        <div class="flag amber">
+          ⚠ ALL 6 ADMIN_HZ COMMANDS EXECUTED FROM A SINGLE ACCOUNT — HAZEM'S PRE-EVENT CREDENTIALS
+          NEVER REVOKED
+        </div>
+        <div class="flag amber">
+          ⚠ AUTO_SCRIPT_DETECTED ON ALL HAZEM FLAG SUBMISSIONS — SEE FULL ANALYSIS IN NODE 08
+        </div>
+      </div>
+
+      <!-- BADGE CLONE ANALYSIS -->
+      <div class="section">
+        <h2>🔑 BADGE CLONE ANALYSIS — ID: 0x7F3A</h2>
+        <div class="device-analysis">
+          <h3>CLONED BADGE — TECHNICAL BREAKDOWN</h3>
+          <div class="device-field">
+            <span class="key">Badge ID detected:</span
+            ><span class="val red">0x7F3A — NOT IN REGISTERED LIST</span>
+          </div>
+          <div class="device-field">
+            <span class="key">Signal characteristics:</span
+            ><span class="val">MIFARE Classic 1K — standard event badge protocol</span>
+          </div>
+          <div class="device-field">
+            <span class="key">Source badge (cloned from):</span
+            ><span class="val amber">GHOFRANE MABROUK — Badge ID 0x7F39</span>
+          </div>
+          <div class="device-field">
+            <span class="key">Clone detection:</span
+            ><span class="val"
+              >Sequential ID offset (+1 from source) — textbook clone artifact</span
+            >
+          </div>
+          <div class="device-field">
+            <span class="key">Clone creation window:</span
+            ><span class="val"
+              >PRE-EVENT SETUP — Hazem had physical access to Ghofrane's badge when coordinating
+              volunteer check-in</span
+            >
+          </div>
+          <div class="device-field">
+            <span class="key">Cloning device required:</span
+            ><span class="val">Proxmark3 or equivalent — portable, concealable</span>
+          </div>
+          <div class="device-field">
+            <span class="key">Physical badge recovered:</span
+            ><span class="val red">NOT YET FOUND — HAZEM'S BELONGINGS NOT SEARCHED</span>
+          </div>
+        </div>
+        <div class="annotation">
+          <span class="label">&gt;_ INVESTIGATOR NOTE — THE IRONY</span>
+          The badge Hazem used to enter the rooms where he committed both murders was cloned from
+          Ghofrane Mabrouk's own access card. The same woman who would later discover the badge log
+          anomaly, write his name in her notes, and die because of it — her badge opened both murder
+          scenes. Hazem cloned it during pre-event setup coordination, when handling volunteer
+          credentials was routine and unquestioned.
+        </div>
+      </div>
+
+      <!-- KEYLOGGER -->
+      <div class="section">
+        <h2>💾 HARDWARE KEYLOGGER — RECOVERED DEVICE ANALYSIS</h2>
+        <div class="annotation">
+          <span class="label">&gt;_ DEVICE STATUS</span>
+          The hardware keylogger photographed by Mohi at 01:28 AM was recovered from Server Room B
+          during the 04:00 AM sweep. Mohi had not removed it — he photographed it and left to find
+          Hazem. The device was still in place. Chahd extracted its firmware for analysis.
+        </div>
+        <div class="device-analysis">
+          <h3>KEYLOGGER DEVICE — FORENSIC EXTRACTION</h3>
+          <div class="device-field">
+            <span class="key">Device type:</span
+            ><span class="val">Hardware keylogger — USB pass-through variant</span>
+          </div>
+          <div class="device-field">
+            <span class="key">Installation location:</span
+            ><span class="val">Primary competition server — USB hub, port 3</span>
+          </div>
+          <div class="device-field">
+            <span class="key">Data captured:</span
+            ><span class="val amber">All keystrokes from 22:00–01:47 AM — 1h47m of data</span>
+          </div>
+          <div class="device-field">
+            <span class="key">Data includes:</span
+            ><span class="val red"
+              >Flag submissions, participant credentials, challenge solutions, admin commands</span
+            >
+          </div>
+          <div class="device-field">
+            <span class="key">Firmware signature:</span
+            ><span class="val amber">KL-DAEMON-v3 // BUILD: 20241108 // BATCH: PRIV-INT-07</span>
+          </div>
+          <div class="device-field">
+            <span class="key">Firmware database match:</span
+            ><span class="val red">MATCHED — 2024 HackTN SECURITY INCIDENT REPORT (see below)</span>
+          </div>
+          <div class="device-field">
+            <span class="key">Fingerprints on device:</span
+            ><span class="val red">SINGLE SET — RIGHT THUMB + INDEX — AWAITING MATCH</span>
+          </div>
+          <div class="device-field">
+            <span class="key">Software companion (server):</span
+            ><span class="val red">keylog_daemon_v3.bin — INSTALLED 23:41 PM BY ADMIN_HZ</span>
+          </div>
+        </div>
+        <div class="flag">
+          ☠ FIRMWARE BATCH "PRIV-INT-07" APPEARED IN A 2024 HACKTN INCIDENT REPORT — FARES
+          RECOGNIZES THIS BATCH NUMBER
+        </div>
+
+        <div class="statement" style="margin-top: 16px">
+          <span class="speaker">// FARES — STATEMENT — 04:51 AM</span>
+          When Chahd showed me the firmware string — KL-DAEMON-v3, BATCH: PRIV-INT-07 — I recognized
+          it immediately. At HackTN 2024, three teams had their flag submissions intercepted before
+          they could submit. The post-incident report identified the same firmware batch. It was
+          traced to a device sourced from a private intelligence contractor — the report named the
+          batch but couldn't identify the operator.<br /><br />
+          I competed at HackTN 2024. The participant who placed suspiciously high that year — using
+          a pseudonym — I didn't think much of it at the time. Looking at the profile Chahd pulled:
+          same competition style, same challenge selection pattern, same firmware. Different name.
+          This is the same person.<br /><br />
+          <strong
+            >The name used at HackTN 2024 was different. But the photo on the old profile — that's
+            not the Hazem I know from the community. This person has been operating under borrowed
+            identities across multiple events.</strong
+          >
+        </div>
+        <div class="flag amber">
+          ⚠ HAZEM IS USING A STOLEN CTF IDENTITY — FARES CONFIRMS HE IS NOT THE REAL HAZEM FROM THE
+          COMMUNITY
+        </div>
+      </div>
+
+      <!-- AHMED STATEMENT -->
+      <div class="section">
+        <h2>⚙️ SYSTEM ADMIN STATEMENT — AHMED</h2>
+        <div class="statement">
+          <span class="speaker">// AHMED — SYSTEM ADMIN — STATEMENT — 04:12 AM</span>
+          I granted Hazem admin access to the infrastructure panel on setup day — I think it was 3
+          or 4 days before the event. He was coordinating the volunteer tech team, handling server
+          configuration and cabling. Yassine introduced him to me directly. I had no reason to
+          question it.<br /><br />
+          The access was supposed to be temporary — setup-phase only. I forgot to revoke it. That's
+          on me. I never revoked it after setup was complete, which means he had root-level access
+          to the infrastructure panel during the entire event.<br /><br />
+          When I ran the full access log query tonight — not the standard one, the complete one with
+          unregistered events — I nearly couldn't process what I was seeing. He suppressed the badge
+          alert before the event started. He cleared two camera buffers exactly when he needed them
+          cleared. He generated the fake alert that pulled Ayhem away from the monitoring station.
+          He read Ghofrane's message three minutes before she died.<br /><br />
+          <strong
+            >He planned both murders before the event started. He knew exactly which cameras to
+            clear, which alerts to suppress, and how long he had between actions. He used the
+            infrastructure I gave him access to as a murder toolkit.</strong
+          >
+        </div>
+        <div class="flag">
+          ⚠ AHMED IS NOT CRIMINALLY RESPONSIBLE — HE WAS DECEIVED. ADMIN ACCESS WAS LEGITIMATELY
+          GRANTED AND SHOULD HAVE BEEN REVOKED POST-SETUP.
+        </div>
+      </div>
+
+      <!-- ACCESS GRANT TABLE -->
+      <div class="section">
+        <h2>📋 ADMIN ACCESS GRANT HISTORY — INFRASTRUCTURE PANEL</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>USER</th>
+              <th>ACCESS LEVEL</th>
+              <th>GRANTED BY</th>
+              <th>DATE GRANTED</th>
+              <th>DATE REVOKED</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>AHMED</td>
+              <td>ROOT</td>
+              <td>SYSTEM</td>
+              <td>EVENT SETUP</td>
+              <td>N/A</td>
+              <td class="green">ACTIVE (AUTHORIZED)</td>
+            </tr>
+            <tr>
+              <td>YASSINE</td>
+              <td>DIRECTOR</td>
+              <td>AHMED</td>
+              <td>EVENT SETUP</td>
+              <td>N/A</td>
+              <td class="green">ACTIVE (AUTHORIZED)</td>
+            </tr>
+            <tr>
+              <td>AYHEM</td>
+              <td>MONITOR</td>
+              <td>AHMED</td>
+              <td>EVENT SETUP</td>
+              <td>N/A</td>
+              <td class="green">ACTIVE (AUTHORIZED)</td>
+            </tr>
+            <tr class="critical">
+              <td>ADMIN_HZ (HAZEM)</td>
+              <td class="red">ROOT</td>
+              <td>AHMED</td>
+              <td class="amber">4 DAYS PRE-EVENT</td>
+              <td class="red">NEVER REVOKED</td>
+              <td class="red">ACTIVE — UNAUTHORIZED RETAINED</td>
+            </tr>
+            <tr>
+              <td>CHAHD</td>
+              <td>MONITOR</td>
+              <td>AHMED</td>
+              <td>EVENT NIGHT</td>
+              <td>N/A</td>
+              <td class="green">ACTIVE (AUTHORIZED)</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="flag">
+          ⚠ HAZEM'S ROOT ACCESS WAS NEVER REVOKED. HE RETAINED FULL INFRASTRUCTURE CONTROL FROM
+          PRE-EVENT SETUP THROUGH BOTH MURDERS.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NODE 02 // POLICE DATABASE</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --green: #00ff41;
+        --green-dim: #00cc33;
+        --green-dark: #003300;
+        --red: #ff3333;
+        --amber: #ffb700;
+        --blue: #00b4ff;
+        --font: "Share Tech Mono", monospace;
+      }
+      body {
+        background: #000;
+        color: var(--green);
+        font-family: var(--font);
+        min-height: 100vh;
+        cursor: crosshair;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 65, 0.012) 2px,
+          rgba(0, 255, 65, 0.012) 4px
+        );
+        pointer-events: none;
+        z-index: 9999;
+      }
+
+      .header {
+        border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(0, 0, 0, 0.97);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .back-btn {
+        color: var(--green-dim);
+        text-decoration: none;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 6px 12px;
+        transition: all 0.2s;
+      }
+      .back-btn:hover {
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .header-title {
+        font-size: 0.85rem;
+        letter-spacing: 4px;
+        color: var(--green);
+      }
+      .header-badge {
+        font-size: 0.65rem;
+        color: var(--red);
+        margin-left: auto;
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      .main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 24px 60px;
+      }
+      .page-title {
+        font-size: 1.4rem;
+        letter-spacing: 6px;
+        margin-bottom: 6px;
+      }
+      .page-sub {
+        font-size: 0.72rem;
+        color: #555;
+        letter-spacing: 3px;
+        margin-bottom: 32px;
+      }
+
+      /* INCIDENT REPORTS */
+      .incident-card {
+        background: #050a05;
+        border: 1px solid rgba(0, 255, 65, 0.15);
+        border-left: 4px solid var(--red);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 2px;
+      }
+      .incident-card h2 {
+        color: var(--red);
+        font-size: 0.9rem;
+        letter-spacing: 4px;
+        margin-bottom: 16px;
+      }
+      .incident-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .field label {
+        font-size: 0.62rem;
+        color: #444;
+        letter-spacing: 2px;
+      }
+      .field span {
+        font-size: 0.8rem;
+        color: #ccc;
+      }
+      .field span.red {
+        color: var(--red);
+      }
+      .field span.amber {
+        color: var(--amber);
+      }
+      .narrative {
+        background: #000;
+        border: 1px solid rgba(0, 255, 65, 0.1);
+        padding: 16px;
+        font-size: 0.78rem;
+        color: #aaa;
+        line-height: 1.9;
+        margin-top: 12px;
+      }
+      .narrative strong {
+        color: var(--green);
+      }
+
+      /* MEDICAL EXAMINER */
+      .me-card {
+        background: #080505;
+        border: 1px solid rgba(255, 51, 51, 0.2);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 2px;
+      }
+      .me-card h2 {
+        color: var(--red);
+        font-size: 0.9rem;
+        letter-spacing: 4px;
+        margin-bottom: 16px;
+      }
+      .me-finding {
+        background: #000;
+        border-left: 3px solid var(--red);
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        font-size: 0.78rem;
+        color: #bbb;
+        line-height: 1.8;
+      }
+      .me-finding .key {
+        color: var(--amber);
+        display: block;
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+      }
+      .flag {
+        display: inline-block;
+        background: rgba(255, 51, 51, 0.1);
+        border: 1px solid rgba(255, 51, 51, 0.3);
+        color: var(--red);
+        font-size: 0.65rem;
+        padding: 3px 8px;
+        letter-spacing: 1px;
+        margin: 4px 0;
+      }
+      .flag.amber {
+        background: rgba(255, 183, 0, 0.1);
+        border-color: rgba(255, 183, 0, 0.3);
+        color: var(--amber);
+      }
+      .flag.green {
+        background: rgba(0, 255, 65, 0.05);
+        border-color: rgba(0, 255, 65, 0.2);
+        color: var(--green);
+      }
+
+      /* SUSPECTS */
+      .suspects-section h2 {
+        font-size: 0.8rem;
+        letter-spacing: 4px;
+        color: var(--green-dim);
+        border-bottom: 1px solid rgba(0, 255, 65, 0.15);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      .suspect-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+      .suspect-card {
+        background: #030803;
+        border: 1px solid rgba(0, 255, 65, 0.12);
+        padding: 20px;
+        border-radius: 2px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .suspect-card:hover {
+        border-color: var(--green);
+        box-shadow: 0 0 16px rgba(0, 255, 65, 0.06);
+      }
+      .suspect-card.killer {
+        border-color: rgba(255, 51, 51, 0.2);
+      }
+      .suspect-card.victim {
+        border-color: rgba(255, 51, 51, 0.4);
+        background: #080303;
+      }
+      .suspect-card.decoy {
+        border-color: rgba(255, 183, 0, 0.2);
+      }
+      .suspect-card.liar {
+        border-color: rgba(255, 183, 0, 0.2);
+      }
+      .suspect-card.cleared {
+        opacity: 0.6;
+      }
+      .s-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .s-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        font-weight: bold;
+        flex-shrink: 0;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+      }
+      .s-avatar.red {
+        background: rgba(255, 51, 51, 0.1);
+        border-color: rgba(255, 51, 51, 0.3);
+      }
+      .s-avatar.amber {
+        background: rgba(255, 183, 0, 0.1);
+        border-color: rgba(255, 183, 0, 0.3);
+      }
+      .s-avatar.green {
+        background: rgba(0, 255, 65, 0.05);
+        border-color: rgba(0, 255, 65, 0.2);
+      }
+      .s-avatar.gray {
+        background: rgba(100, 100, 100, 0.1);
+        border-color: rgba(100, 100, 100, 0.2);
+      }
+      .s-name {
+        font-size: 0.9rem;
+        color: var(--green);
+        letter-spacing: 2px;
+      }
+      .s-role {
+        font-size: 0.65rem;
+        color: #555;
+        letter-spacing: 1px;
+        margin-top: 2px;
+      }
+      .s-status {
+        font-size: 0.62rem;
+        margin-top: 4px;
+      }
+      .status-suspect {
+        color: var(--amber);
+      }
+      .status-victim {
+        color: var(--red);
+      }
+      .status-cleared {
+        color: var(--green-dim);
+      }
+      .status-poi {
+        color: #00b4ff;
+      }
+      .s-body {
+        font-size: 0.72rem;
+        color: #777;
+        line-height: 1.8;
+      }
+      .s-body strong {
+        color: #aaa;
+      }
+      .s-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 12px;
+      }
+      .s-tag {
+        font-size: 0.6rem;
+        padding: 2px 7px;
+        border-radius: 1px;
+      }
+      .tag-red {
+        background: rgba(255, 51, 51, 0.1);
+        color: var(--red);
+        border: 1px solid rgba(255, 51, 51, 0.2);
+      }
+      .tag-amber {
+        background: rgba(255, 183, 0, 0.1);
+        color: var(--amber);
+        border: 1px solid rgba(255, 183, 0, 0.2);
+      }
+      .tag-green {
+        background: rgba(0, 255, 65, 0.05);
+        color: var(--green-dim);
+        border: 1px solid rgba(0, 255, 65, 0.15);
+      }
+      .tag-blue {
+        background: rgba(0, 180, 255, 0.05);
+        color: #00b4ff;
+        border: 1px solid rgba(0, 180, 255, 0.15);
+      }
+
+      /* TIMELINE */
+      .timeline {
+        margin-top: 24px;
+      }
+      .timeline h2 {
+        font-size: 0.8rem;
+        letter-spacing: 4px;
+        color: var(--green-dim);
+        border-bottom: 1px solid rgba(0, 255, 65, 0.15);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      .tl-item {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 0;
+        position: relative;
+      }
+      .tl-item::before {
+        content: "";
+        position: absolute;
+        left: 63px;
+        top: 20px;
+        bottom: -20px;
+        width: 1px;
+        background: rgba(0, 255, 65, 0.1);
+      }
+      .tl-item:last-child::before {
+        display: none;
+      }
+      .tl-time {
+        font-size: 0.72rem;
+        color: var(--green-dim);
+        min-width: 60px;
+        padding-top: 4px;
+        text-align: right;
+      }
+      .tl-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 6px;
+        border: 1px solid;
+      }
+      .tl-dot.red {
+        background: rgba(255, 51, 51, 0.3);
+        border-color: var(--red);
+      }
+      .tl-dot.green {
+        background: rgba(0, 255, 65, 0.1);
+        border-color: var(--green);
+      }
+      .tl-dot.amber {
+        background: rgba(255, 183, 0, 0.1);
+        border-color: var(--amber);
+      }
+      .tl-content {
+        flex: 1;
+        background: #030803;
+        border: 1px solid rgba(0, 255, 65, 0.08);
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        font-size: 0.75rem;
+        color: #888;
+        line-height: 1.7;
+      }
+      .tl-content strong {
+        color: #bbb;
+      }
+      .tl-content .highlight {
+        color: var(--red);
+      }
+      .tl-content .highlight-amber {
+        color: var(--amber);
+      }
+
+      /* RAHMA EVIDENCE */
+      .evidence-spotlight {
+        background: #050a00;
+        border: 2px solid rgba(255, 183, 0, 0.3);
+        padding: 20px;
+        margin: 24px 0;
+        border-radius: 2px;
+      }
+      .evidence-spotlight h3 {
+        color: var(--amber);
+        font-size: 0.8rem;
+        letter-spacing: 3px;
+        margin-bottom: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <a href="index.html" class="back-btn">← BACK</a>
+      <div class="header-title">NODE 02 // POLICE DATABASE</div>
+      <div class="header-badge">⚠ CLASSIFIED — LAW ENFORCEMENT ONLY</div>
+    </div>
+
+    <div class="main">
+      <div class="page-title">&gt;_ POLICE DATABASE</div>
+      <div class="page-sub">
+        INCIDENT REPORTS // SUSPECT PROFILES // FORENSIC FINDINGS — CASE #CC-2025-0001
+      </div>
+
+      <!-- INCIDENT REPORT 1 -->
+      <div class="incident-card">
+        <h2>📋 INCIDENT REPORT #001 — VICTIM: MOHI</h2>
+        <div class="incident-grid">
+          <div class="field">
+            <label>VICTIM</label><span>MOHI — Volunteer Network Technician</span>
+          </div>
+          <div class="field">
+            <label>TIME OF DISCOVERY</label><span class="red">03:52 AM — May 03</span>
+          </div>
+          <div class="field">
+            <label>LOCATION</label><span>Server Room B — Basement Level</span>
+          </div>
+          <div class="field">
+            <label>DISCOVERED BY</label><span>CHAHD — Network Monitor Volunteer</span>
+          </div>
+          <div class="field">
+            <label>INITIAL CLASSIFICATION</label><span class="amber">Electrical Accident</span>
+          </div>
+          <div class="field">
+            <label>REVISED CLASSIFICATION</label><span class="red">HOMICIDE — STAGED ACCIDENT</span>
+          </div>
+        </div>
+        <div class="narrative">
+          <strong>First Responder Notes:</strong> Victim found slumped against primary server rack
+          in Server Room B. Right hand shows burn marks consistent with electrical contact from
+          power cable. Cable identified as a modified CAT6 junction with exposed copper at the
+          grounding point.
+          <strong>However: the cable burn pattern is inconsistent with accidental contact.</strong>
+          Victim's body position suggests he fell forward toward the rack — not backward as expected
+          from an electrical shock response. Head trauma on the posterior cranium, inconsistent with
+          a forward fall. <br /><br />
+          Mohi's phone was found 1.4 meters from his body — ejected during the fall. Phone is
+          locked.
+          <strong
+            >Employee number on volunteer roster required to unlock. Volunteer roster located in
+            NODE 05 (IEEE Portal).</strong
+          >
+        </div>
+        <div class="flag">
+          ⚠ MEDICAL EXAMINER: CAUSE OF DEATH — BLUNT FORCE TRAUMA. ELECTRICAL BURN MARKS ARE
+          POST-MORTEM STAGING.
+        </div>
+      </div>
+
+      <!-- INCIDENT REPORT 2 -->
+      <div class="incident-card">
+        <h2>📋 INCIDENT REPORT #002 — VICTIM: GHOFRANE</h2>
+        <div class="incident-grid">
+          <div class="field"><label>VICTIM</label><span>GHOFRANE — Event Coordinator</span></div>
+          <div class="field">
+            <label>TIME OF DISCOVERY</label><span class="red">03:41 AM — May 03</span>
+          </div>
+          <div class="field">
+            <label>LOCATION</label><span>Fire Exit Corridor — 3rd Floor</span>
+          </div>
+          <div class="field"><label>DISCOVERED BY</label><span>AHMED — System Admin</span></div>
+          <div class="field">
+            <label>INITIAL CLASSIFICATION</label
+            ><span class="amber">Accidental Fall / Medical Incident</span>
+          </div>
+          <div class="field">
+            <label>REVISED CLASSIFICATION</label><span class="red">HOMICIDE — BLUNT FORCE</span>
+          </div>
+        </div>
+        <div class="narrative">
+          <strong>First Responder Notes:</strong> Victim found in fire exit corridor, 3rd floor.
+          Tablet found beside body — screen face down. Tablet was wiped before being dropped.
+          <strong>The wipe was incomplete — cache recovery in progress (see NODE 07).</strong> Body
+          positioned near the emergency staircase exit door. No signs of struggle in the corridor —
+          the attack was fast and the victim had no time to react. Victim was headed toward the
+          records room when intercepted. <br /><br />
+          <strong>Critical detail:</strong> A small handwritten note was found in the victim's
+          jacket pocket. Partial, crumpled. Legible text:
+          <strong>"Check w/ H__ — basement access during setup — badge?"</strong> The name is
+          partially torn. First letter confirmed: <strong>H.</strong>
+        </div>
+        <div class="flag">
+          ⚠ GHOFRANE WAS KILLED BECAUSE SHE FOUND THE BADGE ANOMALY. THE KILLER SAW HER MESSAGE IN
+          THE COORDINATOR CHANNEL.
+        </div>
+      </div>
+
+      <!-- MEDICAL EXAMINER -->
+      <div class="me-card">
+        <h2>🔬 MEDICAL EXAMINER — PRELIMINARY FINDINGS</h2>
+        <div class="me-finding">
+          <span class="key">VICTIM #1 — MOHI</span>
+          Posterior cranial impact — angle and force inconsistent with accidental fall. Impact
+          direction: horizontal, from behind-right. Electrical burns on right palm are superficial
+          and post-mortem. The cable was placed in contact with the hand after death. Time of death:
+          01:44–01:51 AM. The staged accident was prepared in advance — the modified cable was
+          placed in Server Room B before the event started.
+        </div>
+        <div class="me-finding">
+          <span class="key">VICTIM #2 — GHOFRANE</span>
+          Single blunt force impact to temporal region — right side. Clean, precise. Weapon not
+          recovered. Impact angle suggests the attacker was right-handed, approximately 175–180cm
+          tall. Death was rapid — less than 90 seconds after impact. Time of death: 03:16–03:21 AM.
+          The fire exit corridor has no cameras (camera angle was manually adjusted at 03:11 AM —
+          see NODE 03).
+        </div>
+        <div class="flag amber">
+          📐 ATTACKER HEIGHT ESTIMATE: 175–180cm | RIGHT-HANDED | PREMEDITATED — THE MODIFIED CABLE
+          WAS PREPARED DAYS IN ADVANCE
+        </div>
+      </div>
+
+      <!-- RAHMA EVIDENCE -->
+      <div class="evidence-spotlight">
+        <h3>⏱️ KEY PHYSICAL EVIDENCE — RAHMA'S VENDING MACHINE TIMESTAMP</h3>
+        <div class="narrative" style="margin-top: 0">
+          Rahma purchased a can of coffee from Vending Machine Unit #3, Basement Level, at
+          <strong>01:46:12 AM</strong>. This timestamp is logged automatically by the machine's
+          payment system and cannot be altered retroactively. The vending machine is located
+          <strong>8.3 meters</strong> from Server Room B's entrance door. <br /><br />
+          This means Rahma was in the basement at 01:46 AM — within 60 seconds of Mohi's estimated
+          time of death (01:47 AM). She heard nothing unusual. She saw a figure walking from the
+          server room direction toward the stairwell. Her description of this figure:
+          <br /><br />
+          <strong
+            >"Medium height. Grey or dark hoodie — the kind with the event staff logo on the back.
+            Moving fast. No eye contact. Carrying something — under the left arm, like a jacket
+            folded over something."</strong
+          >
+          <br /><br />
+          The Code & Capture event staff hoodie is grey with the event logo on the back.
+          <strong>Hazem received a staff volunteer hoodie during pre-event setup.</strong> No other
+          participant received a staff hoodie.
+        </div>
+        <div class="flag">
+          ⚠ RAHMA'S DESCRIPTION MATCHES HAZEM'S KNOWN CLOTHING DURING THE EVENT — CONFIRMED BY
+          DARINE'S 01:52 AM PHOTO (SEE NODE 03)
+        </div>
+      </div>
+
+      <!-- SUSPECT GRID -->
+      <div class="suspects-section">
+        <h2>&gt;_ SUSPECT PROFILES // STATUS AS OF 05:00 AM</h2>
+        <div class="suspect-grid">
+          <div class="suspect-card killer">
+            <div class="s-header">
+              <div class="s-avatar red">HZ</div>
+              <div>
+                <div class="s-name">HAZEM</div>
+                <div class="s-role">CTF PARTICIPANT / VOLUNTEER — PRE-EVENT TECH TEAM</div>
+                <div class="s-status status-suspect">⚠ PRIMARY SUSPECT</div>
+              </div>
+            </div>
+            <div class="s-body">
+              <strong>Known facts:</strong> Top-ranked CTF player. Had pre-event admin access to
+              infrastructure. Received staff volunteer hoodie. His competition credentials used for
+              infrastructure panel access at 10:48 PM. Was last person Mohi contacted before death.
+              Seen leaving basement by Ala at ~01:57 AM.<br /><br />
+              <strong>Anomaly:</strong> CTF flag submissions are mathematically regular — exactly
+              480-second intervals for 2+ hours. Statistically impossible for human play.
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-red">PRIME SUSPECT</span
+              ><span class="s-tag tag-red">PRE-EVENT ACCESS</span
+              ><span class="s-tag tag-amber">ALIBI SUSPICIOUS</span>
+            </div>
+          </div>
+
+          <div class="suspect-card victim">
+            <div class="s-header">
+              <div class="s-avatar red">MH</div>
+              <div>
+                <div class="s-name">MOHI</div>
+                <div class="s-role">VOLUNTEER NETWORK TECHNICIAN</div>
+                <div class="s-status status-victim">☠ VICTIM #1</div>
+              </div>
+            </div>
+            <div class="s-body">
+              Found hardware keylogger in Server Room B at 01:28 AM. Photographed it on phone. Made
+              the fatal mistake of informing Hazem — the person who installed it. Killed at
+              01:44–01:51 AM.<br /><br /><strong
+                >His phone contains the keylogger photo — unlock using employee ID from NODE
+                05.</strong
+              >
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-red">DECEASED</span
+              ><span class="s-tag tag-amber">KEY EVIDENCE — LOCKED PHONE</span>
+            </div>
+          </div>
+
+          <div class="suspect-card victim">
+            <div class="s-header">
+              <div class="s-avatar red">GH</div>
+              <div>
+                <div class="s-name">GHOFRANE</div>
+                <div class="s-role">EVENT COORDINATOR</div>
+                <div class="s-status status-victim">☠ VICTIM #2</div>
+              </div>
+            </div>
+            <div class="s-body">
+              Discovered the badge log anomaly while cross-referencing physical vs digital access
+              logs at 03:05 AM. Had Hazem's name written in her notes next to the unregistered badge
+              entry. Killed at 03:16–03:21 AM before she could reach Yassine.<br /><br /><strong
+                >Her tablet cache contains the voice memo — see NODE 07.</strong
+              >
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-red">DECEASED</span
+              ><span class="s-tag tag-amber">KEY EVIDENCE — TABLET CACHE</span>
+            </div>
+          </div>
+
+          <div class="suspect-card decoy">
+            <div class="s-header">
+              <div class="s-avatar amber">FR</div>
+              <div>
+                <div class="s-name">FARES</div>
+                <div class="s-role">CTF PARTICIPANT — VETERAN PLAYER</div>
+                <div class="s-status status-suspect">⚠ FRAMED DECOY</div>
+              </div>
+            </div>
+            <div class="s-body">
+              Deliberately framed by Hazem. Hazem spoofed server logs to show Fares's credentials
+              accessing Server Room B at 01:41 AM. Anonymous tip sent from burner account pointing
+              investigators at Fares.<br /><br /><strong>Frame-breaking alibi:</strong> Fares
+              livestreamed his entire session on Twitch from 01:00–04:00 AM. Stream is timestamped,
+              continuous, shows his face. Amine revealed this casually.
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-amber">DECOY — FRAMED</span
+              ><span class="s-tag tag-green">ALIBI CONFIRMED — TWITCH STREAM</span>
+            </div>
+          </div>
+
+          <div class="suspect-card liar">
+            <div class="s-header">
+              <div class="s-avatar amber">DR</div>
+              <div>
+                <div class="s-name">DARINE</div>
+                <div class="s-role">SOCIAL MEDIA MANAGER</div>
+                <div class="s-status status-suspect">⚠ THE LIAR</div>
+              </div>
+            </div>
+            <div class="s-body">
+              Rahma told Darine at 03:01 AM that she'd seen something suspicious and was going to
+              find Yassine. Darine panicked — afraid of being implicated due to her anonymous exposé
+              blog about the IEEE community. She told the wrong person. She also initially told
+              investigators Rahma said nothing unusual. She deleted the group chat message Rahma
+              sent her.<br /><br /><strong
+                >When she finally admitted the truth, the timeline shifted. The deletion came from
+                her device — confirmed.</strong
+              >
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-amber">THE LIAR</span
+              ><span class="s-tag tag-red">DELETED EVIDENCE</span
+              ><span class="s-tag tag-green">NOT THE KILLER</span>
+            </div>
+          </div>
+
+          <div class="suspect-card">
+            <div class="s-header">
+              <div class="s-avatar green">YS</div>
+              <div>
+                <div class="s-name">YASSINE</div>
+                <div class="s-role">EVENT DIRECTOR</div>
+                <div class="s-status status-poi">🔵 PERSON OF INTEREST</div>
+              </div>
+            </div>
+            <div class="s-body">
+              Read Ghofrane's distress message at 03:14 AM. Did not respond until 03:33 AM — after
+              her body was found. Claims he was in a sponsor meeting. Cannot fully explain the
+              19-minute gap between reading and responding. Also: forwarded Hazem's background check
+              flag directly to Hazem. Gave Hazem pre-event admin access without additional
+              verification.<br /><br /><strong
+                >Not a murder suspect. Guilty of negligence and a cover-up of his own
+                inaction.</strong
+              >
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-amber">READ RECEIPT CONFLICT</span
+              ><span class="s-tag tag-green">NOT THE KILLER</span>
+            </div>
+          </div>
+
+          <div class="suspect-card">
+            <div class="s-header">
+              <div class="s-avatar green">CH</div>
+              <div>
+                <div class="s-name">CHAHD</div>
+                <div class="s-role">NETWORK MONITOR VOLUNTEER</div>
+                <div class="s-status status-cleared">✓ INVESTIGATOR / CLEARED</div>
+              </div>
+            </div>
+            <div class="s-body">
+              Discovered Mohi's body at 03:52 AM during routine corridor check. Began forensic
+              analysis of Ghofrane's tablet cache, server logs, and scoreboard backend. Identified
+              the keylogger firmware signature and the 8-minute submission interval anomaly. The
+              case's technical investigation runs through her.
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-green">KEY INVESTIGATOR</span
+              ><span class="s-tag tag-blue">FORENSICS LEAD</span>
+            </div>
+          </div>
+
+          <div class="suspect-card cleared">
+            <div class="s-header">
+              <div class="s-avatar gray">LB</div>
+              <div>
+                <div class="s-name">LE BLANC</div>
+                <div class="s-role">PARTICIPANT — ANONYMOUS</div>
+                <div class="s-status status-cleared">✓ CLEARED — SIDE STORY A</div>
+              </div>
+            </div>
+            <div class="s-body">
+              Used pseudonym. No verifiable university. Encrypted comms all night. Looked like a
+              ghost operative. Was running an unauthorized hint-selling operation with ELA. Privacy
+              advocate who competes under aliases on principle. Confirmed by Fares from past events.
+              Not connected to either murder.
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-green">CLEARED</span
+              ><span class="s-tag tag-amber">SIDE STORY A</span>
+            </div>
+          </div>
+
+          <div class="suspect-card cleared">
+            <div class="s-header">
+              <div class="s-avatar gray">AY</div>
+              <div>
+                <div class="s-name">AYA</div>
+                <div class="s-role">PARTICIPANT</div>
+                <div class="s-status status-cleared">✓ CLEARED — SIDE STORY B</div>
+              </div>
+            </div>
+            <div class="s-body">
+              Erratic movements, cryptic messages, evasive about alibi. Was secretly meeting Chadi
+              throughout the event — they are in a relationship they wanted to keep private. No
+              connection to either murder. Cleared after relationship was revealed.
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-green">CLEARED</span
+              ><span class="s-tag tag-amber">SIDE STORY B</span>
+            </div>
+          </div>
+
+          <div class="suspect-card cleared">
+            <div class="s-header">
+              <div class="s-avatar gray">CD</div>
+              <div>
+                <div class="s-name">CHADI</div>
+                <div class="s-role">PARTICIPANT</div>
+                <div class="s-status status-cleared">✓ CLEARED — SIDE STORY B</div>
+              </div>
+            </div>
+            <div class="s-body">
+              Same situation as Aya. Contradicting alibis, suspicious movements near
+              parking/basement area. Was with Aya. Cleared after Amine accidentally exposed the
+              relationship at 04:11 AM.
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-green">CLEARED</span
+              ><span class="s-tag tag-amber">SIDE STORY B</span>
+            </div>
+          </div>
+
+          <div class="suspect-card cleared">
+            <div class="s-header">
+              <div class="s-avatar gray">EL</div>
+              <div>
+                <div class="s-name">ELA</div>
+                <div class="s-role">PARTICIPANT</div>
+                <div class="s-status status-cleared">✓ CLEARED — SIDE STORY A</div>
+              </div>
+            </div>
+            <div class="s-body">
+              Lied about 01:33–01:58 AM absence — was in parking lot running the hint-selling
+              operation with Le Blanc. Initially primary suspect due to false alibi overlap with
+              murder window. Cleared after confession.
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-green">CLEARED</span
+              ><span class="s-tag tag-amber">SIDE STORY A</span>
+            </div>
+          </div>
+
+          <div class="suspect-card">
+            <div class="s-header">
+              <div class="s-avatar green">AM</div>
+              <div>
+                <div class="s-name">AMINE</div>
+                <div class="s-role">PARTICIPANT</div>
+                <div class="s-status status-cleared">✓ KEY WITNESS</div>
+              </div>
+            </div>
+            <div class="s-body">
+              Casually revealed Fares's Twitch stream, collapsing the frame on Fares. Also confirmed
+              he was walking past the 3rd floor fire exit corridor at 03:21 AM and saw nothing —
+              helping establish the exact murder window for Ghofrane.
+            </div>
+            <div class="s-tags">
+              <span class="s-tag tag-blue">ALIBI BREAKER</span
+              ><span class="s-tag tag-green">KEY WITNESS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="timeline">
+        <h2>&gt;_ RECONSTRUCTED TIMELINE — MAY 02-03</h2>
+
+        <div class="tl-item">
+          <div class="tl-time">22:00</div>
+          <div class="tl-dot green"></div>
+          <div class="tl-content">
+            Event begins. Hazem is checked in with all other participants. Pre-event admin access
+            already granted by Ahmed.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">22:48</div>
+          <div class="tl-dot amber"></div>
+          <div class="tl-content">
+            Infrastructure panel alert suppression command issued at
+            <strong class="highlight-amber">10:48 PM</strong>. Origin: Hazem's pre-event admin
+            credentials. The event's unregistered-badge alert system is silenced.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">01:12</div>
+          <div class="tl-dot amber"></div>
+          <div class="tl-content">
+            Aya and Chadi meet at parking level 2. Adjacent to basement stairwell. They see nothing
+            relevant.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">01:28</div>
+          <div class="tl-dot red"></div>
+          <div class="tl-content">
+            <strong>MOHI</strong> photographs hardware keylogger in Server Room B. Photo timestamped
+            01:28:14 AM on his phone.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">01:31</div>
+          <div class="tl-dot red"></div>
+          <div class="tl-content">
+            <strong class="highlight">MOHI'S LAST MESSAGE</strong> — posts to organizer channel that
+            he found something in Server Room B and is telling Hazem about it.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">01:33</div>
+          <div class="tl-dot amber"></div>
+          <div class="tl-content">
+            Ela and Le Blanc coordinate parking lot meeting for Side Story A hint operation.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">01:38</div>
+          <div class="tl-dot red"></div>
+          <div class="tl-content">
+            Mohi enters Server Room B — physical log entry 01:38 AM (verified).
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">01:44</div>
+          <div class="tl-dot red"></div>
+          <div class="tl-content">
+            <strong class="highlight">UNREGISTERED BADGE SWIPE</strong> — Server Room B digital door
+            system. Badge cloned from Ghofrane's own card. This is Hazem entering.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">01:46</div>
+          <div class="tl-dot amber"></div>
+          <div class="tl-content">
+            Rahma purchases coffee from basement vending machine — 8.3m from Server Room B. Hears
+            nothing. Sees a figure near stairwell shortly after.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">01:47</div>
+          <div class="tl-dot red"></div>
+          <div class="tl-content">
+            <strong class="highlight">MOHI KILLED</strong> — estimated time of death. Staged as
+            electrical accident.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">01:52</div>
+          <div class="tl-dot amber"></div>
+          <div class="tl-content">
+            Darine's Instagram story posted — Hazem visible in background near stairwell. Jacket
+            disheveled, walking fast. Timestamp: 01:52:34 AM.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">01:55</div>
+          <div class="tl-dot red"></div>
+          <div class="tl-content">
+            Hazem submits CTF flag —
+            <strong class="highlight">automated script, not Hazem in person</strong>. He was in
+            basement during this submission.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">03:01</div>
+          <div class="tl-dot amber"></div>
+          <div class="tl-content">
+            Rahma tells Darine she saw something and is going to find Yassine. Darine panics and
+            tells the wrong person.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">03:05</div>
+          <div class="tl-dot red"></div>
+          <div class="tl-content">
+            Ghofrane finds badge log anomaly. Begins messaging Yassine at 03:07–03:11 AM.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">03:11</div>
+          <div class="tl-dot red"></div>
+          <div class="tl-content">
+            Ghofrane's message to Yassine sent — coordinator channel forward.
+            <strong class="highlight"
+              >Hazem monitors coordinator channel. He sees the message.</strong
+            >
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">03:14</div>
+          <div class="tl-dot amber"></div>
+          <div class="tl-content">
+            <strong class="highlight-amber">YASSINE READS GHOFRANE'S MESSAGE</strong> — server log
+            read receipt at 03:14:07 AM. Does not respond. Does not act.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">03:19</div>
+          <div class="tl-dot red"></div>
+          <div class="tl-content">
+            <strong class="highlight">GHOFRANE KILLED</strong> — 3rd floor fire exit corridor. Hazem
+            intercepts her before she reaches the records room.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">03:21</div>
+          <div class="tl-dot green"></div>
+          <div class="tl-content">
+            Amine walks past 3rd floor fire exit at 03:21 AM — sees nothing. Body was not yet there
+            OR already moved. Confirms window.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">03:33</div>
+          <div class="tl-dot amber"></div>
+          <div class="tl-content">
+            Yassine finally responds to Ghofrane's message — "just saw this." She is already dead.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">03:41</div>
+          <div class="tl-dot red"></div>
+          <div class="tl-content">
+            Ahmed finds Ghofrane's body in fire exit corridor. Alert raised.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">03:52</div>
+          <div class="tl-dot red"></div>
+          <div class="tl-content">
+            Chahd finds Mohi's body in Server Room B during investigation sweep. Investigation fully
+            activated.
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

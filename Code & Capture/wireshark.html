@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NODE 08 // SCOREBOARD AUDIT</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--green:#00ff41;--green-dim:#00cc33;--green-dark:#003300;--red:#ff3333;--amber:#ffb700;--blue:#00b4ff;--font:'Share Tech Mono',monospace;}
+body{background:#000;color:var(--green);font-family:var(--font);min-height:100vh;cursor:crosshair;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.012) 2px,rgba(0,255,65,0.012) 4px);pointer-events:none;z-index:9999;}
+.header{border-bottom:1px solid rgba(0,255,65,0.2);padding:14px 28px;display:flex;align-items:center;gap:16px;background:rgba(0,0,0,0.97);position:sticky;top:0;z-index:100;}
+.back-btn{color:var(--green-dim);text-decoration:none;font-size:0.75rem;letter-spacing:2px;border:1px solid rgba(0,255,65,0.2);padding:6px 12px;transition:all 0.2s;}
+.back-btn:hover{border-color:var(--green);}
+.header-title{font-size:0.85rem;letter-spacing:4px;}
+.header-badge{font-size:0.65rem;color:var(--red);margin-left:auto;animation:blink 1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.main{max-width:1000px;margin:0 auto;padding:32px 24px 60px;}
+.page-title{font-size:1.4rem;letter-spacing:6px;margin-bottom:6px;}
+.page-sub{font-size:0.72rem;color:#555;letter-spacing:3px;margin-bottom:32px;}
+
+.section{background:#030803;border:1px solid rgba(0,255,65,0.12);padding:24px;margin-bottom:24px;border-radius:2px;}
+.section h2{font-size:0.82rem;letter-spacing:4px;color:var(--green);margin-bottom:16px;border-bottom:1px solid rgba(0,255,65,0.1);padding-bottom:10px;}
+
+.flag{display:inline-block;background:rgba(255,51,51,0.1);border:1px solid rgba(255,51,51,0.3);color:var(--red);font-size:0.65rem;padding:3px 8px;letter-spacing:1px;margin:4px 0;}
+.flag.amber{background:rgba(255,183,0,0.1);border-color:rgba(255,183,0,0.3);color:var(--amber);}
+.flag.green{background:rgba(0,255,65,0.05);border-color:rgba(0,255,65,0.2);color:var(--green-dim);}
+.flag.block{display:block;}
+
+.annotation{background:rgba(255,183,0,0.04);border:1px solid rgba(255,183,0,0.2);border-left:3px solid var(--amber);padding:14px 18px;margin:16px 0;font-size:0.75rem;color:#bbb;line-height:1.8;}
+.annotation .label{color:var(--amber);font-size:0.65rem;letter-spacing:2px;display:block;margin-bottom:6px;}
+
+/* SCOREBOARD */
+.scoreboard{background:#000;border:1px solid rgba(0,255,65,0.15);overflow:hidden;}
+.sb-header{background:#050f05;padding:10px 16px;display:flex;justify-content:space-between;font-size:0.65rem;color:var(--green-dim);letter-spacing:2px;border-bottom:1px solid rgba(0,255,65,0.1);}
+.sb-row{display:grid;grid-template-columns:40px 1fr 80px 120px 100px;gap:8px;padding:10px 16px;border-bottom:1px solid rgba(0,255,65,0.04);align-items:center;font-size:0.72rem;}
+.sb-row.header-row{background:#030803;font-size:0.62px;color:var(--green-dim);letter-spacing:1px;}
+.sb-row:hover{background:#030803;}
+.sb-row.critical{background:#080200;}
+.rank{color:#555;text-align:center;}
+.rank.gold{color:var(--amber);}
+.rank.silver{color:#aaa;}
+.rank.bronze{color:#8b6914;}
+.player-name{color:#aaa;}
+.player-name.suspect{color:var(--amber);}
+.score-val{color:var(--green);text-align:right;}
+.last-sub{color:#555;font-size:0.65rem;}
+.last-sub.suspicious{color:var(--red);}
+.interval-badge{font-size:0.6rem;padding:2px 6px;text-align:center;}
+.badge-normal{color:#555;border:1px solid #1a1a1a;}
+.badge-suspicious{color:var(--amber);border:1px solid rgba(255,183,0,0.3);background:rgba(255,183,0,0.05);}
+.badge-auto{color:var(--red);border:1px solid rgba(255,51,51,0.3);background:rgba(255,51,51,0.05);animation:blink 1.5s ease infinite;}
+
+/* CHART */
+.chart-container{margin:16px 0;background:#000;border:1px solid rgba(0,255,65,0.1);padding:20px;}
+.chart-title{font-size:0.65rem;color:var(--green-dim);letter-spacing:2px;margin-bottom:16px;}
+.chart-area{display:flex;align-items:flex-end;gap:4px;height:120px;border-bottom:1px solid rgba(0,255,65,0.1);border-left:1px solid rgba(0,255,65,0.1);padding:8px 8px 0;position:relative;}
+.chart-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;}
+.chart-bar{width:100%;border-radius:1px 1px 0 0;transition:all 0.3s;position:relative;}
+.chart-bar.normal{background:rgba(0,255,65,0.2);}
+.chart-bar.suspect{background:rgba(255,183,0,0.5);}
+.chart-bar.auto{background:rgba(255,51,51,0.7);}
+.chart-bar:hover .tooltip{display:block;}
+.tooltip{display:none;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#111;border:1px solid rgba(0,255,65,0.2);padding:4px 8px;font-size:0.6rem;white-space:nowrap;z-index:10;color:var(--green);}
+.chart-label{font-size:0.5rem;color:#333;text-align:center;writing-mode:vertical-lr;transform:rotate(180deg);height:50px;white-space:nowrap;}
+.chart-y-labels{position:absolute;left:-30px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-between;font-size:0.55rem;color:#333;}
+
+/* SUBMISSION TABLE */
+.sub-table{width:100%;border-collapse:collapse;font-size:0.7rem;}
+.sub-table th{padding:8px 12px;background:#050f05;color:var(--green-dim);text-align:left;border-bottom:1px solid rgba(0,255,65,0.15);letter-spacing:1px;font-size:0.6rem;}
+.sub-table td{padding:8px 12px;border-bottom:1px solid rgba(0,255,65,0.05);color:#666;}
+.sub-table td.time{color:var(--green-dim);}
+.sub-table td.player{color:#aaa;}
+.sub-table td.flag-val{color:var(--green-dim);font-size:0.65rem;}
+.sub-table td.gap{color:#555;}
+.sub-table td.gap.red{color:var(--red);}
+.sub-table td.gap.amber{color:var(--amber);}
+.sub-table tr.auto-row{background:#080200;}
+.sub-table tr.auto-row td{color:#999;}
+.sub-table tr.auto-row td.gap{color:var(--red);}
+.sub-table tr:hover td{background:#030803;}
+
+/* FARES CONFIRMATION */
+.expert-statement{background:#050508;border:1px solid rgba(0,180,255,0.12);border-left:3px solid var(--blue);padding:20px;font-size:0.78rem;color:#aaa;line-height:1.9;margin:16px 0;}
+.expert-statement .speaker{font-size:0.65rem;color:var(--blue);letter-spacing:3px;display:block;margin-bottom:10px;}
+
+/* IDENTITY COLLAPSE */
+.identity-table{width:100%;border-collapse:collapse;font-size:0.72rem;}
+.identity-table td{padding:10px 12px;border-bottom:1px solid rgba(0,255,65,0.05);}
+.identity-table td:first-child{color:var(--green-dim);width:240px;}
+.identity-table td:last-child{color:#888;}
+.identity-table td.red{color:var(--red);}
+.identity-table td.amber{color:var(--amber);}
+.identity-table tr.critical td{background:#080200;}
+</style>
+</head>
+<body>
+<div class="header">
+  <a href="index.html" class="back-btn">← BACK</a>
+  <div class="header-title">NODE 08 // SCOREBOARD AUDIT</div>
+  <div class="header-badge">⚠ AUTO-SUBMISSION DETECTED</div>
+</div>
+
+<div class="main">
+  <div class="page-title">&gt;_ SCOREBOARD AUDIT</div>
+  <div class="page-sub">CTF BACKEND SUBMISSION ANALYSIS // TIMING FORENSICS // IDENTITY COLLAPSE — CASE #CC-2025-0001</div>
+
+  <!-- LIVE SCOREBOARD -->
+  <div class="section">
+    <h2>🏆 COMPETITION SCOREBOARD — FINAL STATE — 05:00 AM</h2>
+    <div class="annotation">
+      <span class="label">&gt;_ CHAHD'S ANALYSIS — WHY THE SCOREBOARD MATTERS</span>
+      Hazem's alibi depends on the scoreboard. He was "seen at his terminal" and "actively competing" during the murder windows. If the submissions are genuine human play, he can't be in the basement or the 3rd floor corridor at the same time. The scoreboard backend logs submission timestamps to the millisecond. What I found breaks his entire alibi.
+    </div>
+    <div class="scoreboard">
+      <div class="sb-header"><span>RANK</span><span>COMPETITOR</span><span>SCORE</span><span>LAST SUBMISSION</span><span>INTERVAL PATTERN</span></div>
+      <div class="sb-row"><span class="rank gold">1</span><span class="player-name">ALA + TEAM</span><span class="score-val">2840</span><span class="last-sub">04:51 AM</span><span class="interval-badge badge-normal">VARIABLE</span></div>
+      <div class="sb-row critical"><span class="rank silver">2</span><span class="player-name suspect">HAZEM ⚠</span><span class="score-val">2600</span><span class="last-sub suspicious">AUTO 04:03 AM</span><span class="interval-badge badge-auto">480s EXACT</span></div>
+      <div class="sb-row"><span class="rank bronze">3</span><span class="player-name">FARES</span><span class="score-val">2410</span><span class="last-sub">03:58 AM</span><span class="interval-badge badge-normal">VARIABLE</span></div>
+      <div class="sb-row"><span class="rank">4</span><span class="player-name">AMINE + TEAM</span><span class="score-val">2190</span><span class="last-sub">04:22 AM</span><span class="interval-badge badge-normal">VARIABLE</span></div>
+      <div class="sb-row"><span class="rank">5</span><span class="player-name">CHADI</span><span class="score-val">1880</span><span class="last-sub">04:44 AM</span><span class="interval-badge badge-normal">VARIABLE</span></div>
+      <div class="sb-row"><span class="rank">6</span><span class="player-name">RIHAB</span><span class="score-val">1640</span><span class="last-sub">04:11 AM</span><span class="interval-badge badge-normal">VARIABLE</span></div>
+      <div class="sb-row"><span class="rank">7</span><span class="player-name">RAHMA*</span><span class="score-val" style="color:var(--red);">1420</span><span class="last-sub" style="color:var(--red);">03:08 AM</span><span class="interval-badge" style="color:var(--red);border-color:rgba(255,51,51,0.2);">DECEASED</span></div>
+      <div class="sb-row"><span class="rank">—</span><span class="player-name" style="color:var(--blue);">LE BLANC</span><span class="score-val" style="color:#555;">—</span><span class="last-sub">WITHDREW</span><span class="interval-badge badge-normal">N/A</span></div>
+    </div>
+    <div class="flag amber">⚠ HAZEM IS RANKED #2 WITH THE MOST SUSPICIOUS SUBMISSION PATTERN IN THE DATASET. HIS SCORE REQUIRED HIM TO BE AT HIS TERMINAL — HE WASN'T.</div>
+  </div>
+
+  <!-- INTERVAL ANALYSIS -->
+  <div class="section">
+    <h2>📊 SUBMISSION INTERVAL ANALYSIS — HAZEM VS ALL OTHERS</h2>
+    <div class="annotation">
+      <span class="label">&gt;_ THE KEY FINDING</span>
+      I pulled every flag submission timestamp from the backend and calculated the gap between consecutive submissions for each competitor. Normal human players have highly variable intervals — they solve challenges at different speeds, take breaks, get stuck, get unstuck. <strong>Hazem's intervals are exactly 480 seconds. Every time. For 2 hours and 16 minutes.</strong> That is statistically impossible for a human.
+    </div>
+
+    <div class="chart-container">
+      <div class="chart-title">SUBMISSION INTERVAL (SECONDS) — HAZEM VS HUMAN BASELINE — 01:00–04:00 AM</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <div>
+          <div style="font-size:0.65rem;color:var(--green-dim);margin-bottom:8px;letter-spacing:2px;">HUMAN PLAYER (ALA — NORMAL PATTERN)</div>
+          <div class="chart-area">
+            <div class="chart-y-labels"><span>1200</span><span>600</span><span>0</span></div>
+            <div class="chart-bar-wrap"><div class="chart-bar normal" style="height:45%"></div><div class="chart-label">01:12</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar normal" style="height:82%"></div><div class="chart-label">01:34</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar normal" style="height:23%"></div><div class="chart-label">01:51</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar normal" style="height:67%"></div><div class="chart-label">02:18</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar normal" style="height:91%"></div><div class="chart-label">02:47</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar normal" style="height:38%"></div><div class="chart-label">03:09</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar normal" style="height:55%"></div><div class="chart-label">03:29</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar normal" style="height:19%"></div><div class="chart-label">03:47</div></div>
+          </div>
+          <div style="font-size:0.62rem;color:#333;margin-top:8px;">VARIANCE: HIGH — HUMAN PATTERN ✓</div>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;color:var(--amber);margin-bottom:8px;letter-spacing:2px;">HAZEM — SUSPICIOUS PATTERN ⚠</div>
+          <div class="chart-area">
+            <div class="chart-y-labels"><span>600</span><span>300</span><span>0</span></div>
+            <div class="chart-bar-wrap"><div class="chart-bar auto" style="height:80%"></div><div class="chart-label">01:55</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar auto" style="height:80%"></div><div class="chart-label">02:03</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar auto" style="height:80%"></div><div class="chart-label">02:11</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar auto" style="height:80%"></div><div class="chart-label">02:19</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar auto" style="height:80%"></div><div class="chart-label">02:27</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar auto" style="height:80%"></div><div class="chart-label">02:35</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar auto" style="height:80%"></div><div class="chart-label">02:43</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar auto" style="height:80%"></div><div class="chart-label">02:51</div></div>
+          </div>
+          <div style="font-size:0.62rem;color:var(--red);margin-top:8px;">VARIANCE: ZERO — AUTOMATED SCRIPT ⚠</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMISSION LOG -->
+    <table class="sub-table" style="margin-top:20px;">
+      <thead><tr><th>TIMESTAMP</th><th>PLAYER</th><th>CHALLENGE</th><th>FLAG</th><th>GAP FROM PREV</th><th>DETECTION</th></tr></thead>
+      <tbody>
+        <tr><td class="time">01:47:23</td><td class="player">ALA</td><td>Challenge 03</td><td class="flag-val">CTF{XSS_1nj3ct}</td><td class="gap">+827s</td><td style="color:var(--green-dim);font-size:0.62rem;">✓ HUMAN</td></tr>
+        <tr class="auto-row"><td class="time">01:55:00</td><td class="player" style="color:var(--amber);">HAZEM ⚠</td><td>Challenge 04</td><td class="flag-val">CTF{r3v3rs3_3ng}</td><td class="gap red">+480s EXACT</td><td style="color:var(--red);font-size:0.62rem;">⚠ AUTO</td></tr>
+        <tr><td class="time">01:59:41</td><td class="player">FARES</td><td>Challenge 05</td><td class="flag-val">CTF{p4th_trav3rs}</td><td class="gap">+314s</td><td style="color:var(--green-dim);font-size:0.62rem;">✓ HUMAN</td></tr>
+        <tr class="auto-row"><td class="time">02:03:00</td><td class="player" style="color:var(--amber);">HAZEM ⚠</td><td>Challenge 06</td><td class="flag-val">CTF{buff3r_0v3rfl}</td><td class="gap red">+480s EXACT</td><td style="color:var(--red);font-size:0.62rem;">⚠ AUTO</td></tr>
+        <tr><td class="time">02:07:19</td><td class="player">AMINE</td><td>Challenge 02</td><td class="flag-val">CTF{md5_c0ll1s10n}</td><td class="gap">+219s</td><td style="color:var(--green-dim);font-size:0.62rem;">✓ HUMAN</td></tr>
+        <tr class="auto-row"><td class="time">02:11:00</td><td class="player" style="color:var(--amber);">HAZEM ⚠</td><td>Challenge 08</td><td class="flag-val">CTF{sql_1nj3ct10n}</td><td class="gap red">+480s EXACT</td><td style="color:var(--red);font-size:0.62rem;">⚠ AUTO</td></tr>
+        <tr class="auto-row"><td class="time">02:19:00</td><td class="player" style="color:var(--amber);">HAZEM ⚠</td><td>Challenge 09</td><td class="flag-val">CTF{rce_vuln_chain}</td><td class="gap red">+480s EXACT</td><td style="color:var(--red);font-size:0.62rem;">⚠ AUTO</td></tr>
+        <tr class="auto-row"><td class="time">02:27:00</td><td class="player" style="color:var(--amber);">HAZEM ⚠</td><td>Challenge 11</td><td class="flag-val">CTF{cr4ck_th3_h4sh}</td><td class="gap red">+480s EXACT</td><td style="color:var(--red);font-size:0.62rem;">⚠ AUTO</td></tr>
+        <tr><td class="time">02:31:14</td><td class="player">CHADI</td><td>Challenge 07</td><td class="flag-val">CTF{f0rm4t_str1ng}</td><td class="gap">+892s</td><td style="color:var(--green-dim);font-size:0.62rem;">✓ HUMAN</td></tr>
+        <tr><td class="time">02:44:58</td><td class="player">RIHAB</td><td>Challenge 03</td><td class="flag-val">CTF{XSS_1nj3ct}</td><td class="gap amber">+821s</td><td style="color:var(--green-dim);font-size:0.62rem;">✓ HUMAN</td></tr>
+      </tbody>
+    </table>
+    <div class="flag block">☠ HAZEM'S ALIBI IS THE SCOREBOARD. THE SCOREBOARD PROVES THE ALIBI IS FAKE. HIS FLAGS WERE SUBMITTED BY AN AUTOMATED SCRIPT ON A TIMER — NOT BY A HUMAN AT A KEYBOARD.</div>
+    <div class="flag amber block">⚠ NOTE: THE FLAGS HAZEM SUBMITTED WERE SOLVED CHALLENGES — HE HARVESTED THEM FROM THE KEYLOGGER AND PRE-LOADED THEM INTO THE SCRIPT BEFORE THE EVENT.</div>
+  </div>
+
+  <!-- FARES ALIBI COLLAPSE -->
+  <div class="section">
+    <h2>📺 FARES'S ALIBI — THE FRAME COLLAPSE</h2>
+    <div class="annotation">
+      <span class="label">&gt;_ HOW THE FRAME ON FARES COLLAPSED</span>
+      Hazem framed Fares as the primary suspect using spoofed server log entries. Fares's credentials appeared in the access log entering Server Room B at 01:41 AM. An anonymous tip pointed investigators at Fares. For the first 90 minutes of the investigation, Fares was the prime suspect. Then Amine mentioned something casually.
+    </div>
+    <div class="expert-statement">
+      <span class="speaker">// AMINE — CASUAL CONVERSATION — 04:11 AM</span>
+      Wait — Fares was streaming tonight. He always streams his CTF sessions for his online crew. I was watching it in the background while I worked. It was running from like 1 AM onward. You can check his Twitch — it's timestamped. He's on screen the whole time.
+    </div>
+    <div class="expert-statement">
+      <span class="speaker">// CHAHD — INVESTIGATION LEAD — 04:14 AM</span>
+      I checked Fares's Twitch VOD. Stream started 01:02 AM. Continuous, timestamped by Twitch's servers. Fares is visible on camera at 01:41 AM — the exact time Hazem's spoofed log entry places him in Server Room B. He's at his terminal, talking to his stream chat, solving challenge 5. <strong>The frame is completely fabricated.</strong>
+      <br/><br/>
+      The spoofed log entry using Fares's credentials is the sloppiest part of Hazem's plan. He chose Fares because of his reputation — he assumed investigators would be biased toward believing it. He didn't account for the Twitch stream.
+    </div>
+    <div class="flag">⚠ FARES'S TWITCH STREAM IS TIMESTAMPED EVIDENCE. THE SERVER LOG ENTRY WITH HIS CREDENTIALS IS CONFIRMED SPOOFED BY ADMIN_HZ.</div>
+  </div>
+
+  <!-- IDENTITY COLLAPSE -->
+  <div class="section">
+    <h2">🕵️ IDENTITY COLLAPSE — WHO IS HAZEM REALLY?</h2>
+    <div class="annotation">
+      <span class="label">&gt;_ FARES + LE BLANC COMBINED TESTIMONY</span>
+      Both Fares and Le Blanc have competed in the regional CTF community for years. When shown the investigation's evidence, both independently confirmed: the person at Code & Capture using the name "Hazem" is not the Hazem they know from the community. He has been operating under at least three separate identities across four events.
+    </div>
+    <table class="identity-table">
+      <thead><tr><th colspan="2" style="padding:8px 12px;background:#050f05;color:var(--red);font-size:0.65rem;letter-spacing:3px;border-bottom:1px solid rgba(255,51,51,0.1);">IDENTITY VERIFICATION — CC-007 "HAZEM"</th></tr></thead>
+      <tbody>
+        <tr><td>Submitted name</td><td>"Hazem" — full name withheld from public registration</td></tr>
+        <tr><td>Real identity</td><td class="red">UNKNOWN — NO MATCH IN ANY DATABASE</td></tr>
+        <tr class="critical"><td>Known alias 1</td><td class="amber">"Hazem" — Code & Capture 2025</td></tr>
+        <tr class="critical"><td>Known alias 2</td><td class="amber">Unknown pseudonym — HackTN 2024 (firmware signature match)</td></tr>
+        <tr class="critical"><td>Known alias 3</td><td class="amber">Different pseudonym — 2022 regional event (Fares & Le Blanc)</td></tr>
+        <tr><td>Fingerprints</td><td class="red">NO NATIONAL DATABASE MATCH — POSSIBLY ALTERED</td></tr>
+        <tr><td>Employer</td><td class="red">UNKNOWN — SUSPECTED PRIVATE INTELLIGENCE CONTRACTOR</td></tr>
+        <tr><td>Events compromised</td><td class="amber">MINIMUM 4 — ONLY CODE & CAPTURE RESULTED IN DEATHS</td></tr>
+        <tr><td>Why deaths this time</td><td>Mohi found the device. Previous events: no early discovery = no need for violence.</td></tr>
+        <tr><td>Current status</td><td class="red">IN BUILDING — INVESTIGATION ACTIVE — AUTHORITIES NOTIFIED</td></tr>
+      </tbody>
+    </table>
+    <div class="flag block">☠ THE KILLER'S REAL NAME IS UNKNOWN. "HAZEM" IS A STOLEN IDENTITY. THE CRIMES ARE REAL. THE INVESTIGATION IS ONGOING.</div>
+  </div>
+
+</div>
+</body>
+</html>

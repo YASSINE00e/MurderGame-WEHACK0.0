@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NODE 03 // SECURITY SYSTEM</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --green: #00ff41;
+        --green-dim: #00cc33;
+        --green-dark: #003300;
+        --red: #ff3333;
+        --amber: #ffb700;
+        --blue: #00b4ff;
+        --font: "Share Tech Mono", monospace;
+      }
+      body {
+        background: #000;
+        color: var(--green);
+        font-family: var(--font);
+        min-height: 100vh;
+        cursor: crosshair;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 65, 0.012) 2px,
+          rgba(0, 255, 65, 0.012) 4px
+        );
+        pointer-events: none;
+        z-index: 9999;
+      }
+      .header {
+        border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(0, 0, 0, 0.97);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .back-btn {
+        color: var(--green-dim);
+        text-decoration: none;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 6px 12px;
+        transition: all 0.2s;
+      }
+      .back-btn:hover {
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .header-title {
+        font-size: 0.85rem;
+        letter-spacing: 4px;
+      }
+      .header-badge {
+        font-size: 0.65rem;
+        color: var(--red);
+        margin-left: auto;
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      .main {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 32px 24px 60px;
+      }
+      .page-title {
+        font-size: 1.4rem;
+        letter-spacing: 6px;
+        margin-bottom: 6px;
+      }
+      .page-sub {
+        font-size: 0.72rem;
+        color: #555;
+        letter-spacing: 3px;
+        margin-bottom: 32px;
+      }
+
+      /* CAMERA GRID */
+      .camera-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+      .camera-feed {
+        background: #050a05;
+        border: 1px solid rgba(0, 255, 65, 0.15);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .camera-screen {
+        width: 100%;
+        aspect-ratio: 16/9;
+        background: #000;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .camera-screen.active {
+        background: #020802;
+      }
+      .camera-screen.tampered {
+        background: #0a0200;
+      }
+      .camera-screen.offline {
+        background: #050505;
+      }
+      .scan-line {
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 3px,
+          rgba(0, 255, 65, 0.04) 3px,
+          rgba(0, 255, 65, 0.04) 6px
+        );
+      }
+      .cam-label {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        font-size: 0.6rem;
+        color: var(--green-dim);
+        letter-spacing: 2px;
+      }
+      .cam-timestamp {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        font-size: 0.6rem;
+        color: var(--green-dim);
+      }
+      .cam-status-dot {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .dot-green {
+        background: var(--green);
+        animation: blink 1.5s ease infinite;
+      }
+      .dot-red {
+        background: var(--red);
+      }
+      .dot-amber {
+        background: var(--amber);
+        animation: blink 0.8s ease infinite;
+      }
+      .cam-placeholder {
+        font-size: 0.7rem;
+        color: #222;
+        text-align: center;
+        padding: 20px;
+        line-height: 1.8;
+      }
+      .cam-placeholder.show {
+        color: #444;
+      }
+      .cam-placeholder .big {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .camera-info {
+        padding: 12px;
+      }
+      .cam-name {
+        font-size: 0.72rem;
+        color: var(--green);
+        letter-spacing: 2px;
+        margin-bottom: 6px;
+      }
+      .cam-detail {
+        font-size: 0.65rem;
+        color: #555;
+        line-height: 1.6;
+      }
+      .cam-detail.warn {
+        color: var(--amber);
+      }
+      .cam-detail.danger {
+        color: var(--red);
+      }
+
+      /* EVIDENCE SECTION */
+      .evidence-block {
+        background: #050a05;
+        border: 1px solid rgba(0, 255, 65, 0.15);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 2px;
+      }
+      .evidence-block h2 {
+        font-size: 0.85rem;
+        letter-spacing: 4px;
+        color: var(--green);
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+        padding-bottom: 10px;
+      }
+      .photo-evidence {
+        background: #000;
+        border: 2px solid rgba(255, 183, 0, 0.3);
+        padding: 0;
+        margin: 16px 0;
+        position: relative;
+        overflow: hidden;
+      }
+      .photo-mock {
+        width: 100%;
+        aspect-ratio: 16/9;
+        background: linear-gradient(135deg, #050a05, #000);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border-bottom: 1px solid rgba(255, 183, 0, 0.15);
+      }
+      .photo-mock .scene {
+        font-size: 0.75rem;
+        color: #333;
+        text-align: center;
+        line-height: 2;
+      }
+      .photo-mock .highlight-box {
+        position: absolute;
+        border: 2px solid var(--amber);
+        width: 80px;
+        height: 60px;
+        right: 25%;
+        top: 30%;
+        animation: pulse 2s ease infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      .photo-caption {
+        padding: 14px 16px;
+      }
+      .photo-caption .timestamp {
+        font-size: 0.65rem;
+        color: var(--amber);
+        letter-spacing: 2px;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .photo-caption p {
+        font-size: 0.75rem;
+        color: #888;
+        line-height: 1.8;
+      }
+      .photo-caption strong {
+        color: #bbb;
+      }
+
+      /* LOG TABLE */
+      .log-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.72rem;
+        margin-top: 12px;
+      }
+      .log-table th {
+        padding: 8px 12px;
+        background: #030803;
+        color: var(--green-dim);
+        text-align: left;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.15);
+        letter-spacing: 2px;
+        font-size: 0.62rem;
+      }
+      .log-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.06);
+        color: #777;
+      }
+      .log-table td.time {
+        color: var(--green-dim);
+      }
+      .log-table td.red {
+        color: var(--red);
+      }
+      .log-table td.amber {
+        color: var(--amber);
+      }
+      .log-table td.green {
+        color: var(--green-dim);
+      }
+      .log-table tr:hover td {
+        background: #030803;
+      }
+      .log-table tr.highlight-row td {
+        background: #0a0500;
+        color: #aaa;
+      }
+      .log-table tr.critical-row td {
+        background: #0a0300;
+        color: var(--amber);
+      }
+
+      .flag {
+        display: inline-block;
+        background: rgba(255, 51, 51, 0.1);
+        border: 1px solid rgba(255, 51, 51, 0.3);
+        color: var(--red);
+        font-size: 0.65rem;
+        padding: 3px 8px;
+        letter-spacing: 1px;
+        margin: 4px 0;
+      }
+      .flag.amber {
+        background: rgba(255, 183, 0, 0.1);
+        border-color: rgba(255, 183, 0, 0.3);
+        color: var(--amber);
+      }
+      .annotation {
+        background: rgba(255, 183, 0, 0.04);
+        border: 1px solid rgba(255, 183, 0, 0.2);
+        border-left: 3px solid var(--amber);
+        padding: 14px 18px;
+        margin: 16px 0;
+        font-size: 0.75rem;
+        color: #bbb;
+        line-height: 1.8;
+      }
+      .annotation .label {
+        color: var(--amber);
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      /* AYHEM REPORT */
+      .operator-report {
+        background: #050508;
+        border: 1px solid rgba(0, 180, 255, 0.15);
+        border-left: 3px solid var(--blue);
+        padding: 20px;
+        margin: 16px 0;
+        font-size: 0.78rem;
+        color: #aaa;
+        line-height: 1.9;
+      }
+      .operator-report .speaker {
+        font-size: 0.65rem;
+        color: var(--blue);
+        letter-spacing: 3px;
+        display: block;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <a href="index.html" class="back-btn">← BACK</a>
+      <div class="header-title">NODE 03 // SECURITY SYSTEM — CCTV & ACCESS LOGS</div>
+      <div class="header-badge">⚠ EVIDENCE CLASSIFIED</div>
+    </div>
+
+    <div class="main">
+      <div class="page-title">&gt;_ SECURITY SYSTEM</div>
+      <div class="page-sub">
+        CCTV LOGS // CAMERA STATUS // INCIDENT WINDOW REVIEW — CASE #CC-2025-0001
+      </div>
+
+      <!-- CAMERA GRID -->
+      <div class="evidence-block">
+        <h2>📹 CAMERA NETWORK — LIVE STATUS AS OF 05:00 AM</h2>
+        <div class="camera-grid">
+          <div class="camera-feed">
+            <div class="camera-screen offline">
+              <div class="scan-line"></div>
+              <div class="cam-label">CAM-01 / BASEMENT-CORRIDOR</div>
+              <div class="cam-timestamp">BUFFER CLEARED</div>
+              <div class="cam-status-dot dot-red"></div>
+              <div class="cam-placeholder">
+                <span class="big">🚫</span>RECORDING BUFFER<br />MANUALLY CLEARED<br />01:30 — 02:00
+                AM<br /><span style="color: var(--red)">DATA LOST</span>
+              </div>
+            </div>
+            <div class="camera-info">
+              <div class="cam-name">CAM-01 — BASEMENT CORRIDOR</div>
+              <div class="cam-detail danger">BUFFER CLEARED 01:30–02:00 AM</div>
+              <div class="cam-detail">
+                Covers Server Room B entrance. Clear command issued from infrastructure panel at
+                01:30:02 AM. This is the primary murder scene camera.
+              </div>
+            </div>
+          </div>
+
+          <div class="camera-feed">
+            <div class="camera-screen tampered">
+              <div class="scan-line"></div>
+              <div class="cam-label">CAM-07 / BASEMENT-STAIRWELL</div>
+              <div class="cam-timestamp">01:52:34</div>
+              <div class="cam-status-dot dot-amber"></div>
+              <div class="cam-placeholder show">
+                <span class="big">👁️</span>PARTIAL CAPTURE<br />ANGLE: ADJUSTED UP 12°<br />FIGURE
+                VISIBLE<br /><span style="color: var(--amber)">KEY EVIDENCE</span>
+              </div>
+            </div>
+            <div class="camera-info">
+              <div class="cam-name">CAM-07 — BASEMENT STAIRWELL</div>
+              <div class="cam-detail warn">ANGLE MANUALLY ADJUSTED — POINTED UP 12° FROM FLOOR</div>
+              <div class="cam-detail">
+                Despite angle manipulation, captured partial figure at 01:52 AM. Grey hoodie. Event
+                staff logo visible. Moving toward stairwell. See photo analysis below.
+              </div>
+            </div>
+          </div>
+
+          <div class="camera-feed">
+            <div class="camera-screen offline">
+              <div class="scan-line"></div>
+              <div class="cam-label">CAM-12 / 3F-FIRE-EXIT</div>
+              <div class="cam-timestamp">BUFFER CLEARED</div>
+              <div class="cam-status-dot dot-red"></div>
+              <div class="cam-placeholder">
+                <span class="big">🚫</span>RECORDING BUFFER<br />MANUALLY CLEARED<br />03:10 — 03:25
+                AM<br /><span style="color: var(--red)">DATA LOST</span>
+              </div>
+            </div>
+            <div class="camera-info">
+              <div class="cam-name">CAM-12 — 3F FIRE EXIT CORRIDOR</div>
+              <div class="cam-detail danger">BUFFER CLEARED 03:10–03:25 AM</div>
+              <div class="cam-detail">
+                Second murder scene camera. Clear command issued at 03:10:44 AM. The angle was also
+                adjusted 2 days before the event — away from the corridor floor. Ghofrane died here.
+              </div>
+            </div>
+          </div>
+
+          <div class="camera-feed">
+            <div class="camera-screen active">
+              <div class="scan-line"></div>
+              <div class="cam-label">CAM-03 / MAIN-HALL</div>
+              <div class="cam-timestamp">05:00:14</div>
+              <div class="cam-status-dot dot-green"></div>
+              <div class="cam-placeholder show">
+                <span class="big">🟢</span>OPERATIONAL<br />FULL RECORDING<br />NO ANOMALIES
+              </div>
+            </div>
+            <div class="camera-info">
+              <div class="cam-name">CAM-03 — MAIN COMPETITION HALL</div>
+              <div class="cam-detail green">OPERATIONAL — CONTINUOUS RECORDING</div>
+              <div class="cam-detail">
+                Confirms Hazem at his terminal at various timestamps. But cross-reference with
+                scoreboard audit (NODE 08) — flag submission automation means "being at the
+                terminal" doesn't prove he was typing.
+              </div>
+            </div>
+          </div>
+
+          <div class="camera-feed">
+            <div class="camera-screen active">
+              <div class="scan-line"></div>
+              <div class="cam-label">CAM-05 / MAIN-ENTRANCE</div>
+              <div class="cam-timestamp">05:00:14</div>
+              <div class="cam-status-dot dot-green"></div>
+              <div class="cam-placeholder show">
+                <span class="big">🚪</span>OPERATIONAL<br />NO EXIT DETECTED<br />POST-22:00
+              </div>
+            </div>
+            <div class="camera-info">
+              <div class="cam-name">CAM-05 — MAIN ENTRANCE</div>
+              <div class="cam-detail green">OPERATIONAL — NO EXTERNAL EXIT AFTER 22:00</div>
+              <div class="cam-detail">
+                Confirms killer never left the building. This is an inside job. All participants and
+                staff who entered before 22:00 are still in the building at 05:00 AM.
+              </div>
+            </div>
+          </div>
+
+          <div class="camera-feed">
+            <div class="camera-screen offline">
+              <div class="scan-line"></div>
+              <div class="cam-label">CAM-CONTROL / AYHEM-STATION</div>
+              <div class="cam-timestamp">OPERATOR ABSENT</div>
+              <div class="cam-status-dot dot-amber"></div>
+              <div class="cam-placeholder">
+                <span class="big">⚠️</span>OPERATOR ABSENT<br />01:14 — 01:36 AM<br />FAKE ALERT
+                TRIGGERED
+              </div>
+            </div>
+            <div class="camera-info">
+              <div class="cam-name">CCTV CONTROL STATION — AYHEM</div>
+              <div class="cam-detail warn">OPERATOR ABSENT 22 MINUTES — 01:14–01:36 AM</div>
+              <div class="cam-detail">
+                Ayhem received fake urgent alert for Hall B power fluctuation. He left his station.
+                Alert was generated from event infrastructure panel. Absence covers Murder #1
+                window.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUFFER CLEAR ANALYSIS -->
+      <div class="evidence-block">
+        <h2>🔍 BUFFER CLEARANCE ANALYSIS — INFRASTRUCTURE PANEL COMMANDS</h2>
+        <div class="log-table-wrap">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>TIMESTAMP</th>
+                <th>COMMAND</th>
+                <th>TARGET</th>
+                <th>ORIGIN ACCOUNT</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="time">MAY 02 — 22:48:03</td>
+                <td>SUPPRESS_ALERT(badge_unregistered)</td>
+                <td>DOOR_SYSTEM_ALL</td>
+                <td class="red">ADMIN_HZ [HAZEM PRE-EVENT]</td>
+                <td class="red">EXECUTED</td>
+              </tr>
+              <tr class="critical-row">
+                <td class="time">MAY 03 — 01:30:02</td>
+                <td>CLEAR_BUFFER(cam_id=01)</td>
+                <td>CAM-01 BASEMENT</td>
+                <td class="red">ADMIN_HZ [HAZEM PRE-EVENT]</td>
+                <td class="red">EXECUTED</td>
+              </tr>
+              <tr>
+                <td class="time">MAY 03 — 01:32:17</td>
+                <td>ADJUST_ANGLE(cam_id=07, delta=-12)</td>
+                <td>CAM-07 STAIRWELL</td>
+                <td class="amber">ADMIN_HZ</td>
+                <td class="amber">PARTIAL — ANGLE ONLY</td>
+              </tr>
+              <tr>
+                <td class="time">MAY 03 — 01:14:55</td>
+                <td>TRIGGER_ALERT(zone=HallB, type=power)</td>
+                <td>AYHEM_DEVICE</td>
+                <td class="red">ADMIN_HZ</td>
+                <td class="red">EXECUTED — AYHEM DISPATCHED</td>
+              </tr>
+              <tr class="critical-row">
+                <td class="time">MAY 03 — 03:10:44</td>
+                <td>CLEAR_BUFFER(cam_id=12)</td>
+                <td>CAM-12 3F EXIT</td>
+                <td class="red">ADMIN_HZ</td>
+                <td class="red">EXECUTED</td>
+              </tr>
+              <tr>
+                <td class="time">MAY 03 — 03:11:09</td>
+                <td>READ_CHANNEL(channel=coordinator_main)</td>
+                <td>COORDINATOR MSGS</td>
+                <td class="red">ADMIN_HZ</td>
+                <td class="red">EXECUTED — GHOFRANE'S MSG READ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="annotation" style="margin-top: 16px">
+          <span class="label">&gt;_ CRITICAL FINDING — AHMED'S ANALYSIS</span>
+          ALL six commands originate from the same admin account: ADMIN_HZ — Hazem's pre-event admin
+          credentials granted by Ahmed on Nov 29 for "infrastructure setup." Ahmed confirms he never
+          revoked these credentials after setup was complete. Hazem retained admin access through
+          the entire event. He used this access to: suppress badge alerts, clear two camera buffers,
+          manipulate a camera angle, generate a fake alert to remove Ayhem from his post, and
+          monitor the coordinator channel — where he saw Ghofrane's message about the badge anomaly
+          3 minutes before she was killed.
+        </div>
+        <div class="flag">
+          ⚠ THE SAME ADMIN ACCOUNT EXECUTED ALL COVER-UP COMMANDS. BOTH CAMERA BUFFER CLEARS
+          DIRECTLY PRECEDE BOTH MURDERS.
+        </div>
+      </div>
+
+      <!-- DARINE PHOTO ANALYSIS -->
+      <div class="evidence-block">
+        <h2>📸 DARINE'S PHOTO ARCHIVE — KEY CAPTURE — 01:52:34 AM</h2>
+        <div class="annotation">
+          <span class="label">&gt;_ HOW THIS WAS FOUND</span>
+          Chahd requested Darine's full event photo archive during the investigation. Darine had
+          posted 47 photos and stories throughout the event for the official Code & Capture social
+          accounts. Image #31 — posted as an Instagram story at 01:53 AM — contained the critical
+          capture in its background. Nobody noticed at the time. The story is still live.
+        </div>
+        <div class="photo-evidence">
+          <div class="photo-mock">
+            <div
+              class="scan-line"
+              style="
+                background: repeating-linear-gradient(
+                  0deg,
+                  transparent,
+                  transparent 3px,
+                  rgba(0, 255, 65, 0.02) 3px,
+                  rgba(0, 255, 65, 0.02) 6px
+                );
+              "
+            ></div>
+            <div class="scene">
+              [LEADERBOARD DISPLAY — FOREGROUND]<br />
+              Rankings visible. Participants in background.<br />
+              ████████████ ████ — 1st place<br />
+              ████ HAZEM — 2nd place<br />
+              <br />
+              [RIGHT EDGE — BACKGROUND]<br />
+              Corridor. Stairwell entrance.<br />
+              <span style="color: var(--amber)"
+                >FIGURE: Grey hoodie. Event staff logo. Moving fast.</span
+              >
+            </div>
+            <div class="highlight-box"></div>
+          </div>
+          <div class="photo-caption">
+            <span class="timestamp">📷 DARINE — INSTAGRAM STORY — 01:52:34 AM — POST ID #31</span>
+            <p>
+              Background of a leaderboard coverage shot. At the right edge of frame: a figure in a
+              <strong>grey hoodie with the Code & Capture event staff logo on the back</strong> is
+              walking away from the camera toward the basement stairwell entrance. The figure is
+              partially cut off but posture, hoodie, and partial badge lanyard are visible.
+              <br /><br />
+              The badge lanyard shows a <strong>GUEST-VOLUNTEER label in yellow</strong>.
+              Cross-referenced with the volunteer roster from NODE 05: only three people received
+              guest-volunteer badges. Two are confirmed elsewhere at this time. The third:
+              <strong>Hazem.</strong> <br /><br />
+              Timestamp is 01:52:34 AM —
+              <strong>5 minutes and 34 seconds after Mohi's estimated time of death.</strong> Hazem
+              is walking away from the scene.
+            </p>
+          </div>
+        </div>
+        <div class="flag">
+          ⚠ DARINE'S PHOTO + RAHMA'S VENDING MACHINE TIMESTAMP + ALA'S TESTIMONY = HAZEM'S MOVEMENT
+          CONFIRMED AT THE SCENE
+        </div>
+      </div>
+
+      <!-- AYHEM REPORT -->
+      <div class="evidence-block">
+        <h2>👁️ CCTV OPERATOR REPORT — AYHEM</h2>
+        <div class="operator-report">
+          <span class="speaker">// STATEMENT — AYHEM — CCTV OPERATOR — RECORDED 04:22 AM</span>
+          At approximately 01:14 AM I received an urgent alert on my monitoring station — power
+          fluctuation in Hall B, potential projector overload. Standard protocol is to physically
+          check. I went to Hall B. The projectors were fine. No fluctuation. I assumed it was a
+          ghost notification from the old firmware — Ahmed had mentioned this earlier in the
+          night.<br /><br />
+          I was gone for approximately 22 minutes. When I returned to the monitoring station at
+          01:36 AM, everything looked normal. I didn't notice the CAM-01 buffer had been cleared
+          while I was away.<br /><br />
+          When I reviewed the footage during the post-incident sweep, I found the two buffer clears,
+          the angle adjustment on CAM-07, and the fake alert command in the infrastructure logs. I
+          didn't generate any of those commands. I've never seen those commands executed during an
+          event before.<br /><br />
+          <strong>There is one more thing.</strong> Two days before the event, during setup, I saw
+          someone adjusting the physical camera mount on CAM-12 in the 3rd floor fire exit corridor.
+          I assumed it was a tech volunteer doing alignment. I didn't get a good look at the person.
+          They were wearing a grey hoodie.
+        </div>
+        <div class="flag amber">
+          ⚠ CAM-12 WAS PHYSICALLY ADJUSTED DURING PRE-EVENT SETUP — 2 DAYS BEFORE THE EVENT — SAME
+          GREY HOODIE
+        </div>
+        <div class="annotation">
+          <span class="label">&gt;_ INVESTIGATOR NOTE</span>
+          The CAM-12 physical angle adjustment happened during pre-event setup — the same period
+          Hazem had legitimate volunteer access to the venue. He prepared both murders days in
+          advance: the modified electrical cable in Server Room B, the camera angle on the 3rd floor
+          fire exit corridor, and the digital infrastructure panel access with suppressed alerts.
+          This was not impulsive. This was planned.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NODE 07 // TABLET CACHE RECOVERY</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --green: #00ff41;
+        --green-dim: #00cc33;
+        --green-dark: #003300;
+        --red: #ff3333;
+        --amber: #ffb700;
+        --blue: #00b4ff;
+        --font: "Share Tech Mono", monospace;
+      }
+      body {
+        background: #000;
+        color: var(--green);
+        font-family: var(--font);
+        min-height: 100vh;
+        cursor: crosshair;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 65, 0.012) 2px,
+          rgba(0, 255, 65, 0.012) 4px
+        );
+        pointer-events: none;
+        z-index: 9999;
+      }
+      .header {
+        border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(0, 0, 0, 0.97);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .back-btn {
+        color: var(--green-dim);
+        text-decoration: none;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 6px 12px;
+        transition: all 0.2s;
+      }
+      .back-btn:hover {
+        border-color: var(--green);
+      }
+      .header-title {
+        font-size: 0.85rem;
+        letter-spacing: 4px;
+      }
+      .header-badge {
+        font-size: 0.65rem;
+        color: var(--amber);
+        margin-left: auto;
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      .main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 32px 24px 60px;
+      }
+      .page-title {
+        font-size: 1.4rem;
+        letter-spacing: 6px;
+        margin-bottom: 6px;
+      }
+      .page-sub {
+        font-size: 0.72rem;
+        color: #555;
+        letter-spacing: 3px;
+        margin-bottom: 32px;
+      }
+
+      .section {
+        background: #030803;
+        border: 1px solid rgba(0, 255, 65, 0.12);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 2px;
+      }
+      .section h2 {
+        font-size: 0.82rem;
+        letter-spacing: 4px;
+        color: var(--green);
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+        padding-bottom: 10px;
+      }
+
+      .flag {
+        display: inline-block;
+        background: rgba(255, 51, 51, 0.1);
+        border: 1px solid rgba(255, 51, 51, 0.3);
+        color: var(--red);
+        font-size: 0.65rem;
+        padding: 3px 8px;
+        letter-spacing: 1px;
+        margin: 4px 0;
+        display: block;
+      }
+      .flag.amber {
+        background: rgba(255, 183, 0, 0.1);
+        border-color: rgba(255, 183, 0, 0.3);
+        color: var(--amber);
+      }
+      .flag.green {
+        background: rgba(0, 255, 65, 0.05);
+        border-color: rgba(0, 255, 65, 0.2);
+        color: var(--green-dim);
+      }
+      .flag.inline {
+        display: inline-block;
+      }
+
+      .annotation {
+        background: rgba(255, 183, 0, 0.04);
+        border: 1px solid rgba(255, 183, 0, 0.2);
+        border-left: 3px solid var(--amber);
+        padding: 14px 18px;
+        margin: 16px 0;
+        font-size: 0.75rem;
+        color: #bbb;
+        line-height: 1.8;
+      }
+      .annotation .label {
+        color: var(--amber);
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      /* RECOVERY PROGRESS */
+      .recovery-bar {
+        background: #000;
+        border: 1px solid rgba(0, 255, 65, 0.15);
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .recovery-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.65rem;
+        color: #555;
+        margin-bottom: 8px;
+        letter-spacing: 2px;
+      }
+      .bar-track {
+        height: 8px;
+        background: #0a0a0a;
+        border: 1px solid rgba(0, 255, 65, 0.1);
+        border-radius: 1px;
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--green-dark), var(--green));
+        border-radius: 1px;
+        animation: fillBar 2s ease forwards;
+      }
+      @keyframes fillBar {
+        from {
+          width: 0;
+        }
+        to {
+          width: var(--pct);
+        }
+      }
+      .recovery-note {
+        font-size: 0.65rem;
+        color: #555;
+        margin-top: 8px;
+      }
+
+      /* FILE TABLE */
+      .file-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.7rem;
+        margin-bottom: 16px;
+      }
+      .file-table th {
+        padding: 8px 12px;
+        background: #050f05;
+        color: var(--green-dim);
+        text-align: left;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.15);
+        letter-spacing: 1px;
+        font-size: 0.6rem;
+      }
+      .file-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.05);
+        color: #666;
+        cursor: pointer;
+      }
+      .file-table tr:hover td {
+        background: #040a04;
+        color: #aaa;
+      }
+      .file-table td.name {
+        color: #aaa;
+      }
+      .file-table td.red {
+        color: var(--red);
+      }
+      .file-table td.amber {
+        color: var(--amber);
+      }
+      .file-table td.green {
+        color: var(--green-dim);
+      }
+      .file-table td.wiped {
+        color: #333;
+        font-style: italic;
+      }
+      .file-table tr.key-file td {
+        background: #080400;
+      }
+      .file-table tr.key-file:hover td {
+        background: #0a0600;
+      }
+      .file-table tr.key-file td.name {
+        color: var(--amber);
+      }
+
+      /* ACCESS LOG TABLE */
+      .access-log {
+        background: #000;
+        border: 1px solid rgba(0, 255, 65, 0.1);
+        padding: 16px;
+        font-size: 0.7rem;
+        line-height: 2;
+        overflow-x: auto;
+      }
+      .log-row {
+        display: grid;
+        grid-template-columns: 100px 120px 1fr 80px;
+        gap: 8px;
+        align-items: center;
+        padding: 4px 0;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.04);
+      }
+      .log-row:last-child {
+        border: none;
+      }
+      .log-row .ts {
+        color: #333;
+      }
+      .log-row .badge {
+        font-size: 0.6rem;
+        padding: 2px 6px;
+        border-radius: 1px;
+      }
+      .badge-mohi {
+        background: rgba(0, 255, 65, 0.05);
+        color: var(--green-dim);
+        border: 1px solid rgba(0, 255, 65, 0.1);
+      }
+      .badge-unreg {
+        background: rgba(255, 51, 51, 0.1);
+        color: var(--red);
+        border: 1px solid rgba(255, 51, 51, 0.2);
+      }
+      .badge-ghof {
+        background: rgba(0, 180, 255, 0.05);
+        color: var(--blue);
+        border: 1px solid rgba(0, 180, 255, 0.1);
+      }
+      .log-row .action {
+        color: #666;
+        font-size: 0.68rem;
+      }
+      .log-row .match {
+        font-size: 0.6rem;
+      }
+      .match-yes {
+        color: var(--green-dim);
+      }
+      .match-no {
+        color: var(--red);
+      }
+      .log-row.critical .action {
+        color: var(--amber);
+      }
+
+      /* VOICE MEMO PLAYER */
+      .voice-player {
+        background: #080300;
+        border: 2px solid rgba(255, 183, 0, 0.3);
+        padding: 24px;
+        border-radius: 2px;
+        margin-top: 16px;
+      }
+      .voice-player h3 {
+        color: var(--amber);
+        font-size: 0.8rem;
+        letter-spacing: 3px;
+        margin-bottom: 16px;
+      }
+      .player-meta {
+        font-size: 0.65rem;
+        color: #555;
+        line-height: 1.9;
+        margin-bottom: 20px;
+      }
+      .player-meta span {
+        color: var(--green-dim);
+      }
+      .player-ui {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .play-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255, 183, 0, 0.1);
+        border: 2px solid var(--amber);
+        color: var(--amber);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .play-btn:hover {
+        background: rgba(255, 183, 0, 0.2);
+      }
+      .play-btn.playing {
+        background: rgba(255, 183, 0, 0.2);
+      }
+      .waveform {
+        flex: 1;
+        height: 40px;
+        background: #000;
+        border: 1px solid rgba(255, 183, 0, 0.15);
+        border-radius: 2px;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+      }
+      .waveform-bars {
+        display: flex;
+        align-items: center;
+        gap: 1px;
+        height: 100%;
+        padding: 4px;
+        position: absolute;
+        inset: 0;
+      }
+      .waveform-bar {
+        width: 3px;
+        border-radius: 1px;
+        background: rgba(255, 183, 0, 0.2);
+        flex-shrink: 0;
+      }
+      .waveform-bar.active {
+        background: var(--amber);
+      }
+      .progress-line {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--amber);
+        left: 0;
+        transition: left 0.1s linear;
+      }
+      .timestamp-display {
+        font-size: 0.75rem;
+        color: var(--amber);
+        min-width: 50px;
+        text-align: right;
+      }
+
+      /* TRANSCRIPT */
+      .transcript {
+        background: #000;
+        border: 1px solid rgba(255, 183, 0, 0.1);
+        padding: 20px;
+      }
+      .transcript-line {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 12px;
+        font-size: 0.75rem;
+        line-height: 1.8;
+      }
+      .t-time {
+        color: #444;
+        min-width: 40px;
+        font-size: 0.65rem;
+        padding-top: 2px;
+      }
+      .t-text {
+        color: #888;
+      }
+      .t-text.active {
+        color: #ccc;
+      }
+      .t-text.key {
+        color: var(--amber);
+      }
+      .t-text.critical {
+        color: var(--red);
+      }
+      .t-text.redacted {
+        color: #222;
+        background: #111;
+        border-radius: 1px;
+        padding: 0 4px;
+      }
+      .transcript-line.highlight-moment {
+        background: rgba(255, 183, 0, 0.04);
+        border-left: 2px solid var(--amber);
+        padding-left: 10px;
+        margin-left: -12px;
+      }
+
+      /* NOTES */
+      .handwritten {
+        background: #080500;
+        border: 1px solid rgba(255, 183, 0, 0.15);
+        padding: 20px;
+        font-size: 0.78rem;
+        color: #888;
+        line-height: 2.2;
+        font-style: italic;
+        position: relative;
+      }
+      .handwritten::before {
+        content: '"';
+        font-size: 3rem;
+        color: rgba(255, 183, 0, 0.1);
+        position: absolute;
+        top: 10px;
+        left: 12px;
+        line-height: 1;
+      }
+      .handwritten .tear {
+        color: #333;
+        font-size: 0.65rem;
+        font-style: normal;
+        letter-spacing: 2px;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .handwritten strong {
+        color: var(--amber);
+        font-style: normal;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <a href="index.html" class="back-btn">← BACK</a>
+      <div class="header-title">NODE 07 // TABLET CACHE RECOVERY</div>
+      <div class="header-badge">⚠ PARTIAL RECOVERY — CHAHD</div>
+    </div>
+
+    <div class="main">
+      <div class="page-title">&gt;_ TABLET CACHE RECOVERY</div>
+      <div class="page-sub">
+        GHOFRANE'S TABLET — INCOMPLETE WIPE — FORENSIC EXTRACTION — CASE #CC-2025-0001
+      </div>
+
+      <!-- RECOVERY STATUS -->
+      <div class="section">
+        <h2>💾 RECOVERY STATUS — CHAHD'S FORENSIC EXTRACTION</h2>
+        <div class="annotation">
+          <span class="label">&gt;_ CHAHD'S NOTE</span>
+          The tablet was wiped using a factory-reset command executed in under 90 seconds — done in
+          a hurry. Factory reset on this tablet model doesn't overwrite cached app data and
+          temporary files in /sdcard/cache. I recovered approximately 67% of recent file activity.
+          The most important items survived. The killer didn't know about the cache partition.
+        </div>
+        <div class="recovery-bar">
+          <div class="recovery-header">
+            <span>CACHE PARTITION RECOVERY</span><span>67% RECOVERED</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="--pct: 67%"></div></div>
+          <div class="recovery-note">
+            3 files fully recovered | 2 files partial | 4 files corrupted beyond repair
+          </div>
+        </div>
+        <table class="file-table">
+          <thead>
+            <tr>
+              <th>FILENAME</th>
+              <th>TYPE</th>
+              <th>SIZE</th>
+              <th>LAST MODIFIED</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="key-file" onclick="scrollTo(0, 400)">
+              <td class="name">access_log_crossref_03h05.xlsx</td>
+              <td>Spreadsheet</td>
+              <td>14KB</td>
+              <td class="amber">03:05–03:09 AM</td>
+              <td class="amber">✓ FULLY RECOVERED</td>
+            </tr>
+            <tr class="key-file">
+              <td class="name">voice_memo_03h09_ghofrane.m4a</td>
+              <td>Audio</td>
+              <td>6.2MB</td>
+              <td class="amber">03:09–03:13 AM</td>
+              <td class="amber">✓ FULLY RECOVERED</td>
+            </tr>
+            <tr>
+              <td class="name">coord_notes_night.txt</td>
+              <td>Text</td>
+              <td>3KB</td>
+              <td>Various</td>
+              <td class="green">✓ RECOVERED</td>
+            </tr>
+            <tr>
+              <td class="name">participant_checkin_log.csv</td>
+              <td>Spreadsheet</td>
+              <td>44KB</td>
+              <td>22:00</td>
+              <td class="green">✓ RECOVERED</td>
+            </tr>
+            <tr>
+              <td class="wiped">cam_review_notes.txt</td>
+              <td>Text</td>
+              <td>—</td>
+              <td class="red">03:14 AM</td>
+              <td class="red">✗ OVERWRITTEN</td>
+            </tr>
+            <tr>
+              <td class="wiped">badge_anomaly_report.pdf</td>
+              <td>Document</td>
+              <td>—</td>
+              <td class="red">03:08 AM</td>
+              <td class="red">✗ OVERWRITTEN</td>
+            </tr>
+            <tr>
+              <td class="wiped">[4 additional files]</td>
+              <td>—</td>
+              <td>—</td>
+              <td class="red">—</td>
+              <td class="red">✗ CORRUPTED</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ACCESS LOG -->
+      <div class="section">
+        <h2>📋 RECOVERED FILE: ACCESS_LOG_CROSSREF — GHOFRANE'S WORKING DOCUMENT</h2>
+        <div class="annotation">
+          <span class="label">&gt;_ CONTEXT</span>
+          Ghofrane was cross-referencing the physical badge logbook against the digital door entry
+          system at 03:05 AM. This document is her working spreadsheet from that process. The
+          critical finding — the unregistered badge swipe at 01:44 AM — is highlighted in her own
+          notation.
+        </div>
+        <div class="access-log">
+          <div
+            class="log-row"
+            style="
+              font-size: 0.6rem;
+              color: var(--green-dim);
+              letter-spacing: 2px;
+              border-bottom: 1px solid rgba(0, 255, 65, 0.15);
+              padding-bottom: 8px;
+              margin-bottom: 4px;
+            "
+          >
+            <span>TIMESTAMP</span><span>BADGE / ID</span><span>ACTION</span><span>MATCH?</span>
+          </div>
+          <div class="log-row">
+            <span class="ts">01:38:04</span><span class="badge badge-mohi">MOHI CC-006</span
+            ><span class="action">ENTRY — Server Room B (physical log)</span
+            ><span class="match match-yes">✓ MATCH</span>
+          </div>
+          <div class="log-row critical">
+            <span class="ts">01:44:11</span><span class="badge badge-unreg">UNREGISTERED</span
+            ><span class="action"
+              >ENTRY — Server Room B (digital only) — ID: 0x7F3A — NOT IN ROSTER</span
+            ><span class="match match-no">✗ NO MATCH</span>
+          </div>
+          <div class="log-row">
+            <span class="ts">01:51:03</span><span class="badge badge-unreg">UNREGISTERED</span
+            ><span class="action">EXIT — Server Room B (digital) — same device</span
+            ><span class="match match-no">✗ NO MATCH</span>
+          </div>
+          <div class="log-row">
+            <span class="ts">02:14:39</span
+            ><span
+              class="badge badge-ghof"
+              style="
+                color: var(--green-dim);
+                border-color: rgba(0, 255, 65, 0.1);
+                background: rgba(0, 255, 65, 0.03);
+              "
+              >AHMED CC-003</span
+            ><span class="action">ENTRY — Server Admin Room</span
+            ><span class="match match-yes">✓ MATCH</span>
+          </div>
+          <div class="log-row critical">
+            <span class="ts">03:16:00</span><span class="badge badge-unreg">UNREGISTERED</span
+            ><span class="action">ENTRY — 3F Fire Exit Corridor — ID: 0x7F3A — SAME DEVICE</span
+            ><span class="match match-no">✗ NO MATCH</span>
+          </div>
+          <div class="log-row critical">
+            <span class="ts">03:21:44</span><span class="badge badge-unreg">UNREGISTERED</span
+            ><span class="action">EXIT — 3F Fire Exit Corridor</span
+            ><span class="match match-no">✗ NO MATCH</span>
+          </div>
+        </div>
+        <div class="handwritten" style="margin-top: 16px">
+          <span class="tear">// GHOFRANE'S HANDWRITTEN ANNOTATION — BOTTOM OF LOG</span>
+          Badge 0x7F3A appears twice — Server Room B AND 3F corridor. Same unregistered device. Not
+          in roster. Alert was suppressed — someone disabled it before the event.<br /><br />
+          Who had infrastructure access before tonight? Ahmed, Ayhem, Chahd, Yassine — and the
+          pre-event tech team.<br /><br />
+          Check with <strong>H___</strong> — basement access during setup — badge?<br /><br />
+          <span style="color: #444; font-size: 0.65rem; font-style: normal"
+            >[NAME TORN — FIRST LETTER: H]</span
+          >
+        </div>
+        <div class="flag amber">
+          ⚠ GHOFRANE WROTE "H" — SHE HAD IDENTIFIED HAZEM AS HER PRIME SUSPECT. SHE WAS KILLED
+          BEFORE SHE COULD TELL ANYONE.
+        </div>
+      </div>
+
+      <!-- VOICE MEMO -->
+      <div class="section">
+        <h2>🎙️ RECOVERED FILE: VOICE_MEMO — GHOFRANE — 03:09 AM — 4 MIN 12 SEC</h2>
+        <div class="annotation">
+          <span class="label">&gt;_ CONTEXT — CHAHD'S NOTE</span>
+          Ghofrane recorded this voice memo while she was working through the access log
+          discrepancy. She narrated her own findings as she went — possibly to keep her thoughts
+          organized, possibly because she had a feeling she needed to document this somewhere. She
+          died 10 minutes after stopping the recording. She never sent this to anyone.
+        </div>
+        <div class="voice-player">
+          <h3>🎙️ VOICE MEMO — GHOFRANE MABROUK — 03:09:17 AM</h3>
+          <div class="player-meta">
+            Duration: <span>4:12</span> | Recorded: <span>03:09:17 AM</span> | Device:
+            <span>Ghofrane's Tablet</span> | Status:
+            <span style="color: var(--green-dim)">FULLY RECOVERED FROM CACHE</span>
+          </div>
+          <div class="player-ui">
+            <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+            <div class="waveform" id="waveform" onclick="scrubAudio(event)">
+              <div class="waveform-bars" id="waveformBars"></div>
+              <div class="progress-line" id="progressLine"></div>
+            </div>
+            <div class="timestamp-display" id="tsDisplay">0:00</div>
+          </div>
+
+          <div class="transcript" id="transcript">
+            <div class="transcript-line">
+              <span class="t-time">0:00</span
+              ><span class="t-text"
+                >Okay. I'm recording this because — I don't know. Something feels wrong and I want
+                to have a record. It's 3:09 AM. I'm in the records room on the 3rd floor.</span
+              >
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">0:14</span
+              ><span class="t-text"
+                >I was doing my usual end-of-night cross-reference. Physical log versus the digital
+                door system. Routine. I've done this at every event.</span
+              >
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">0:28</span
+              ><span class="t-text"
+                >And there's a problem. Server Room B. Physical log shows Mohi entering at 01:38.
+                Normal. That's his job. But then — the digital system shows a second swipe. 01:44.
+                Six minutes later. A badge ID I don't recognize — 0x7F3A. It's not in the
+                roster.</span
+              >
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">0:51</span
+              ><span class="t-text"
+                >And Mohi... Mohi is dead. I keep thinking about that. He went down there at 01:38.
+                The unregistered badge came in at 01:44. And then — we didn't find Mohi until almost
+                4 AM.</span
+              >
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">1:08</span
+              ><span class="t-text"
+                >I checked the alert system. The badge alert — the one that's supposed to flag
+                unregistered entries — it was suppressed. Manually. At 10:48 PM. Before the event
+                even started. Someone with infrastructure panel access did this on purpose.</span
+              >
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">1:26</span
+              ><span class="t-text"
+                >So who had that access? Ahmed, Ayhem, Chahd — they all do. Yassine technically does
+                too. But there was also the pre-event tech team. And one of them — the volunteer who
+                coordinated setup —</span
+              >
+            </div>
+            <div class="transcript-line highlight-moment">
+              <span class="t-time">1:41</span
+              ><span class="t-text key"
+                >I looked up who had pre-event admin access. The log shows one additional account.
+                ADMIN_HZ. That's — that has to be <strong>Hazem</strong>. CC-007. The pre-event tech
+                volunteer. He had ROOT access during setup and nobody revoked it.</span
+              >
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">2:03</span
+              ><span class="t-text"
+                >The same unregistered badge — 0x7F3A — also shows up tonight on the 3rd floor fire
+                exit corridor. At 03:16 AM. That's... that's while I've been in this building.
+                Someone with that badge is in this building right now.</span
+              >
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">2:19</span><span class="t-text">[PAUSE — 8 SECONDS]</span>
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">2:27</span
+              ><span class="t-text"
+                >Okay. I messaged Yassine. He hasn't responded yet. I'm going to go find him. I have
+                my notes. Badge 0x7F3A. ADMIN_HZ. I have the log open on my tablet.</span
+              >
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">2:44</span
+              ><span class="t-text"
+                >I'm also looking at the camera buffer clears. CAM-01 — basement corridor — cleared
+                at 01:30 AM. That's before the unregistered badge entry. Someone cleared the camera
+                before they went in. CAM-12 — 3rd floor fire exit — cleared tonight at 03:10.
+                Thirty-four minutes ago.</span
+              >
+            </div>
+            <div class="transcript-line highlight-moment">
+              <span class="t-time">3:11</span
+              ><span class="t-text critical"
+                >Both buffer clears came from ADMIN_HZ.
+                <strong>It's Hazem. I'm certain it's Hazem.</strong> The pre-event volunteer. He
+                killed Mohi. I think he's still here. I think — I think Yassine's meeting is on the
+                3rd floor. I'm going to find him now.</span
+              >
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">3:28</span
+              ><span class="t-text"
+                >My tablet — I should send this file to someone. To Chahd. She'll understand the
+                technical side. Let me—</span
+              >
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">3:47</span
+              ><span class="t-text critical"
+                >Actually wait. If he still has access to the coordinator channel — if he can read
+                our messages — I shouldn't send this over the event system. I'll find Yassine in
+                person. I'm leaving the records room now.</span
+              >
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">4:01</span><span class="t-text">[FOOTSTEPS — DOOR OPENING]</span>
+            </div>
+            <div class="transcript-line">
+              <span class="t-time">4:07</span
+              ><span class="t-text">[RECORDING ENDS — AUTO-STOP ON DOOR CLOSE]</span>
+            </div>
+          </div>
+        </div>
+        <div class="flag">
+          ☠ GHOFRANE IDENTIFIED HAZEM AS THE KILLER AT 3:47 INTO THE RECORDING. SHE LEFT THE RECORDS
+          ROOM AT 4:07. SHE WAS DEAD BY 03:19 AM.
+        </div>
+        <div class="flag amber">
+          ⚠ SHE DECIDED NOT TO SEND THE FILE BECAUSE SHE KNEW HAZEM COULD READ THE COORDINATOR
+          CHANNEL. THIS DECISION COST HER LIFE AND DELAYED THE INVESTIGATION BY HOURS.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Waveform generation
+      const bars = document.getElementById("waveformBars");
+      const TOTAL_BARS = 80;
+      const DURATION = 252; // 4m12s in seconds
+      let currentTime = 0;
+      let playing = false;
+      let interval = null;
+
+      // Generate random waveform bars
+      for (let i = 0; i < TOTAL_BARS; i++) {
+        const bar = document.createElement("div");
+        bar.className = "waveform-bar";
+        const h = 15 + Math.random() * 65;
+        bar.style.height = h + "%";
+        bar.style.flex = "1";
+        bars.appendChild(bar);
+      }
+
+      function formatTime(s) {
+        const m = Math.floor(s / 60);
+        const sec = Math.floor(s % 60);
+        return m + ":" + (sec < 10 ? "0" : "") + sec;
+      }
+
+      function updateUI() {
+        const pct = currentTime / DURATION;
+        document.getElementById("progressLine").style.left = pct * 100 + "%";
+        document.getElementById("tsDisplay").textContent = formatTime(currentTime);
+        // color bars
+        const barEls = bars.querySelectorAll(".waveform-bar");
+        const activeCount = Math.floor(pct * TOTAL_BARS);
+        barEls.forEach((b, i) => {
+          b.classList.toggle("active", i < activeCount);
+        });
+        // highlight transcript lines
+        const lines = document.querySelectorAll(".transcript-line");
+        const timestamps = [
+          0, 14, 28, 51, 68, 86, 101, 123, 139, 147, 164, 191, 207, 228, 244, 247, 252,
+        ];
+        lines.forEach((line, i) => {
+          const t = timestamps[i] || 0;
+          const next = timestamps[i + 1] || DURATION;
+          if (currentTime >= t && currentTime < next) {
+            line.querySelector(".t-text")?.classList.add("active");
+          } else {
+            line.querySelector(".t-text")?.classList.remove("active");
+          }
+        });
+      }
+
+      function togglePlay() {
+        playing = !playing;
+        const btn = document.getElementById("playBtn");
+        if (playing) {
+          btn.textContent = "⏸";
+          btn.classList.add("playing");
+          interval = setInterval(() => {
+            currentTime += 0.2;
+            if (currentTime >= DURATION) {
+              currentTime = DURATION;
+              playing = false;
+              btn.textContent = "▶";
+              btn.classList.remove("playing");
+              clearInterval(interval);
+            }
+            updateUI();
+          }, 200);
+        } else {
+          btn.textContent = "▶";
+          btn.classList.remove("playing");
+          clearInterval(interval);
+        }
+      }
+
+      function scrubAudio(e) {
+        const rect = document.getElementById("waveform").getBoundingClientRect();
+        const pct = (e.clientX - rect.left) / rect.width;
+        currentTime = Math.max(0, Math.min(DURATION, pct * DURATION));
+        updateUI();
+      }
+    </script>
+  </body>
+</html>

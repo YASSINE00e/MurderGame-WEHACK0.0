@@ -1,0 +1,1414 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SOLUTION // THE TRUTH REVEALED</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --green: #00ff41;
+        --green-dim: #00cc33;
+        --green-dark: #003300;
+        --red: #ff3333;
+        --amber: #ffb700;
+        --blue: #00b4ff;
+        --font: "Share Tech Mono", monospace;
+      }
+      body {
+        background: #000;
+        color: var(--green);
+        font-family: var(--font);
+        min-height: 100vh;
+        cursor: crosshair;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 65, 0.012) 2px,
+          rgba(0, 255, 65, 0.012) 4px
+        );
+        pointer-events: none;
+        z-index: 9999;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .header {
+        border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(0, 0, 0, 0.97);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .back-btn {
+        color: var(--green-dim);
+        text-decoration: none;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 6px 12px;
+        transition: all 0.2s;
+      }
+      .back-btn:hover {
+        border-color: var(--green);
+      }
+      .header-title {
+        font-size: 0.85rem;
+        letter-spacing: 4px;
+      }
+      .main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 24px 80px;
+      }
+
+      /* HERO */
+      .solution-hero {
+        text-align: center;
+        padding: 60px 20px 48px;
+        border-bottom: 1px solid rgba(255, 51, 51, 0.15);
+        margin-bottom: 48px;
+      }
+      .solution-hero h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        letter-spacing: 8px;
+        color: var(--red);
+        margin-bottom: 16px;
+        animation: fadeUp 0.8s ease forwards;
+      }
+      .solution-hero p {
+        font-size: 0.82rem;
+        color: #666;
+        letter-spacing: 3px;
+        animation: fadeUp 0.8s 0.2s ease both;
+      }
+      .hero-stamp {
+        display: inline-block;
+        border: 2px solid var(--red);
+        color: var(--red);
+        font-size: 0.9rem;
+        letter-spacing: 6px;
+        padding: 10px 24px;
+        margin-top: 24px;
+        transform: rotate(-2deg);
+        animation: fadeUp 0.8s 0.4s ease both;
+      }
+
+      /* SECTION */
+      .section {
+        margin-bottom: 48px;
+        animation: fadeUp 0.6s ease forwards;
+      }
+      .section-label {
+        font-size: 0.65rem;
+        color: var(--green-dim);
+        letter-spacing: 4px;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+        padding-bottom: 10px;
+        margin-bottom: 24px;
+      }
+      .section-title {
+        font-size: 1.1rem;
+        letter-spacing: 4px;
+        color: var(--green);
+        margin-bottom: 20px;
+      }
+
+      /* ANSWER CARDS */
+      .answer-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .answer-card {
+        background: #050a05;
+        border: 1px solid rgba(0, 255, 65, 0.12);
+        border-left: 4px solid var(--green);
+        padding: 22px;
+        border-radius: 2px;
+      }
+      .answer-card.red {
+        border-left-color: var(--red);
+        background: #050505;
+      }
+      .answer-card.amber {
+        border-left-color: var(--amber);
+        background: #050400;
+      }
+      .answer-card.blue {
+        border-left-color: var(--blue);
+        background: #00020a;
+      }
+      .answer-num {
+        font-size: 0.62rem;
+        color: #444;
+        letter-spacing: 2px;
+        margin-bottom: 6px;
+      }
+      .answer-q {
+        font-size: 0.8rem;
+        color: #666;
+        margin-bottom: 10px;
+        line-height: 1.6;
+      }
+      .answer-a {
+        font-size: 0.95rem;
+        color: var(--green);
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+      }
+      .answer-card.red .answer-a {
+        color: var(--red);
+      }
+      .answer-card.amber .answer-a {
+        color: var(--amber);
+      }
+      .answer-card.blue .answer-a {
+        color: var(--blue);
+      }
+      .answer-detail {
+        font-size: 0.75rem;
+        color: #777;
+        line-height: 1.9;
+      }
+      .answer-detail strong {
+        color: #aaa;
+      }
+
+      /* TWIST CARDS */
+      .twist-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .twist-card {
+        background: #000;
+        border: 1px solid rgba(0, 255, 65, 0.08);
+        padding: 24px;
+        border-radius: 2px;
+        position: relative;
+        overflow: hidden;
+      }
+      .twist-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+      }
+      .twist-card:nth-child(1)::before {
+        background: var(--red);
+      }
+      .twist-card:nth-child(2)::before {
+        background: var(--amber);
+      }
+      .twist-card:nth-child(3)::before {
+        background: var(--green);
+      }
+      .twist-card:nth-child(4)::before {
+        background: var(--blue);
+      }
+      .twist-card:nth-child(5)::before {
+        background: var(--red);
+      }
+      .twist-card:nth-child(6)::before {
+        background: var(--amber);
+      }
+      .twist-card:nth-child(7)::before {
+        background: var(--green);
+      }
+      .twist-card:nth-child(8)::before {
+        background: var(--blue);
+      }
+      .twist-num {
+        font-size: 0.65rem;
+        color: #333;
+        letter-spacing: 3px;
+        margin-bottom: 8px;
+      }
+      .twist-title {
+        font-size: 0.9rem;
+        color: var(--green);
+        margin-bottom: 12px;
+        letter-spacing: 2px;
+      }
+      .twist-card:nth-child(1) .twist-title {
+        color: var(--red);
+      }
+      .twist-card:nth-child(2) .twist-title {
+        color: var(--amber);
+      }
+      .twist-card:nth-child(4) .twist-title {
+        color: var(--blue);
+      }
+      .twist-card:nth-child(5) .twist-title {
+        color: var(--red);
+      }
+      .twist-card:nth-child(6) .twist-title {
+        color: var(--amber);
+      }
+      .twist-card:nth-child(8) .twist-title {
+        color: var(--blue);
+      }
+      .twist-body {
+        font-size: 0.77rem;
+        color: #777;
+        line-height: 1.9;
+      }
+      .twist-body strong {
+        color: #aaa;
+      }
+
+      /* SIDE STORIES */
+      .side-story {
+        background: #040404;
+        border: 1px solid rgba(255, 183, 0, 0.15);
+        padding: 28px;
+        margin-bottom: 16px;
+        border-radius: 2px;
+      }
+      .ss-label {
+        font-size: 0.65rem;
+        color: var(--amber);
+        letter-spacing: 4px;
+        margin-bottom: 8px;
+      }
+      .ss-title {
+        font-size: 0.95rem;
+        color: var(--amber);
+        margin-bottom: 16px;
+      }
+      .ss-body {
+        font-size: 0.77rem;
+        color: #777;
+        line-height: 1.9;
+      }
+      .ss-body strong {
+        color: #aaa;
+      }
+      .ss-cast {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 12px 0;
+      }
+      .ss-person {
+        font-size: 0.65rem;
+        padding: 4px 10px;
+        border: 1px solid rgba(255, 183, 0, 0.25);
+        color: var(--amber);
+      }
+      .ss-cleared {
+        font-size: 0.7rem;
+        color: var(--green-dim);
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 6px 12px;
+        display: inline-block;
+        margin-top: 12px;
+      }
+
+      /* VERDICTS */
+      .verdict-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .verdict-card {
+        background: #030803;
+        border: 1px solid rgba(0, 255, 65, 0.08);
+        padding: 20px;
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        border-radius: 2px;
+      }
+      .verdict-card.guilty {
+        border-color: rgba(255, 51, 51, 0.2);
+        background: #050505;
+      }
+      .verdict-card.innocent {
+        border-color: rgba(0, 255, 65, 0.15);
+      }
+      .verdict-card.victim {
+        border-color: rgba(255, 183, 0, 0.15);
+        background: #050400;
+      }
+      .v-icon {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+      .v-name {
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+      }
+      .verdict-card.guilty .v-name {
+        color: var(--red);
+      }
+      .verdict-card.innocent .v-name {
+        color: var(--green-dim);
+      }
+      .verdict-card.victim .v-name {
+        color: var(--amber);
+      }
+      .v-status {
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+      }
+      .verdict-card.guilty .v-status {
+        color: rgba(255, 51, 51, 0.7);
+      }
+      .verdict-card.innocent .v-status {
+        color: rgba(0, 255, 65, 0.5);
+      }
+      .verdict-card.victim .v-status {
+        color: rgba(255, 183, 0, 0.7);
+      }
+      .v-detail {
+        font-size: 0.72rem;
+        color: #666;
+        line-height: 1.8;
+      }
+      .v-detail strong {
+        color: #999;
+      }
+
+      /* TIMELINE */
+      .full-timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .ftl-item {
+        display: flex;
+        gap: 16px;
+        position: relative;
+      }
+      .ftl-item::before {
+        content: "";
+        position: absolute;
+        left: 70px;
+        top: 20px;
+        bottom: -8px;
+        width: 1px;
+        background: rgba(0, 255, 65, 0.06);
+      }
+      .ftl-item:last-child::before {
+        display: none;
+      }
+      .ftl-time {
+        font-size: 0.68rem;
+        color: var(--green-dim);
+        min-width: 65px;
+        padding-top: 5px;
+        text-align: right;
+      }
+      .ftl-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 7px;
+        border: 1px solid;
+      }
+      .ftl-dot.red {
+        background: rgba(255, 51, 51, 0.4);
+        border-color: var(--red);
+      }
+      .ftl-dot.green {
+        background: rgba(0, 255, 65, 0.1);
+        border-color: var(--green-dim);
+      }
+      .ftl-dot.amber {
+        background: rgba(255, 183, 0, 0.1);
+        border-color: var(--amber);
+      }
+      .ftl-dot.blue {
+        background: rgba(0, 180, 255, 0.1);
+        border-color: var(--blue);
+      }
+      .ftl-content {
+        flex: 1;
+        background: #030803;
+        border: 1px solid rgba(0, 255, 65, 0.06);
+        padding: 10px 14px;
+        margin-bottom: 8px;
+        font-size: 0.73rem;
+        color: #777;
+        line-height: 1.7;
+      }
+      .ftl-content strong {
+        color: #aaa;
+      }
+      .ftl-content .red {
+        color: var(--red);
+      }
+      .ftl-content .amber {
+        color: var(--amber);
+      }
+
+      /* CLOSING */
+      .closing {
+        background: #050a05;
+        border: 2px solid rgba(0, 255, 65, 0.2);
+        padding: 32px;
+        text-align: center;
+        margin-top: 48px;
+      }
+      .closing h2 {
+        font-size: 1rem;
+        letter-spacing: 6px;
+        color: var(--green);
+        margin-bottom: 16px;
+      }
+      .closing p {
+        font-size: 0.8rem;
+        color: #666;
+        line-height: 1.9;
+        max-width: 600px;
+        margin: 0 auto 20px;
+      }
+      .closing-btns {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .c-btn {
+        padding: 12px 28px;
+        font-family: var(--font);
+        font-size: 0.78rem;
+        letter-spacing: 3px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        border: 1px solid;
+        transition: all 0.2s;
+      }
+      .c-btn.green {
+        color: var(--green);
+        border-color: var(--green);
+      }
+      .c-btn.green:hover {
+        background: rgba(0, 255, 65, 0.08);
+      }
+      .c-btn.amber {
+        color: var(--amber);
+        border-color: var(--amber);
+      }
+      .c-btn.amber:hover {
+        background: rgba(255, 183, 0, 0.08);
+      }
+
+      /* FLAG */
+      .flag {
+        display: inline-block;
+        background: rgba(255, 51, 51, 0.1);
+        border: 1px solid rgba(255, 51, 51, 0.3);
+        color: var(--red);
+        font-size: 0.65rem;
+        padding: 3px 10px;
+        letter-spacing: 1px;
+        margin: 4px 0;
+      }
+      .flag.amber {
+        background: rgba(255, 183, 0, 0.1);
+        border-color: rgba(255, 183, 0, 0.3);
+        color: var(--amber);
+      }
+      .flag.green {
+        background: rgba(0, 255, 65, 0.05);
+        border-color: rgba(0, 255, 65, 0.2);
+        color: var(--green-dim);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <a href="index.html" class="back-btn">← BACK TO HUB</a>
+      <div class="header-title">SOLUTION // THE TRUTH REVEALED — CASE #CC-2025-0001</div>
+    </div>
+
+    <div class="main">
+      <!-- HERO -->
+      <div class="solution-hero">
+        <h1>🔓 THE TRUTH REVEALED</h1>
+        <p>THE COMPLETE SOLUTION TO CODE & CAPTURE: ZERO DAY</p>
+        <div class="hero-stamp">CASE CLOSED</div>
+      </div>
+
+      <!-- CORRECT ANSWERS -->
+      <div class="section">
+        <div class="section-label">&gt;_ SECTION 01 — THE CORRECT ANSWERS</div>
+        <div class="answer-grid">
+          <div class="answer-card red">
+            <div class="answer-num">QUESTION 01 + 02</div>
+            <div class="answer-q">Who killed Mohi — and who killed Ghofrane?</div>
+            <div class="answer-a">HAZEM — KILLED BOTH VICTIMS</div>
+            <div class="answer-detail">
+              Mohi was killed at <strong>01:47 AM in Server Room B</strong> — blunt force trauma,
+              staged as an electrical accident using a modified power cable Hazem had prepared days
+              in advance. Ghofrane was killed at
+              <strong>03:19 AM in the 3rd floor fire exit corridor</strong> — blunt force, no
+              staging, fast — because Hazem saw her badge anomaly message in the coordinator channel
+              and intercepted her before she could reach Yassine.
+            </div>
+          </div>
+
+          <div class="answer-card amber">
+            <div class="answer-num">QUESTION 03</div>
+            <div class="answer-q">Who is THE DECOY — the innocent person deliberately framed?</div>
+            <div class="answer-a">FARES — FRAMED BY HAZEM</div>
+            <div class="answer-detail">
+              Hazem chose Fares because of his reputation for grey-area tactics in CTF competitions
+              — making him a plausible suspect without needing much setup. Hazem spoofed a server
+              log entry placing Fares's credentials in Server Room B at 01:41 AM, and sent an
+              anonymous tip from a burner account pointing at Fares.
+              <strong
+                >The frame collapsed instantly when Amine casually mentioned Fares's Twitch stream —
+                timestamped, continuous, showing his face during the entire murder window.</strong
+              >
+            </div>
+          </div>
+
+          <div class="answer-card">
+            <div class="answer-num">QUESTION 04</div>
+            <div class="answer-q">What broke the frame on the decoy?</div>
+            <div class="answer-a">FARES'S TWITCH LIVESTREAM</div>
+            <div class="answer-detail">
+              Fares had been streaming his CTF session for a private group of online friends from
+              01:02–04:00 AM. The stream is hosted on Twitch, timestamped by Twitch's servers,
+              continuous, and shows Fares's face and keyboard the entire time. At 01:41 AM — the
+              exact moment the spoofed log places him in Server Room B — he is on camera talking to
+              chat and working on Challenge 5.
+              <strong>Amine revealed this entirely by accident.</strong> He had no idea he was
+              destroying Hazem's frame.
+            </div>
+          </div>
+
+          <div class="answer-card amber">
+            <div class="answer-num">QUESTION 05</div>
+            <div class="answer-q">Who is THE LIAR — and what were they actually hiding?</div>
+            <div class="answer-a">DARINE — HIDING HER ANONYMOUS EXPOSÉ BLOG</div>
+            <div class="answer-detail">
+              When Rahma told Darine at 03:01 AM that she'd seen something and was going to find
+              Yassine, <strong>Darine panicked</strong>. Not because she was guilty — but because
+              she runs an anonymous blog exposing IEEE community drama, and she was terrified of
+              being pulled into a murder investigation that would out her identity. She told
+              investigators Rahma said nothing unusual. She deleted Rahma's group chat message from
+              her device. Her deletion gave Hazem 7 extra minutes to intercept Rahma. When
+              investigators cornered her, she broke — and the timeline shifted completely.
+            </div>
+          </div>
+
+          <div class="answer-card">
+            <div class="answer-num">QUESTION 06</div>
+            <div class="answer-q">What is SIDE STORY A?</div>
+            <div class="answer-a">UNAUTHORIZED CTF HINT-SELLING OPERATION</div>
+            <div class="answer-detail">
+              <strong>Ela and Le Blanc</strong> were running an unauthorized hint shop during the
+              event — selling challenge nudges to participants for small crypto payments through an
+              encrypted Telegram channel. <strong>Rihab</strong> was a buyer, not a co-conspirator.
+              Ela's mysterious 27-minute absence (01:33–01:58 AM) was a parking lot payment
+              coordination call with Le Blanc. Le Blanc's encrypted communications were this
+              operation. All three are completely cleared of any murder involvement. Total
+              transactions: 6. Total earned: approximately 90 TND equivalent in crypto. A
+              hint-selling side hustle that consumed hours of investigation time.
+            </div>
+          </div>
+
+          <div class="answer-card">
+            <div class="answer-num">QUESTION 07</div>
+            <div class="answer-q">What is SIDE STORY B?</div>
+            <div class="answer-a">AYA & CHADI'S SECRET RELATIONSHIP</div>
+            <div class="answer-detail">
+              <strong>Aya and Chadi</strong> are in a relationship they want to keep private — both
+              hold IEEE leadership positions in different chapters and the situation is complicated.
+              They met three times during the event: rooftop at 23:30, parking level 2 at 01:15 AM,
+              and seminar room 4F at 02:40 AM. Every time someone asked where they were, they gave
+              different answers because they were each protecting the secret without coordinating.
+              Their encrypted messages were rendezvous coordination.
+              <strong>Amine asked Chadi directly at 04:11 AM with zero tact.</strong> Chadi's
+              reaction confirmed everything. Both timelines instantly made sense.
+            </div>
+          </div>
+
+          <div class="answer-card red">
+            <div class="answer-num">QUESTION 08</div>
+            <div class="answer-q">How did Hazem's scoreboard alibi prove he was guilty?</div>
+            <div class="answer-a">480-SECOND EXACT SUBMISSION INTERVALS — AUTOMATED SCRIPT</div>
+            <div class="answer-detail">
+              Hazem's flag submissions arrived at
+              <strong
+                >exactly 480 seconds apart — every single time — for 2 hours and 16 minutes</strong
+              >. Chahd pulled the scoreboard backend timestamps to millisecond precision and found
+              zero variance. No human submits CTF flags on a perfect 8-minute timer. The flags were
+              pre-loaded — harvested from the keylogger's captured data — and submitted by an
+              automated script running on a timer from his terminal. He wasn't at his keyboard
+              during the murders. The scoreboard he used as an alibi was the proof that destroyed
+              his alibi.
+            </div>
+          </div>
+
+          <div class="answer-card red">
+            <div class="answer-num">QUESTION 09</div>
+            <div class="answer-q">What was Ghofrane's final evidence?</div>
+            <div class="answer-a">4-MINUTE 12-SECOND VOICE MEMO — SHE NAMES HAZEM AT 3:47</div>
+            <div class="answer-detail">
+              Ghofrane recorded herself narrating her findings as she worked through the access log
+              discrepancy. The recording runs 4 minutes and 12 seconds. At the
+              <strong>3:47 mark</strong> she says Hazem's name clearly — connecting him to the
+              ADMIN_HZ account, the badge alert suppression, and the unregistered badge entries. She
+              decided not to send the file over the event system because she realized Hazem could
+              read the coordinator channel. She left the records room at 4:07 into the recording.
+              She was dead by 03:19 AM. The voice memo survived the tablet wipe in the cache
+              partition. <strong>Chahd found it.</strong>
+            </div>
+          </div>
+
+          <div class="answer-card amber">
+            <div class="answer-num">QUESTION 10</div>
+            <div class="answer-q">What was Yassine's role and his greatest failure?</div>
+            <div class="answer-a">INNOCENT DIRECTOR — GUILTY OF CATASTROPHIC NEGLIGENCE</div>
+            <div class="answer-detail">
+              Yassine is not a killer, not an accomplice, not a mastermind. He is a person who made
+              two decisions that enabled everything. <strong>First:</strong> he forwarded Ghofrane
+              Mabrouk's background flag about Hazem directly to Hazem — allowing the killer to see
+              his own background check and self-clear it. <strong>Second:</strong> he read
+              Ghofrane's distress message at 03:14:07 AM — five minutes before she died — and did
+              not act. He was in a conversation and told himself he'd respond in two minutes. He
+              didn't. He lied to investigators about when he read the message until confronted with
+              the server log read receipt. He is cooperating fully. He will carry the weight of both
+              decisions for the rest of his life.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8 PLOT TWISTS -->
+      <div class="section">
+        <div class="section-label">&gt;_ SECTION 02 — THE 8 PLOT TWISTS</div>
+        <div class="twist-grid">
+          <div class="twist-card">
+            <div class="twist-num">TWIST 01</div>
+            <div class="twist-title">THE ALIBI WAS THE EVIDENCE</div>
+            <div class="twist-body">
+              Hazem's alibi was the scoreboard. He was "submitting flags continuously" during both
+              murder windows. This alibi seemed airtight — verified timestamps, consistent activity,
+              witnesses who saw him at his terminal.
+              <strong>But the scoreboard timestamps proved he was a machine, not a human.</strong>
+              The inhuman 480-second intervals that looked like industrious competition were the
+              fingerprint of an automated script. The thing he used to protect himself destroyed
+              him. Every flag he "submitted" while Mohi and Ghofrane were dying was harvested from
+              the keylogger he installed to steal other people's work.
+            </div>
+          </div>
+
+          <div class="twist-card">
+            <div class="twist-num">TWIST 02</div>
+            <div class="twist-title">MOHI CHOSE HIS OWN KILLER</div>
+            <div class="twist-body">
+              Mohi found the keylogger at 01:28 AM. He didn't know what to do. He thought about
+              going to the organizers — but it was the middle of the night and he didn't want to
+              cause a scene if it turned out to be nothing. So he thought:
+              <em>who would know about hardware security?</em> And the answer was obvious.
+              <strong
+                >Hazem. The guy who'd been doing infrastructure setup. The guy who knew
+                servers.</strong
+              >
+              Mohi walked to Hazem with the photo on his phone and told him everything. Hazem
+              processed the information in seconds. Mohi was dead sixteen minutes later. The most
+              chilling detail: Mohi posted to the main channel that he'd found something and was
+              telling Hazem about it. The message is still there. He announced his own murder.
+            </div>
+          </div>
+
+          <div class="twist-card">
+            <div class="twist-num">TWIST 03</div>
+            <div class="twist-title">
+              THE BADGE THAT OPENED BOTH MURDER SCENES BELONGED TO ONE OF THE VICTIMS
+            </div>
+            <div class="twist-body">
+              The unregistered badge 0x7F3A — used to enter Server Room B when Mohi was killed, and
+              used to enter the 3rd floor fire exit corridor when Ghofrane was killed — was cloned
+              from <strong>Ghofrane's own access card</strong>. Badge ID 0x7F39 is Ghofrane's
+              registered badge. 0x7F3A is a sequential-offset clone — the textbook artifact of
+              MIFARE cloning. Hazem cloned it during pre-event setup coordination when handling
+              volunteer credentials was routine. The woman whose badge opened both murder scenes was
+              the second victim. She died because she discovered the badge log. She had been
+              carrying the key to her own murder since setup day.
+            </div>
+          </div>
+
+          <div class="twist-card">
+            <div class="twist-num">TWIST 04</div>
+            <div class="twist-title">
+              GHOFRANE IDENTIFIED THE KILLER AND THEN MADE A DECISION THAT COST HER LIFE
+            </div>
+            <div class="twist-body">
+              By 03:09 AM Ghofrane had the complete picture. ADMIN_HZ. Badge 0x7F3A. The suppressed
+              alert. The camera clears. She had Hazem's name written in her notes. She recorded a
+              voice memo naming him clearly at 3:47. She was going to find Yassine.
+              <strong>And then she had a thought that seemed smart but was fatal:</strong> she
+              realized Hazem could monitor the coordinator channel, so she decided not to send the
+              voice memo digitally. She would find Yassine in person instead. That decision — to
+              protect her evidence — removed the only protection she had. She left the records room
+              alone at 4:07 into the recording. Hazem, who had read her messages to Yassine and was
+              monitoring her, was waiting. She was the only person in the building who knew the
+              truth. She took it to her death 12 minutes later.
+            </div>
+          </div>
+
+          <div class="twist-card">
+            <div class="twist-num">TWIST 05</div>
+            <div class="twist-title">
+              THE TWO BIGGEST RED HERRINGS WERE COMPLETELY UNRELATED TO EACH OTHER AND TO THE
+              MURDERS
+            </div>
+            <div class="twist-body">
+              Side Story A (the hint shop) and Side Story B (the secret relationship) had nothing to
+              do with each other and nothing to do with either murder. They ran simultaneously, all
+              night, in the same building, with overlapping characters whose movements
+              coincidentally intersected with the murder timeline.
+              <strong
+                >Ela's parking lot absence overlapped exactly with Mohi's murder window. Aya and
+                Chadi's parking structure meeting (01:15 AM) was adjacent to the basement
+                stairwell.</strong
+              >
+              Le Blanc's encrypted communications looked exactly like operational cover. The two
+              stories consumed the first half of the investigation, generated dozens of false leads,
+              and both collapsed in the same portal — leaving investigators suddenly with zero
+              suspects except the person who had been hiding in plain sight as "the hard-working CTF
+              guy who placed 2nd."
+            </div>
+          </div>
+
+          <div class="twist-card">
+            <div class="twist-num">TWIST 06</div>
+            <div class="twist-title">
+              THE LIAR'S LIE WASN'T MALICE — IT WAS COWARDICE — AND IT KILLED RAHMA
+            </div>
+            <div class="twist-body">
+              Darine didn't lie to protect a killer. She lied to protect herself from association
+              with a murder investigation that might expose her anonymous blog.
+              <strong
+                >When Rahma told her "I think I saw something — I'm going to tell Yassine," Darine's
+                first instinct wasn't to help. It was to calculate her own risk.</strong
+              >
+              She told the wrong person. She deleted Rahma's message. She gave Hazem 7 extra minutes
+              between knowing Rahma was a threat and Rahma reaching anyone who could help her. Those
+              7 minutes are the difference between Rahma alive and Rahma dead. Darine will not be
+              charged with murder. But she will be charged with obstruction and evidence tampering.
+              And she knows what those 7 minutes cost.
+            </div>
+          </div>
+
+          <div class="twist-card">
+            <div class="twist-num">TWIST 07</div>
+            <div class="twist-title">HAZEM'S REAL NAME IS UNKNOWN — HE IS A PROFESSIONAL GHOST</div>
+            <div class="twist-body">
+              The person who registered as "Hazem" at Code & Capture is not the Hazem known in the
+              regional CTF community. Fares competed against the real Hazem in 2022 — different
+              face. Le Blanc competed against him too — different face. The person at this event
+              used a stolen CTF identity. His fingerprints match no national database — possibly
+              altered. His ProtonMail address is untraceable. The firmware on his keylogger matches
+              a 2024 HackTN incident under a different pseudonym.
+              <strong
+                >This is at minimum his 4th confirmed event infiltration. The previous three had no
+                deaths — because nobody found the device early.</strong
+              >
+              When Mohi found it, the operation crossed from theft to murder. Authorities have his
+              biometrics. His real identity is a matter of ongoing investigation.
+            </div>
+          </div>
+
+          <div class="twist-card">
+            <div class="twist-num">TWIST 08</div>
+            <div class="twist-title">
+              YASSINE'S GREATEST MISTAKE HAPPENED THREE WEEKS BEFORE THE EVENT
+            </div>
+            <div class="twist-body">
+              The most consequential decision Yassine made wasn't reading Ghofrane's message and not
+              acting — though that was catastrophic.
+              <strong
+                >The original failure was forwarding Ghofrane Mabrouk's background flag about Hazem
+                directly to Hazem for "follow-up."</strong
+              >
+              Hazem saw his own background check. He saw every discrepancy Ghofrane had caught. He
+              had two weeks to prepare responses to each one. He self-cleared himself. If Yassine
+              had followed up independently — or handed the flag to anyone other than its subject —
+              a volunteer with a non-existent university, a dead emergency email, and attendance at
+              a cancelled event would have been removed from the team before setup day. The
+              keylogger would never have been installed. Mohi would not have found it. Nobody would
+              have died. The chain begins three weeks before the event with one forwarded email.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDE STORIES FULL EXPLANATION -->
+      <div class="section">
+        <div class="section-label">&gt;_ SECTION 03 — THE SIDE STORIES</div>
+
+        <div class="side-story">
+          <div class="ss-label">SIDE STORY A</div>
+          <div class="ss-title">THE UNAUTHORIZED HINT SHOP — "CHANNEL X"</div>
+          <div class="ss-cast">
+            <span class="ss-person">ELA — OPERATOR</span>
+            <span class="ss-person">LE BLANC — OPERATOR</span>
+            <span class="ss-person">RIHAB — BUYER</span>
+          </div>
+          <div class="ss-body">
+            Ela and Le Blanc had been planning this before the event. Using an encrypted Telegram
+            channel they called "Channel X," they sold challenge nudges — not full solutions, just
+            directional hints — to participants for small crypto payments. The rate was 5–15 TND
+            equivalent per hint, with full solutions at double. Rihab purchased two hints for
+            Challenge 7 and Challenge 3.<br /><br />
+            The operation looked criminal because: Ela's 27-minute absence matched the first murder
+            window exactly. Le Blanc's encrypted messages looked like operational cover for
+            something violent. Rihab's evasiveness about her whereabouts created a third suspicious
+            character with no alibi.<br /><br />
+            <strong>What collapsed it:</strong> The Telegram archive contained zero discussion of
+            violence, locations, or anything event-related beyond challenge hints. The crypto
+            amounts were tiny and consistent. The "drop" language referred to hint delivery. When
+            Ela finally admitted the parking lot truth — cornered after 3 portals of investigation —
+            the entire structure deflated in minutes. Le Blanc confirmed everything. Rihab admitted
+            the purchases.
+          </div>
+          <span class="ss-cleared"
+            >✓ ELA, LE BLANC, RIHAB — CLEARED OF ALL MURDER-RELATED SUSPICION</span
+          >
+        </div>
+
+        <div class="side-story">
+          <div class="ss-label">SIDE STORY B</div>
+          <div class="ss-title">THE SECRET RELATIONSHIP — THREE MEETINGS, ZERO MURDERS</div>
+          <div class="ss-cast">
+            <span class="ss-person">AYA</span>
+            <span class="ss-person">CHADI</span>
+            <span class="ss-person">AMINE — ACCIDENTAL EXPOSER</span>
+          </div>
+          <div class="ss-body">
+            Aya and Chadi have been together for four months. They haven't told anyone — they're
+            both in IEEE leadership roles in different chapters and the community gossip would be
+            significant. They agreed to keep it private until they figure out the situation.<br /><br />
+            During the event, they met three times: rooftop terrace at 23:30 (30 minutes), parking
+            level 2 at 01:15 AM (20 minutes, adjacent to the murder location but 32 minutes before
+            the killing), and seminar room 4F at 02:40 AM (40 minutes). Every time investigators
+            asked about their whereabouts, they gave different answers because they were each
+            protecting the secret without coordinating their cover stories — which made both alibis
+            collapse independently and look even more suspicious.<br /><br />
+            The emoji-coded messages ("📍→P2 | ⏰01:15") looked exactly like operational
+            communication. Their mutual evasiveness, combined with proximity to the murder
+            locations, made them prime suspects for most of the first half of the investigation.<br /><br />
+            <strong>What collapsed it:</strong> Amine, who had been watching both of them all night
+            with growing suspicion, walked up to Chadi at 04:11 AM and asked:
+            <em
+              >"Bro. Are you and Aya together or something? Because your stories make zero sense
+              otherwise."</em
+            >
+            Chadi's face confirmed it before he said a word.
+          </div>
+          <span class="ss-cleared"
+            >✓ AYA & CHADI — FULLY CLEARED. THE INVESTIGATION OWES AMINE AN APOLOGY FOR TAKING 4
+            PORTALS TO GET HERE.</span
+          >
+        </div>
+      </div>
+
+      <!-- FULL TIMELINE -->
+      <div class="section">
+        <div class="section-label">&gt;_ SECTION 04 — THE COMPLETE TIMELINE</div>
+        <div class="full-timeline">
+          <div class="ftl-item">
+            <div class="ftl-time">3 WKS PRE</div>
+            <div class="ftl-dot amber"></div>
+            <div class="ftl-content">
+              Ghofrane Mabrouk flags Hazem's volunteer form — 5 discrepancies.
+              <span class="amber">Yassine forwards flag to Hazem himself.</span> Hazem self-clears.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">SETUP DAY</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              Hazem installs hardware keylogger in Server Room B during pre-event access.
+              <strong>Physically adjusts CAM-12 angle on 3rd floor fire exit corridor.</strong>
+              Prepares modified power cable and hides it in Server Room B.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">SETUP DAY</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              Hazem clones Ghofrane Mabrouk's access badge (0x7F39 → 0x7F3A) during volunteer
+              credential coordination. She hands him her badge. He clones it.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">22:00</div>
+            <div class="ftl-dot green"></div>
+            <div class="ftl-content">
+              Event begins. Hazem is checked in as a participant. His volunteer admin access is
+              still active — Ahmed never revoked it.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">22:48</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              <span class="red">Hazem suppresses badge alert system</span> from infrastructure panel
+              — all unregistered badge entries will now pass silently.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">23:30</div>
+            <div class="ftl-dot blue"></div>
+            <div class="ftl-content">
+              Side Story B: Aya and Chadi meet on rooftop. 30 minutes. Nobody sees them.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">23:41</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              <span class="red">Hazem installs keylog_daemon_v3.bin on competition server</span> —
+              software companion to the hardware device. Begins capturing all keystrokes.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:02</div>
+            <div class="ftl-dot green"></div>
+            <div class="ftl-content">
+              Fares starts his Twitch stream. He will stream continuously until 04:00 AM. This will
+              later destroy Hazem's frame.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:14</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              <span class="red">Hazem triggers fake power alert to Ayhem's station.</span> Ayhem
+              leaves CCTV monitoring to check Hall B. 22-minute gap begins.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:15</div>
+            <div class="ftl-dot blue"></div>
+            <div class="ftl-content">
+              Side Story B: Aya and Chadi meet at parking level 2, adjacent to basement stairwell.
+              32 minutes before the murder. They see nothing relevant.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:28</div>
+            <div class="ftl-dot amber"></div>
+            <div class="ftl-content">
+              Mohi photographs the hardware keylogger in Server Room B. Photo timestamped 01:28:14
+              AM. He texts the organizer channel that he found something and is telling Hazem about
+              it.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:30</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              <span class="red">Hazem clears CAM-01 buffer</span> — basement corridor camera. All
+              footage from the past 30 minutes deleted. The server room entrance is now unmonitored.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:33</div>
+            <div class="ftl-dot blue"></div>
+            <div class="ftl-content">
+              Side Story A: Ela and Le Blanc coordinate parking lot meeting for hint shop payment.
+              Ela leaves her monitoring station.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:38</div>
+            <div class="ftl-dot green"></div>
+            <div class="ftl-content">
+              Mohi enters Server Room B via physical badge — logged. He is waiting for Hazem, phone
+              in hand, photo ready to show.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:44</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              <span class="red">Hazem enters Server Room B using cloned badge 0x7F3A.</span> Alert
+              suppressed. No log entry visible in standard view. Mohi shows him the photo. Hazem
+              understands immediately what has to happen.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:46</div>
+            <div class="ftl-dot amber"></div>
+            <div class="ftl-content">
+              Rahma purchases coffee from basement vending machine — 8.3 meters away. She hears
+              nothing. She sees a figure near the stairwell shortly after she leaves.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:47</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              <strong><span class="red">MOHI KILLED.</span></strong> Blunt force trauma to posterior
+              cranium. Hazem places the modified cable in contact with Mohi's hand to stage the
+              scene. The staging took less than 4 minutes.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:51</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              Hazem exits Server Room B via cloned badge — logged digitally, no ID match, alert
+              suppressed. He adjusts CAM-07 angle via panel — 12 degrees upward, away from corridor
+              floor.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:52</div>
+            <div class="ftl-dot amber"></div>
+            <div class="ftl-content">
+              Darine posts Instagram story — Hazem visible in background near stairwell. Grey
+              hoodie, event staff logo, moving fast. Timestamp: 01:52:34 AM. The photo is still
+              live. Nobody looks at the background for hours.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">01:55</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              <span class="red">Hazem's automated script submits first queued flag</span> —
+              CTF{r3v3rs3_3ng1n33r}. He is not at his terminal. The script runs on a 480-second
+              timer. He will be "submitting flags" for the next 2+ hours while doing other things.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">02:40</div>
+            <div class="ftl-dot blue"></div>
+            <div class="ftl-content">
+              Side Story B: Aya and Chadi meet in seminar room 4F. 40 minutes.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">03:01</div>
+            <div class="ftl-dot amber"></div>
+            <div class="ftl-content">
+              Rahma tells Darine: <em>"I think I saw something. I'm going to tell Yassine."</em>
+              <span class="amber">Darine panics and tells the wrong person.</span>
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">03:05</div>
+            <div class="ftl-dot amber"></div>
+            <div class="ftl-content">
+              Ghofrane begins cross-referencing physical and digital access logs. Finds the badge
+              anomaly at 03:08. Begins messaging Yassine.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">03:09</div>
+            <div class="ftl-dot amber"></div>
+            <div class="ftl-content">
+              Ghofrane starts recording voice memo. She names Hazem at 3:47 into the recording. She
+              decides not to send it digitally because she knows he monitors the channel.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">03:10</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              <span class="red">Hazem clears CAM-12 buffer</span> — 3rd floor fire exit camera. Then
+              reads Ghofrane's coordinator channel messages.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">03:14</div>
+            <div class="ftl-dot amber"></div>
+            <div class="ftl-content">
+              <span class="amber">Yassine reads Ghofrane's message at 03:14:07 AM.</span> Server log
+              confirms read receipt. He does not respond. He does not act. He is in a conversation.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">03:16</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              <span class="red"
+                >Hazem enters 3rd floor fire exit corridor via cloned badge 0x7F3A.</span
+              >
+              Alert suppressed. Ghofrane left the records room 9 minutes ago. She is heading toward
+              Yassine.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">03:19</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              <strong><span class="red">GHOFRANE KILLED.</span></strong> Blunt force, temporal
+              region, single impact. She had no time to react. Her tablet is wiped and dropped
+              beside her body. The wipe is incomplete.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">03:21</div>
+            <div class="ftl-dot green"></div>
+            <div class="ftl-content">
+              Amine walks past 3rd floor fire exit at 03:21 AM. Sees nothing — confirms the body was
+              not yet visible or had been moved briefly. Fixes the murder window.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">03:33</div>
+            <div class="ftl-dot amber"></div>
+            <div class="ftl-content">
+              Yassine replies to Ghofrane: <em>"Just saw this. Where are you?"</em> She is already
+              dead.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">03:41</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              Ahmed finds Ghofrane's body in fire exit corridor. Emergency protocol initiated.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">03:52</div>
+            <div class="ftl-dot red"></div>
+            <div class="ftl-content">
+              Chahd finds Mohi's body in Server Room B during sweep. Full investigation activated.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">04:11</div>
+            <div class="ftl-dot green"></div>
+            <div class="ftl-content">
+              Amine accidentally exposes Aya and Chadi's relationship. Side Story B collapses.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">04:38</div>
+            <div class="ftl-dot green"></div>
+            <div class="ftl-content">
+              Ahmed runs full access log query. Three unregistered badge swipes. All ADMIN_HZ
+              commands visible. The infrastructure picture becomes clear.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">04:51</div>
+            <div class="ftl-dot green"></div>
+            <div class="ftl-content">
+              Fares confirms keylogger firmware from HackTN 2024. Confirms Hazem's stolen identity.
+              Side Story A already collapsed — Ela confessed at 04:44 AM.
+            </div>
+          </div>
+          <div class="ftl-item">
+            <div class="ftl-time">05:00</div>
+            <div class="ftl-dot green"></div>
+            <div class="ftl-content">
+              <strong>Chahd presents the complete case.</strong> Authorities notified. Hazem is
+              still in the building. Arrest imminent.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINAL VERDICTS -->
+      <div class="section">
+        <div class="section-label">&gt;_ SECTION 05 — FINAL VERDICTS</div>
+        <div class="verdict-grid">
+          <div class="verdict-card guilty">
+            <div class="v-icon">⛓️</div>
+            <div>
+              <div class="v-name">HAZEM — GUILTY</div>
+              <div class="v-status">
+                MURDER × 2 | IDENTITY FRAUD | CORPORATE ESPIONAGE | EVIDENCE TAMPERING
+              </div>
+              <div class="v-detail">
+                <strong>Charges:</strong> Murder in the first degree (Ghofrane), Manslaughter /
+                second-degree murder (Mohi), unauthorized computer access, evidence destruction,
+                corporate espionage, operating under a false identity. Real identity pending
+                investigation. Intelligence contractor affiliation being pursued.
+                <strong>Still in building at time of this report.</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="verdict-card victim">
+            <div class="v-icon">🕯️</div>
+            <div>
+              <div class="v-name">MOHI — VICTIM</div>
+              <div class="v-status">KILLED DOING HIS JOB</div>
+              <div class="v-detail">
+                Found a piece of hardware that didn't belong. Took a photo. Told the wrong person
+                because that person seemed trustworthy. He was doing his job with care and
+                diligence. He died for it.
+                <strong
+                  >His phone photo — recovered after finding his volunteer ID — is the first piece
+                  of physical evidence linking Hazem to the operation.</strong
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="verdict-card victim">
+            <div class="v-icon">🕯️</div>
+            <div>
+              <div class="v-name">GHOFRANE — VICTIM</div>
+              <div class="v-status">KILLED FOR BEING ORGANIZED</div>
+              <div class="v-detail">
+                She found the badge anomaly through routine administrative work. She recorded her
+                findings. She named the killer. She made one decision that cost her life —
+                protecting her evidence from digital interception by going in person.
+                <strong
+                  >Her voice memo, recovered from the cache partition of her wiped tablet, is the
+                  definitive evidence that closes the case.</strong
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="verdict-card innocent">
+            <div class="v-icon">✓</div>
+            <div>
+              <div class="v-name">FARES — INNOCENT (THE DECOY)</div>
+              <div class="v-status">FULLY CLEARED — FRAME COLLAPSED</div>
+              <div class="v-detail">
+                Framed using spoofed server logs and an anonymous tip. Cleared by Twitch VOD
+                timestamped during the murder window. Also provided critical identification of the
+                keylogger firmware from HackTN 2024. His reputation made him an easy target. His
+                stream made the frame impossible.
+                <strong>He also confirmed Hazem's stolen identity.</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="verdict-card guilty">
+            <div class="v-icon">⚠️</div>
+            <div>
+              <div class="v-name">DARINE — GUILTY (OBSTRUCTION)</div>
+              <div class="v-status">OBSTRUCTION OF JUSTICE | EVIDENCE TAMPERING</div>
+              <div class="v-detail">
+                Not a killer. Guilty of deleting Rahma's message and lying to investigators out of
+                self-interest. Her 7-minute delay contributed to Rahma's death. She cooperated fully
+                once cornered.
+                <strong
+                  >Charges: obstruction of justice, evidence tampering, providing false
+                  statements.</strong
+                >
+                She has been informed that her cooperation will be considered in sentencing.
+              </div>
+            </div>
+          </div>
+
+          <div class="verdict-card innocent">
+            <div class="v-icon">⚠️</div>
+            <div>
+              <div class="v-name">YASSINE — INNOCENT (NEGLIGENCE)</div>
+              <div class="v-status">NOT CRIMINALLY CHARGED — CIVIL LIABILITY PENDING</div>
+              <div class="v-detail">
+                Not a killer. Guilty of forwarding a background flag to its own subject, and of
+                reading a distress message 5 minutes before the sender's death without acting. He is
+                cooperating fully and has waived all confidentiality.
+                <strong
+                  >Civil liability for negligence is being evaluated. He will face an internal IEEE
+                  review.</strong
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="verdict-card innocent">
+            <div class="v-icon">✓</div>
+            <div>
+              <div class="v-name">ELA + LE BLANC + RIHAB — CLEARED (SIDE STORY A)</div>
+              <div class="v-status">CLEARED OF MURDER — MINOR RULE VIOLATIONS ONLY</div>
+              <div class="v-detail">
+                The unauthorized hint shop was against event rules. It was not illegal, not
+                connected to either murder, and not worth the investigation time it consumed. Ela
+                and Le Blanc receive formal warnings and a ban from future Code & Capture events.
+                Rihab receives a warning.
+                <strong>Their competition scores are not affected.</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="verdict-card innocent">
+            <div class="v-icon">✓</div>
+            <div>
+              <div class="v-name">AYA + CHADI — CLEARED (SIDE STORY B)</div>
+              <div class="v-status">FULLY CLEARED — NO CHARGES</div>
+              <div class="v-detail">
+                Having a secret relationship is not a crime. Their movements are fully explained.
+                Their alibis are coherent once the relationship is understood.
+                <strong
+                  >The investigation formally apologizes for the level of scrutiny applied to their
+                  personal lives.</strong
+                >
+                Amine is requested to exercise more tact in future.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLOSING -->
+      <div class="closing">
+        <h2>&gt;_ CASE CLOSED — CODE & CAPTURE: ZERO DAY</h2>
+        <p>
+          Two people died in this building because one person found a piece of hardware that didn't
+          belong, and told the most qualified person he could think of. The most dangerous person in
+          the room was the one who helped build it. The case was always solvable — the evidence was
+          always there. It just needed someone who wouldn't stop pulling threads.
+        </p>
+        <p style="color: var(--green-dim); font-size: 0.75rem">
+          Thank you for investigating. — IEEE CS FSM Student Branch | Code & Capture 2025
+        </p>
+        <div class="closing-btns">
+          <a href="index.html" class="c-btn green">← RETURN TO HUB</a>
+          <a href="evidence-board.html" class="c-btn amber">🎯 TRY AGAIN</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

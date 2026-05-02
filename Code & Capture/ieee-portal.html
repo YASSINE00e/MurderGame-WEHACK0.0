@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NODE 05 // IEEE ORGANIZER PORTAL</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--green:#00ff41;--green-dim:#00cc33;--green-dark:#003300;--red:#ff3333;--amber:#ffb700;--blue:#00b4ff;--font:'Share Tech Mono',monospace;}
+body{background:#000;color:var(--green);font-family:var(--font);min-height:100vh;cursor:crosshair;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.012) 2px,rgba(0,255,65,0.012) 4px);pointer-events:none;z-index:9999;}
+.header{border-bottom:1px solid rgba(0,255,65,0.2);padding:14px 28px;display:flex;align-items:center;gap:16px;background:rgba(0,0,0,0.97);position:sticky;top:0;z-index:100;}
+.back-btn{color:var(--green-dim);text-decoration:none;font-size:0.75rem;letter-spacing:2px;border:1px solid rgba(0,255,65,0.2);padding:6px 12px;transition:all 0.2s;}
+.back-btn:hover{border-color:var(--green);}
+.header-title{font-size:0.85rem;letter-spacing:4px;}
+.header-badge{font-size:0.65rem;color:var(--amber);margin-left:auto;animation:blink 1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.main{max-width:1000px;margin:0 auto;padding:32px 24px 60px;}
+.page-title{font-size:1.4rem;letter-spacing:6px;margin-bottom:6px;}
+.page-sub{font-size:0.72rem;color:#555;letter-spacing:3px;margin-bottom:32px;}
+
+.section{background:#030803;border:1px solid rgba(0,255,65,0.12);padding:24px;margin-bottom:24px;border-radius:2px;}
+.section h2{font-size:0.82rem;letter-spacing:4px;color:var(--green);margin-bottom:16px;border-bottom:1px solid rgba(0,255,65,0.1);padding-bottom:10px;}
+
+.flag{display:inline-block;background:rgba(255,51,51,0.1);border:1px solid rgba(255,51,51,0.3);color:var(--red);font-size:0.65rem;padding:3px 8px;letter-spacing:1px;margin:4px 0;}
+.flag.amber{background:rgba(255,183,0,0.1);border-color:rgba(255,183,0,0.3);color:var(--amber);}
+.flag.green{background:rgba(0,255,65,0.05);border-color:rgba(0,255,65,0.2);color:var(--green-dim);}
+.flag.blue{background:rgba(0,180,255,0.05);border-color:rgba(0,180,255,0.2);color:var(--blue);}
+
+.annotation{background:rgba(255,183,0,0.04);border:1px solid rgba(255,183,0,0.2);border-left:3px solid var(--amber);padding:14px 18px;margin:16px 0;font-size:0.75rem;color:#bbb;line-height:1.8;}
+.annotation .label{color:var(--amber);font-size:0.65rem;letter-spacing:2px;display:block;margin-bottom:6px;}
+
+/* DOCUMENT STYLE */
+.document{background:#040804;border:1px solid rgba(0,255,65,0.1);padding:28px;margin-bottom:16px;font-size:0.78rem;line-height:1.9;color:#888;}
+.document .doc-header{font-size:0.65rem;letter-spacing:3px;color:var(--green-dim);border-bottom:1px solid rgba(0,255,65,0.1);padding-bottom:10px;margin-bottom:16px;}
+.document strong{color:#ccc;}
+.document .redacted{background:#222;color:#222;padding:0 4px;border-radius:1px;user-select:none;}
+.document .highlight{color:var(--amber);}
+.document .danger{color:var(--red);}
+.document ul{margin:8px 0 8px 20px;}
+.document ul li{margin-bottom:4px;}
+
+/* VOLUNTEER TABLE */
+.vol-table{width:100%;border-collapse:collapse;font-size:0.7rem;margin:12px 0;}
+.vol-table th{padding:8px 12px;background:#050f05;color:var(--green-dim);text-align:left;border-bottom:1px solid rgba(0,255,65,0.15);letter-spacing:1px;font-size:0.6rem;}
+.vol-table td{padding:8px 12px;border-bottom:1px solid rgba(0,255,65,0.05);color:#666;}
+.vol-table td.name{color:#aaa;}
+.vol-table td.emp{color:var(--green-dim);font-family:var(--font);}
+.vol-table td.red{color:var(--red);}
+.vol-table td.amber{color:var(--amber);}
+.vol-table td.green{color:var(--green-dim);}
+.vol-table tr.critical td{background:#080200;color:#999;}
+.vol-table tr:hover td{background:#030803;}
+
+/* EMAIL CHAIN */
+.email{background:#040408;border:1px solid rgba(0,180,255,0.1);padding:20px;margin-bottom:12px;}
+.email-meta{font-size:0.65rem;color:#444;line-height:1.8;border-bottom:1px solid rgba(0,180,255,0.08);padding-bottom:10px;margin-bottom:12px;}
+.email-meta span{color:#666;}
+.email-body{font-size:0.77rem;color:#888;line-height:1.9;}
+.email-body strong{color:#bbb;}
+.email-body .highlight{color:var(--amber);}
+.email-body .danger{color:var(--red);}
+
+/* KEY FIND */
+.key-find{background:#090400;border:2px solid rgba(255,183,0,0.3);padding:20px;margin:16px 0;}
+.key-find h3{color:var(--amber);font-size:0.78rem;letter-spacing:3px;margin-bottom:12px;}
+.key-find p{font-size:0.78rem;color:#bbb;line-height:1.9;}
+.key-find .pin-reveal{font-size:1.4rem;color:var(--green);letter-spacing:8px;text-align:center;margin:16px 0;padding:12px;border:1px solid rgba(0,255,65,0.2);background:#000;}
+</style>
+</head>
+<body>
+<div class="header">
+  <a href="index.html" class="back-btn">← BACK</a>
+  <div class="header-title">NODE 05 // IEEE ORGANIZER PORTAL</div>
+  <div class="header-badge">⚠ INTERNAL — ORGANIZER ACCESS ONLY</div>
+</div>
+
+<div class="main">
+  <div class="page-title">&gt;_ IEEE ORGANIZER PORTAL</div>
+  <div class="page-sub">VOLUNTEER ROSTER // BACKGROUND FLAGS // INTERNAL DOCUMENTS // CASE #CC-2025-0001</div>
+
+  <!-- VOLUNTEER ROSTER -->
+  <div class="section">
+    <h2>👥 VOLUNTEER ROSTER — CODE & CAPTURE — COMPLETE</h2>
+    <div class="annotation">
+      <span class="label">&gt;_ NOTE — MOHI'S PHONE PIN</span>
+      Mohi's employee/volunteer ID is used as his phone PIN. This is standard practice per the event's volunteer onboarding document — "default device lock = volunteer ID number." Find Mohi's employee ID in the table below to unlock his phone in NODE 06.
+    </div>
+    <table class="vol-table">
+      <thead><tr><th>NAME</th><th>VOLUNTEER ID</th><th>ROLE</th><th>ACCESS LEVEL</th><th>HOODIE ISSUED</th><th>NOTES</th></tr></thead>
+      <tbody>
+        <tr><td class="name">YASSINE</td><td class="emp">CC-001</td><td>Event Director</td><td class="amber">DIRECTOR</td><td>Yes — Black</td><td>Organizer</td></tr>
+        <tr><td class="name">GHOFRANE MABROUK</td><td class="emp">CC-002</td><td>Event Coordinator</td><td>COORDINATOR</td><td>Yes — Black</td><td>Flagged Hazem pre-event</td></tr>
+        <tr><td class="name">AHMED</td><td class="emp">CC-003</td><td>System Admin</td><td class="amber">ROOT</td><td>Yes — Black</td><td>Granted Hazem admin access</td></tr>
+        <tr><td class="name">AYHEM</td><td class="emp">CC-004</td><td>CCTV Operator</td><td>MONITOR</td><td>Yes — Black</td><td>Absent 01:14–01:36 AM</td></tr>
+        <tr><td class="name">CHAHD</td><td class="emp">CC-005</td><td>Network Monitor</td><td>MONITOR</td><td>Yes — Black</td><td>Lead investigator</td></tr>
+        <tr class="critical"><td class="name">MOHI</td><td class="emp green">CC-006</td><td>Network Technician</td><td>TECHNICIAN</td><td>Yes — Black</td><td class="red">☠ DECEASED — VICTIM #1</td></tr>
+        <tr class="critical"><td class="name">HAZEM</td><td class="emp red">CC-007</td><td>Tech Volunteer (Pre-event)</td><td class="red">ROOT (NEVER REVOKED)</td><td class="red">Yes — GREY ⚠</td><td class="red">PRIME SUSPECT — IDENTITY UNVERIFIED</td></tr>
+        <tr><td class="name">DARINE</td><td class="emp">CC-008</td><td>Social Media Manager</td><td>SOCIAL</td><td>No</td><td>Key witness — photo archive</td></tr>
+        <tr><td class="name">ALA</td><td class="emp">CC-009</td><td>Participant (Volunteer assist)</td><td>NONE</td><td>No</td><td>Acoustic witness — 01:40–01:47 AM</td></tr>
+      </tbody>
+    </table>
+    <div class="key-find">
+      <h3>🔓 MOHI'S PHONE PIN — LOCATED</h3>
+      <p>Volunteer ID for Mohi (Network Technician, CC-006) is the default phone PIN per onboarding protocol. The volunteer onboarding document states: <strong>"Your volunteer ID is your default device PIN until you change it."</strong> Mohi never changed his PIN — confirmed by the phone's security settings which show the PIN was set during device initialization and never modified.</p>
+      <div class="pin-reveal">0 0 6</div>
+      <p style="text-align:center;font-size:0.7rem;color:#555;margin-top:8px;">→ Enter this PIN in NODE 06 (Locked Device) to unlock Mohi's phone and access the keylogger photograph.</p>
+    </div>
+    <div class="annotation" style="margin-top:8px;">
+      <span class="label">&gt;_ NOTE ON GREY HOODIE</span>
+      Only one volunteer received a GREY staff hoodie: Hazem (CC-007). All other volunteers and organizers received BLACK hoodies. The grey hoodie was issued because Hazem joined as a late pre-event addition and the black stock had run out. This is the hoodie visible in Darine's 01:52 AM photo. This is the hoodie Rahma described. This is the hoodie Ayhem saw adjusting CAM-12 two days before the event.
+    </div>
+    <div class="flag">⚠ HAZEM IS THE ONLY PERSON IN THE BUILDING WITH A GREY STAFF HOODIE. ALL THREE WITNESS DESCRIPTIONS MATCH.</div>
+  </div>
+
+  <!-- BACKGROUND FLAG REPORT -->
+  <div class="section">
+    <h2>🚩 BACKGROUND FLAG REPORT — HAZEM — FILED BY GHOFRANE MABROUK</h2>
+    <div class="document">
+      <div class="doc-header">INTERNAL FLAG REPORT // CODE & CAPTURE VOLUNTEER MANAGEMENT // DATE: [3 WEEKS PRE-EVENT] // FILED BY: GHOFRANE MABROUK (CC-002)</div>
+      <strong>Subject:</strong> Volunteer Registration Anomalies — CC-007 (HAZEM)<br/><br/>
+      I am filing this flag regarding the volunteer registration submitted for CC-007. During routine verification of all volunteer background forms, I identified the following discrepancies:<br/><br/>
+      <ul>
+        <li><strong>University affiliation:</strong> Listed as <span class="highlight">"ISET Sousse — Computer Science, 2022 cohort."</span> I contacted ISET Sousse's alumni records office. No student matching the submitted name and ID number appears in their 2022 cohort database. The student ID format also uses a numbering convention from 2019, not 2022.</li>
+        <li><strong>Phone number:</strong> Listed with a +216 Tunisia prefix but the middle digits indicate a <span class="highlight">Libyan mobile carrier registration</span> (verified via GSMA database). Applicant stated he is a local participant.</li>
+        <li><strong>Emergency contact email:</strong> <span class="danger">Address bounced with "mailbox does not exist" error.</span> Dead email provided as emergency contact.</li>
+        <li><strong>Previous event experience:</strong> Lists "HackMed 2023 — participant." HackMed 2023 was <span class="danger">cancelled before participants arrived</span> due to venue issues. He could not have attended it.</li>
+        <li><strong>Profile photo:</strong> Reverse image search of submitted photo returns <span class="danger">no social media matches</span>. Most participants have some digital footprint. This photo appears to be a one-time use image.</li>
+      </ul>
+      <br/>
+      <strong>Recommendation:</strong> Contact applicant for verification before granting volunteer access, especially given the ROOT-level infrastructure request.<br/><br/>
+      <strong class="highlight">Status of this flag:</strong> Forwarded to YASSINE (CC-001) for action on [date]. Yassine replied: <span class="highlight">"Forward to Hazem — he's heading the tech team. He can look into any discrepancies."</span> Flag considered resolved after Hazem self-reported that his information was correct.
+    </div>
+    <div class="flag">☠ THE FLAG ABOUT HAZEM WAS FORWARDED TO HAZEM HIMSELF. HE CLEARED HIS OWN BACKGROUND CHECK.</div>
+    <div class="flag amber">⚠ ALL 5 DISCREPANCIES GHOFRANE FLAGGED WERE ACCURATE. HAZEM IS OPERATING UNDER A FALSE IDENTITY.</div>
+  </div>
+
+  <!-- YASSINE EMAIL CHAIN -->
+  <div class="section">
+    <h2>📧 YASSINE — INTERNAL EMAIL CHAIN — INVESTIGATION RELEVANT</h2>
+    <div class="annotation">
+      <span class="label">&gt;_ CONTEXT</span>
+      These emails are relevant to understanding Yassine's role in the events leading up to the murders. He is not the killer. But his decisions enabled critical failures. When confronted, Yassine provided these emails voluntarily — he is cooperating fully. His statement is below.
+    </div>
+
+    <div class="email">
+      <div class="email-meta">FROM: <span>ghofrane.mabrouk@ieee-fsm.org</span> | TO: <span>yassine@ieee-fsm.org</span> | SUBJECT: <span>Volunteer flag — CC-007</span> | DATE: <span>3 weeks pre-event</span></div>
+      <div class="email-body">Yassine — flagging CC-007 (Hazem). 5 discrepancies on his volunteer form. University doesn't check out, phone carrier mismatch, dead emergency email, attended an event that was cancelled, and his photo has no social media footprint. Recommending verification before granting ROOT access. Full report attached.</div>
+    </div>
+
+    <div class="email">
+      <div class="email-meta">FROM: <span>yassine@ieee-fsm.org</span> | TO: <span>ghofrane.mabrouk@ieee-fsm.org</span> | SUBJECT: <span>Re: Volunteer flag — CC-007</span> | DATE: <span>3 weeks pre-event</span></div>
+      <div class="email-body">Thanks for flagging. <span class="highlight">Please forward this directly to Hazem — he's coordinating the tech volunteer team. He can check into any inconsistencies on his end.</span> Probably an international student situation. We've seen this before. Don't overthink it. We need him confirmed before setup day.</div>
+    </div>
+
+    <div class="email">
+      <div class="email-meta">FROM: <span>hazem.cc007@protonmail.com</span> | TO: <span>ghofrane.mabrouk@ieee-fsm.org</span> | SUBJECT: <span>Re: Re: Volunteer flag</span> | DATE: <span>3 weeks pre-event</span></div>
+      <div class="email-body">Hi Ghofrane — thanks for reaching out. Happy to clarify. The university database issue is because I graduated under a different department code — happens with interdisciplinary programs. The phone was registered through a family plan from before I moved. Emergency contact email was a typo — my fault. HackMed 2023 — I did register, but you're right it was cancelled; I forgot it didn't actually happen. My photo is new — I just don't use social media. <span class="danger">Hope that clears everything up.</span></div>
+    </div>
+
+    <div class="annotation">
+      <span class="label">&gt;_ INVESTIGATOR ANALYSIS</span>
+      Hazem's response addressed every flag with a plausible-sounding explanation but provided zero verifiable documentation. No corrected university contact, no new phone info, no updated emergency email, no acknowledgment that HackMed 2023 was cancelled before anyone arrived. <strong>Every "explanation" was unverifiable and accepted without follow-up.</strong> Ghofrane marked the flag as resolved. The ROOT access was granted.
+    </div>
+    <div class="flag">⚠ HAZEM'S SELF-CLEARANCE WAS ACCEPTED WITHOUT VERIFICATION. THIS IS THE ORIGINAL FAILURE POINT.</div>
+
+    <div class="document" style="margin-top:16px;border-left:3px solid var(--amber);">
+      <div class="doc-header">YASSINE — PERSONAL STATEMENT — RECORDED 04:45 AM</div>
+      I made two catastrophic mistakes. The first: I told Ghofrane to send the background flag to Hazem. I wasn't thinking. I was focused on getting setup done on time. I trusted that if something was seriously wrong, it would surface. It didn't — because I handed the investigation to the subject of the investigation.<br/><br/>
+      The second: I read Ghofrane's message at 03:14 AM. I was mid-conversation with a sponsor representative. I told myself I'd respond in two minutes. I got distracted. When I saw her body at 03:41 AM, I realized what I had done. I didn't tell investigators about the read receipt immediately because I was afraid of what it would look like. That was wrong. I'm telling you now.<br/><br/>
+      <strong>I didn't kill anyone. But I gave the killer the tools, the access, and the time he needed. I don't know how to live with that yet.</strong><br/><br/>
+      <span class="highlight">I am waiving all confidentiality and providing full access to every communication I sent or received during this event.</span>
+    </div>
+  </div>
+
+  <!-- HAZEM IDENTITY -->
+  <div class="section">
+    <h2">🕵️ HAZEM — IDENTITY VERIFICATION FAILURE — SUMMARY</h2>
+    <div class="document" style="border-left:3px solid var(--red);">
+      <div class="doc-header">IDENTITY ANALYSIS — CC-007 — COMPILED 05:02 AM</div>
+      <strong class="danger">The person registered as "Hazem" at Code & Capture is not who he claims to be.</strong><br/><br/>
+      Evidence:<br/>
+      <ul>
+        <li>5 registration discrepancies flagged by Ghofrane Mabrouk — all accurate, none followed up</li>
+        <li>Community CTF profile of the real "Hazem" (confirmed by Fares) shows a different face in 2022 event photos</li>
+        <li>Le Blanc, who competed against the real Hazem at a 2022 event, confirms: <strong class="danger">"That person is not Hazem."</strong></li>
+        <li>Firmware signature on keylogger matches a 2024 HackTN incident — same operator, different pseudonym</li>
+        <li>No biometric match exists in any national database under the submitted identity</li>
+        <li>ProtonMail address used for all communication — untraceable</li>
+      </ul>
+      <br/>
+      <strong>Real identity: UNKNOWN.</strong> Operating as a serial CTF infiltrator for a competitive intelligence firm. Code & Capture is at minimum his 4th confirmed event. The previous three: no deaths. This event: two deaths — because someone found the device early.
+    </div>
+    <div class="flag">☠ THE KILLER'S REAL NAME IS UNKNOWN. "HAZEM" IS A STOLEN CTF IDENTITY. THE INVESTIGATION CONTINUES.</div>
+  </div>
+
+</div>
+</body>
+</html>
