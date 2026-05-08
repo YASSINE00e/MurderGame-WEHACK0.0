@@ -10,329 +10,275 @@
     />
     <style>
       * {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
-        box-sizing: border-box;
       }
       :root {
-        --green: #00ff41;
-        --green-dim: #00cc33;
-        --green-dark: #003300;
-        --red: #ff3333;
-        --amber: #ffb700;
-        --blue: #00b4ff;
-        --font: "Share Tech Mono", monospace;
+        --wa-dark: #0b1417;
+        --wa-sidebar: #0f1a1c;
+        --wa-accent: #25d366;
+        --wa-muted: #98a6a6;
+        --wa-chat-bg: #0a0f11;
+        --wa-bubble-in: #262e2f;
+        --wa-bubble-out: #008069;
+        --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       }
+      html,
       body {
-        background: #000;
-        color: var(--green);
-        font-family: var(--font);
-        min-height: 100vh;
-        cursor: crosshair;
-      }
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 2px,
-          rgba(0, 255, 65, 0.012) 2px,
-          rgba(0, 255, 65, 0.012) 4px
-        );
-        pointer-events: none;
-        z-index: 9999;
+        height: 100%;
+        font-family: var(--font-sans);
+        background: var(--wa-dark);
+        color: #e6eee9;
       }
 
       .header {
-        border-bottom: 1px solid rgba(0, 255, 65, 0.2);
-        padding: 14px 28px;
         display: flex;
         align-items: center;
-        gap: 16px;
-        background: rgba(0, 0, 0, 0.97);
-        position: sticky;
-        top: 0;
-        z-index: 100;
+        padding: 12px 16px;
+        background: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
       }
       .back-btn {
-        color: var(--green-dim);
+        color: var(--wa-muted);
         text-decoration: none;
-        font-size: 0.75rem;
-        letter-spacing: 2px;
-        border: 1px solid rgba(0, 255, 65, 0.2);
-        padding: 6px 12px;
-        transition: all 0.2s;
-      }
-      .back-btn:hover {
-        border-color: var(--green);
-        color: var(--green);
+        padding: 6px 10px;
+        border-radius: 6px;
       }
       .header-title {
-        font-size: 0.85rem;
-        letter-spacing: 4px;
-        color: var(--green);
-      }
-      .header-badge {
-        font-size: 0.65rem;
-        color: var(--red);
-        margin-left: auto;
-        animation: blink 1s step-end infinite;
-      }
-      @keyframes blink {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0;
-        }
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-left: 12px;
       }
 
-      .main {
-        max-width: 960px;
-        margin: 0 auto;
-        padding: 32px 24px;
-      }
-      .page-title {
-        font-size: 1.4rem;
-        letter-spacing: 6px;
-        margin-bottom: 6px;
-      }
-      .page-sub {
-        font-size: 0.72rem;
-        color: #555;
-        letter-spacing: 3px;
-        margin-bottom: 32px;
-      }
-
-      /* TABS */
-      .tabs {
+      .whatsapp {
+        max-width: 1200px;
+        margin: 18px auto;
+        padding: 12px;
         display: flex;
-        gap: 0;
-        border-bottom: 1px solid rgba(0, 255, 65, 0.2);
-        margin-bottom: 32px;
-        overflow-x: auto;
+        gap: 16px;
       }
-      .tab {
-        padding: 10px 20px;
-        font-family: var(--font);
-        font-size: 0.72rem;
-        letter-spacing: 2px;
-        color: #555;
-        background: none;
+      .sidebar {
+        width: 340px;
+        background: var(--wa-sidebar);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+      }
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .sidebar-header .title {
+        font-weight: 700;
+      }
+      .search {
+        padding: 10px;
+        background: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      }
+      .search input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 20px;
         border: none;
+        background: #0b1717;
+        color: #cfe8e2;
+      }
+
+      .chat-list {
+        max-height: 680px;
+        overflow-y: auto;
+      }
+      .chat-item {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.02);
         cursor: pointer;
-        border-bottom: 2px solid transparent;
-        transition: all 0.2s;
+      }
+      .chat-item.active {
+        background: rgba(37, 211, 102, 0.08);
+      }
+      .chat-item:hover {
+        background: rgba(255, 255, 255, 0.01);
+      }
+      .avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #1e6b5a;
+        flex: 0 0 44px;
+      }
+      .chat-meta {
+        flex: 1;
+        min-width: 0;
+      }
+      .chat-meta .name {
+        font-weight: 700;
+        color: #e8f5ef;
+      }
+      .chat-meta .snippet {
+        color: var(--wa-muted);
+        font-size: 13px;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
-      .tab.active {
-        color: var(--green);
-        border-bottom-color: var(--green);
+      .chat-time {
+        font-size: 12px;
+        color: var(--wa-muted);
       }
-      .tab:hover {
-        color: var(--green-dim);
+
+      .chat-pane {
+        flex: 1;
+        background: var(--wa-chat-bg);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
       }
+      .chat-header {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        background: #0f2020;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      }
+      .chat-header .title {
+        font-weight: 700;
+      }
+      .chat-header .status {
+        color: var(--wa-muted);
+        font-size: 13px;
+        margin-left: 8px;
+      }
+
+      .chat-placeholder {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--wa-muted);
+        padding: 24px;
+        font-size: 15px;
+        letter-spacing: 0.2px;
+      }
+
+      .chat-placeholder.hidden {
+        display: none;
+      }
+
       .tab-content {
         display: none;
       }
+
       .tab-content.active {
         display: block;
       }
 
-      /* CHAT WINDOW */
       .chat-window {
-        background: #030803;
-        border: 1px solid rgba(0, 255, 65, 0.2);
-        border-radius: 2px;
         overflow: hidden;
-        margin-bottom: 24px;
-      }
-      .chat-header {
-        background: #050f05;
-        padding: 12px 20px;
-        border-bottom: 1px solid rgba(0, 255, 65, 0.15);
-        font-size: 0.72rem;
-        color: var(--green-dim);
-        letter-spacing: 2px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .chat-header .recovered {
-        font-size: 0.65rem;
-        color: var(--amber);
       }
       .chat-body {
         padding: 20px;
-        max-height: 500px;
+        max-height: 560px;
         overflow-y: auto;
       }
-      .chat-body::-webkit-scrollbar {
-        width: 4px;
-      }
-      .chat-body::-webkit-scrollbar-track {
-        background: #000;
-      }
-      .chat-body::-webkit-scrollbar-thumb {
-        background: var(--green-dark);
-      }
-
       .msg {
-        margin-bottom: 20px;
+        margin-bottom: 12px;
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 6px;
+        align-items: flex-start;
       }
       .msg.right {
         align-items: flex-end;
       }
       .msg-meta {
-        font-size: 0.62rem;
-        color: #444;
-        letter-spacing: 1px;
-      }
-      .msg-meta .sender {
-        color: var(--green-dim);
-      }
-      .msg-meta.red .sender {
-        color: var(--red);
-      }
-      .msg-meta.amber .sender {
-        color: var(--amber);
-      }
-      .msg-meta.blue .sender {
-        color: var(--blue);
+        font-size: 0.68rem;
+        color: var(--wa-muted);
+        letter-spacing: 0.4px;
       }
       .msg-bubble {
-        background: #0a150a;
-        border: 1px solid rgba(0, 255, 65, 0.15);
+        background: #ffffff;
         padding: 10px 14px;
-        max-width: 75%;
-        font-size: 0.78rem;
-        line-height: 1.7;
-        color: #ccc;
+        max-width: 72%;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: #222;
+        border-radius: 8px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
         position: relative;
       }
       .msg.right .msg-bubble {
-        background: #050a0f;
-        border-color: rgba(0, 180, 255, 0.15);
-      }
-      .msg-bubble.deleted {
-        border-style: dashed;
-        border-color: rgba(255, 51, 51, 0.3);
-        color: #555;
-        font-style: italic;
+        background: linear-gradient(180deg, var(--wa-bubble-out), #00a86b);
+        color: #fff;
+        border-radius: 12px;
       }
       .msg-bubble.recovered {
-        border-color: rgba(255, 183, 0, 0.4);
-        background: #100c00;
-      }
-      .msg-bubble .recovered-tag {
-        font-size: 0.6rem;
-        color: var(--amber);
-        display: block;
-        margin-bottom: 6px;
+        border-left: 4px solid #f1c40f;
+        background: #fffef6;
       }
       .msg-bubble.key-evidence {
-        border-color: var(--red);
-        border-width: 2px;
-        background: #100505;
+        border-left: 4px solid #e74c3c;
+        background: #fff6f6;
       }
 
-      .divider {
-        border: none;
-        border-top: 1px dashed rgba(0, 255, 65, 0.1);
-        margin: 24px 0;
-        text-align: center;
-        position: relative;
-      }
-      .divider::after {
-        content: attr(data-label);
-        position: absolute;
-        top: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #000;
-        padding: 0 12px;
-        font-size: 0.62rem;
-        color: #444;
-        letter-spacing: 2px;
-      }
-
-      /* ANNOTATION */
       .annotation {
-        background: rgba(255, 183, 0, 0.05);
-        border: 1px solid rgba(255, 183, 0, 0.25);
-        border-left: 3px solid var(--amber);
-        padding: 14px 18px;
-        margin-bottom: 16px;
-        font-size: 0.75rem;
-        color: #bbb;
-        line-height: 1.8;
+        background: rgba(255, 255, 255, 0.02);
+        border-left: 4px solid #f0b429;
+        padding: 12px;
+        color: #cfe8e2;
       }
-      .annotation .label {
-        color: var(--amber);
-        font-size: 0.65rem;
-        letter-spacing: 2px;
-        display: block;
-        margin-bottom: 6px;
-      }
-
       .flag {
+        background: rgba(231, 76, 60, 0.06);
+        color: #ffb3b3;
+        padding: 6px;
+        border-radius: 6px;
         display: inline-block;
-        background: rgba(255, 51, 51, 0.1);
-        border: 1px solid rgba(255, 51, 51, 0.3);
-        color: var(--red);
-        font-size: 0.65rem;
-        padding: 3px 8px;
-        letter-spacing: 1px;
-        margin: 4px 0;
-      }
-      .flag.amber {
-        background: rgba(255, 183, 0, 0.1);
-        border-color: rgba(255, 183, 0, 0.3);
-        color: var(--amber);
       }
 
-      /* ENCRYPTED */
-      .encrypted-block {
-        background: #000;
-        border: 1px solid rgba(0, 180, 255, 0.2);
-        padding: 16px;
-        margin: 12px 0;
-        font-size: 0.72rem;
-        color: #00b4ff;
-        opacity: 0.7;
-        word-break: break-all;
-        line-height: 1.6;
+      .chat-input {
+        padding: 12px;
+        background: #071212;
+        border-top: 1px solid rgba(255, 255, 255, 0.02);
+        display: flex;
+        gap: 8px;
+        align-items: center;
       }
-      .encrypted-block .enc-label {
-        color: #555;
-        font-size: 0.62rem;
-        display: block;
-        margin-bottom: 8px;
+      .chat-input textarea {
+        flex: 1;
+        padding: 10px;
+        border-radius: 20px;
+        border: none;
+        background: #0b1a19;
+        color: #e6eee9;
+        resize: none;
+        height: 44px;
+      }
+      .btn-send {
+        background: var(--wa-accent);
+        border: none;
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 12px;
+        cursor: pointer;
       }
 
-      .metadata-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.72rem;
-        margin-top: 12px;
-      }
-      .metadata-table td {
-        padding: 6px 12px;
-        border-bottom: 1px solid rgba(0, 255, 65, 0.08);
-        color: #888;
-      }
-      .metadata-table td:first-child {
-        color: var(--green-dim);
-        width: 180px;
-      }
-      .metadata-table td.highlight {
-        color: var(--red);
+      @media (max-width: 980px) {
+        .whatsapp {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+        }
       }
     </style>
   </head>
@@ -340,467 +286,921 @@
     <div class="header">
       <a href="index.html" class="back-btn">← BACK</a>
       <div class="header-title">NODE 01 // MESSENGER LOGS</div>
-      <div class="header-badge">⚠ EVIDENCE CLASSIFIED</div>
+      <div style="margin-left: auto; color: var(--wa-muted); font-size: 13px">
+        ⚠ EVIDENCE CLASSIFIED
+      </div>
     </div>
 
-    <div class="main">
-      <div class="page-title">&gt;_ MESSENGER LOGS</div>
-      <div class="page-sub">RECOVERED COMMUNICATIONS — FORENSIC EXTRACTION — MAY 03 05:17 AM</div>
-
-      <div class="tabs">
-        <button class="tab active" onclick="switchTab('main-channel')">MAIN CHANNEL</button>
-        <button class="tab" onclick="switchTab('ghofrane-yassine')">GHOFRANE → YASSINE ⚠</button>
-        <button class="tab" onclick="switchTab('ala-rihab')">ALA × RIHAB</button>
-        <button class="tab" onclick="switchTab('aya-chadi')">AYA × CHADI 🔒</button>
-        <button class="tab" onclick="switchTab('side-a')">SIDE STORY A FRAGMENTS</button>
-      </div>
-
-      <!-- MAIN CHANNEL -->
-      <div class="tab-content active" id="main-channel">
-        <div class="annotation">
-          <span class="label">&gt;_ FORENSIC NOTE</span>
-          Event-wide organizer channel. All messages extracted from server backup at 04:47 AM. 3
-          messages were deleted between 03:01–03:22 AM — deletion origin traced to a single device.
-          Recovered versions marked in amber.
-        </div>
-        <div class="chat-window">
-          <div class="chat-header">
-            <span>📢 CODE & CAPTURE — ORGANIZER MAIN CHANNEL</span>
-            <span class="recovered">73 messages — 3 DELETED/RECOVERED</span>
-          </div>
-          <div class="chat-body">
-            <div class="msg">
-              <div class="msg-meta"><span class="sender">YASSINE</span> — 22:14</div>
-              <div class="msg-bubble">
-                All stations confirmed. Event is live. Let's make this a night to remember. 🚀
-              </div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta amber"><span class="sender">GHOFRANE MABROUK</span> — 22:31</div>
-              <div class="msg-bubble">
-                Participant check-in complete. 78/80 registered. Two no-shows. Volunteer roster
-                updated.
-              </div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta"><span class="sender">AHMED</span> — 23:05</div>
-              <div class="msg-bubble">
-                Infrastructure stable. All servers nominal. Scoreboard synced. Night mode enabled on
-                monitoring panel.
-              </div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta"><span class="sender">MOHI</span> — 00:12</div>
-              <div class="msg-bubble">
-                Doing routine cable check in B wing basement. Back in 20.
-              </div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta amber"><span class="sender">AYHEM</span> — 01:14</div>
-              <div class="msg-bubble">
-                Getting an alert on Hall B power draw — might be a projector overload. Going to
-                check.
-              </div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta"><span class="sender">AHMED</span> — 01:16</div>
-              <div class="msg-bubble">
-                I didn't send any alert about Hall B. Check your source — could be a ghost
-                notification from the old panel firmware.
-              </div>
-            </div>
-            <div class="divider" data-label="— GAP: 01:17 — 01:52 —"></div>
-            <div class="msg">
-              <div class="msg-meta red"><span class="sender">HAZEM</span> — 01:55</div>
-              <div class="msg-bubble">Flag submitted! Team standing at #2. Let's go 🔥</div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta"><span class="sender">CHAHD</span> — 02:06</div>
-              <div class="msg-bubble">
-                Traffic anomaly on basement subnet. Ela flagged it earlier. I'm pulling the logs
-                now.
-              </div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta amber">
-                <span class="sender">GHOFRANE MABROUK — [COORDINATOR CHANNEL FORWARD]</span> — 03:11
-              </div>
-              <div class="msg-bubble key-evidence">
-                @Yassine — There's an unregistered badge entry in Server Room B. Physical log and
-                digital log don't match. Second swipe at 01:44 AM — no registered badge ID. Can you
-                come look at this with me? 3rd floor records room.
-              </div>
-            </div>
-
-            <div class="annotation" style="margin: 0">
-              <span class="label">&gt;_ CRITICAL METADATA DISCREPANCY</span>
-              <table class="metadata-table">
-                <tr>
-                  <td>Message sent:</td>
-                  <td>03:11:42 AM</td>
-                </tr>
-                <tr>
-                  <td>Yassine's claimed read time:</td>
-                  <td>03:33:00 AM</td>
-                </tr>
-                <tr>
-                  <td class="highlight">Actual read receipt (server log):</td>
-                  <td class="highlight">03:14:07 AM — MESSAGE READ BY YASSINE</td>
-                </tr>
-                <tr>
-                  <td>Yassine response:</td>
-                  <td>03:33:15 AM — NO RESPONSE UNTIL BODY FOUND</td>
-                </tr>
-                <tr>
-                  <td>Time Ghofrane died:</td>
-                  <td>03:19 AM (estimated)</td>
-                </tr>
-              </table>
-              <div class="flag" style="margin-top: 10px">
-                ⚠ YASSINE READ GHOFRANE'S MESSAGE 5 MINUTES BEFORE HER DEATH. HE DID NOT RESPOND OR
-                ACT.
-              </div>
-            </div>
-
-            <div class="divider" data-label="— DELETED MESSAGES RECOVERED —"></div>
-
-            <div class="msg">
-              <div class="msg-meta amber">
-                <span class="sender">RAHMA [DELETED 03:09 AM — RECOVERED]</span>
-              </div>
-              <div class="msg-bubble recovered">
-                <span class="recovered-tag"
-                  >⚠ FORENSICALLY RECOVERED — DELETION ORIGIN: DEVICE ID #MH-07 (HAZEM'S COMPETITION
-                  TERMINAL)</span
-                >
-                @Darine saw something earlier near the basement. She told me about it. I'm going to
-                find Yassine right now.
-              </div>
-            </div>
-
-            <div class="msg">
-              <div class="msg-meta">
-                <span class="sender">MOHI</span> — [LAST MESSAGE — 01:31 AM]
-              </div>
-              <div class="msg-bubble key-evidence">
-                Found something in Server Room B. Hardware I don't recognize. Not ours. I
-                photographed it. Telling Hazem — he knows hardware security better than anyone here.
-                Don't want to make a big thing if it's nothing.
-              </div>
-            </div>
-            <div class="flag">
-              ☠ THIS WAS MOHI'S LAST MESSAGE. TIMESTAMP: 01:31 AM. HE WAS DEAD BY 01:47 AM.
+    <div class="whatsapp">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="avatar"></div>
+          <div>
+            <div class="title">WhatsApp — Messenger Logs</div>
+            <div class="subtitle" style="color: var(--wa-muted); font-size: 13px">
+              Recovered communications
             </div>
           </div>
         </div>
-      </div>
+        <div class="search"><input placeholder="Search or start new chat" /></div>
+        <div class="chat-list">
+          <div
+            class="chat-item"
+            data-target="main-channel"
+            onclick="switchTab('main-channel', this)"
+          >
+            <div class="avatar"></div>
+            <div class="chat-meta">
+              <div class="name">Code & Capture — Main</div>
+              <div class="snippet">All stations confirmed. Event is live.</div>
+            </div>
+            <div class="chat-time">22:14</div>
+          </div>
+          <div
+            class="chat-item"
+            data-target="ghof-yassine"
+            onclick="switchTab('ghof-yassine', this)"
+          >
+            <div class="avatar"></div>
+            <div class="chat-meta">
+              <div class="name">ghof ↔ YASSINE (private)</div>
+              <div class="snippet">Yassine — Gass sorry just saw this — I was with sponsors.</div>
+            </div>
+            <div class="chat-time">03:33</div>
+          </div>
+          <div class="chat-item" data-target="ala-rihab" onclick="switchTab('ala-rihab', this)">
+            <div class="avatar"></div>
+            <div class="chat-meta">
+              <div class="name">ALA × RIHAB</div>
+              <div class="snippet">Did they find Mohi? I heard he went to the basement.</div>
+            </div>
+            <div class="chat-time">03:31</div>
+          </div>
+          <div class="chat-item" data-target="aya-chadi" onclick="switchTab('aya-chadi', this)">
+            <div class="avatar"></div>
+            <div class="chat-meta">
+              <div class="name">AYA × CHADI</div>
+              <div class="snippet">Encrypted fragments — side story.</div>
+            </div>
+            <div class="chat-time">02:40</div>
+          </div>
+          <div class="chat-item" data-target="side-a" onclick="switchTab('side-a', this)">
+            <div class="avatar"></div>
+            <div class="chat-meta">
+              <div class="name">SIDE STORY A</div>
+              <div class="snippet">Encrypted Telegram — recovered fragments</div>
+            </div>
+            <div class="chat-time">01:33</div>
+          </div>
+          <div class="chat-item" data-target="random-chat" onclick="switchTab('random-chat', this)">
+            <div class="avatar"></div>
+            <div class="chat-meta">
+              <div class="name">Random Chat</div>
+              <div class="snippet">Coffee later? meet at 5?</div>
+            </div>
+            <div class="chat-time">12:03</div>
+          </div>
+          <div class="chat-item" data-target="old-group" onclick="switchTab('old-group', this)">
+            <div class="avatar"></div>
+            <div class="chat-meta">
+              <div class="name">Old Group Chat</div>
+              <div class="snippet">Messages from before the event weekend.</div>
+            </div>
+            <div class="chat-time">Fri 18:40</div>
+          </div>
+          <div class="chat-item" data-target="afterparty" onclick="switchTab('afterparty', this)">
+            <div class="avatar"></div>
+            <div class="chat-meta">
+              <div class="name">Afterparty</div>
+              <div class="snippet">Dinner, music, and ride plans.</div>
+            </div>
+            <div class="chat-time">Sat 00:12</div>
+          </div>
+          <div class="chat-item" data-target="noura-room" onclick="switchTab('noura-room', this)">
+            <div class="avatar"></div>
+            <div class="chat-meta">
+              <div class="name">Noura × IT Room</div>
+              <div class="snippet">Badge logs, camera gaps, and a missing maintenance key.</div>
+            </div>
+            <div class="chat-time">02:18</div>
+          </div>
+          <div
+            class="chat-item"
+            data-target="whistle-blower"
+            onclick="switchTab('whistle-blower', this)"
+          >
+            <div class="avatar"></div>
+            <div class="chat-meta">
+              <div class="name">Unknown Sender</div>
+              <div class="snippet">
+                I have the screenshot you asked for. It’s bigger than the event.
+              </div>
+            </div>
+            <div class="chat-time">02:51</div>
+          </div>
+        </div>
+      </aside>
 
-      <!-- GHOFRANE → YASSINE -->
-      <div class="tab-content" id="ghofrane-yassine">
-        <div class="annotation">
-          <span class="label">&gt;_ FORENSIC NOTE — PRIVATE DM THREAD</span>
-          Direct message thread between Ghofrane Mabrouk (coordinator) and Yassine (director).
-          Extracted from server. Read receipts preserved. This thread is the most critical sequence
-          in the investigation.
-        </div>
-        <div class="chat-window">
-          <div class="chat-header">
-            <span>🔐 PRIVATE — GHOFRANE MABROUK ↔ YASSINE</span>
-            <span class="recovered">11 messages — READ RECEIPTS INTACT</span>
-          </div>
-          <div class="chat-body">
-            <div class="msg">
-              <div class="msg-meta amber">
-                <span class="sender">GHOFRANE MABROUK</span> — 3 WEEKS BEFORE EVENT
-              </div>
-              <div class="msg-bubble">
-                Yassine — flagging Hazem's volunteer form. His listed university (ISET Sousse, 2022
-                cohort) has no record of him in their alumni database. Phone number has a Libyan
-                country code but he said he's local. Emergency contact email bounced. Should we
-                follow up?
-              </div>
-            </div>
-            <div class="msg right">
-              <div class="msg-meta blue">
-                <span class="sender">YASSINE</span> — 3 WEEKS BEFORE EVENT
-              </div>
-              <div class="msg-bubble">
-                Forward it to Hazem actually — he's heading the volunteer tech team. He can look
-                into any discrepancies. Probably just an international student thing. Don't
-                overthink it.
-              </div>
-            </div>
-            <div class="flag amber">
-              ⚠ YASSINE FORWARDED A FLAG ABOUT HAZEM DIRECTLY TO HAZEM. HAZEM SAW HIS OWN BACKGROUND
-              CHECK.
-            </div>
-            <div class="msg">
-              <div class="msg-meta amber">
-                <span class="sender">GHOFRANE MABROUK</span> — 2 WEEKS BEFORE EVENT
-              </div>
-              <div class="msg-bubble">
-                Hazem says he looked into it and it's all fine. He explained the university database
-                thing. I'll take his word for it since you approved.
-              </div>
-            </div>
-            <div class="divider" data-label="— NIGHT OF EVENT —"></div>
-            <div class="msg">
-              <div class="msg-meta amber">
-                <span class="sender">GHOFRANE MABROUK</span> — 03:05 AM
-              </div>
-              <div class="msg-bubble">
-                Yassine I'm going through the access logs cross-checking physical vs digital and
-                something is wrong. Server Room B physical log — Mohi entered at 01:38. But digital
-                door system shows a SECOND badge swipe at 01:44 — no ID match, not in our registered
-                list.
-              </div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta amber">
-                <span class="sender">GHOFRANE MABROUK</span> — 03:07 AM
-              </div>
-              <div class="msg-bubble">
-                Also just noticed — the alert that would have flagged an unregistered swipe was
-                suppressed. Manually, from the infrastructure panel. At 10:48 PM. Before the event
-                started. Who had access to the panel that early?
-              </div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta amber">
-                <span class="sender">GHOFRANE MABROUK</span> — 03:08 AM
-              </div>
-              <div class="msg-bubble">
-                I wrote down a name next to the badge time in my notes. Checking with you first
-                before I go to the investigation team. Can you meet me on the 3rd floor records
-                room?
-              </div>
-            </div>
-            <div class="msg right">
-              <div class="msg-meta blue"><span class="sender">YASSINE</span> — 03:33 AM</div>
-              <div class="msg-bubble">
-                Ghofrane sorry just saw this — I was with sponsors. Where are you?
-              </div>
-            </div>
-            <div class="flag">
-              ☠ GHOFRANE WAS ALREADY DEAD WHEN YASSINE SENT THIS RESPONSE.<br />⚠ SERVER LOGS SHOW
-              YASSINE READ HER MESSAGES AT 03:14 AM — 19 MINUTES EARLIER.
-            </div>
-            <div class="annotation" style="margin-top: 16px">
-              <span class="label">&gt;_ INVESTIGATOR NOTE</span>
-              Yassine claims he was "with sponsors" from 03:00–03:33 AM and didn't see the messages.
-              The read receipt at 03:14:07 AM contradicts this. When confronted, Yassine admitted he
-              saw the message but was in a conversation with a sponsor representative and assumed it
-              could wait. He did not act. He has no explanation for the 19-minute gap. He is not a
-              murder suspect — but his inaction gave the killer time.
-            </div>
+      <section class="chat-pane">
+        <div class="chat-header">
+          <div>
+            <div class="title" id="pane-title">CODE & CAPTURE — ORGANIZER MAIN CHANNEL</div>
+            <div class="status" id="pane-status">73 messages — 3 DELETED/RECOVERED</div>
           </div>
         </div>
-      </div>
 
-      <!-- ALA × RIHAB -->
-      <div class="tab-content" id="ala-rihab">
-        <div class="annotation">
-          <span class="label">&gt;_ FORENSIC NOTE</span>
-          Casual conversation between Ala (Mohi's teammate) and Rihab. Ala reported hearing sounds
-          near Server Room B. He mentioned it casually hours later, not realizing the significance.
-          Rihab relayed it to investigators — Ala must be found for direct testimony.
-        </div>
-        <div class="chat-window">
-          <div class="chat-header">
-            <span>💬 ALA × RIHAB — PRIVATE CHAT — 03:28 AM</span>
-            <span class="recovered">6 messages</span>
+        <div
+          id="chat-contents"
+          style="flex: 1; display: flex; flex-direction: column; overflow: hidden"
+        >
+          <div class="chat-placeholder" id="empty-state">
+            Select a chat from the list to open the conversation.
           </div>
-          <div class="chat-body">
-            <div class="msg">
-              <div class="msg-meta"><span class="sender">ALA</span> — 03:28 AM</div>
-              <div class="msg-bubble">
-                Did they find Mohi? I heard he went to the basement and never came back to check in.
-              </div>
-            </div>
-            <div class="msg right">
-              <div class="msg-meta blue"><span class="sender">RIHAB</span> — 03:29 AM</div>
-              <div class="msg-bubble">
-                They found someone yeah. I don't know details. Are you ok?
-              </div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta"><span class="sender">ALA</span> — 03:29 AM</div>
-              <div class="msg-bubble">
-                I was near Server Room B most of the night — corner spot with good signal. Around
-                01:40 maybe I heard something through the wall. Like two people talking but too
-                muffled. Then around 01:47 something heavy fell. I thought it was equipment. I
-                didn't want to interrupt.
-              </div>
-            </div>
-            <div class="msg right">
-              <div class="msg-meta blue"><span class="sender">RIHAB</span> — 03:30 AM</div>
-              <div class="msg-bubble">Ala. You need to tell the investigators that RIGHT NOW.</div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta"><span class="sender">ALA</span> — 03:31 AM</div>
-              <div class="msg-bubble">
-                You think it's related? I saw Hazem walking past me toward the stairwell maybe 10
-                minutes after. Moving fast. Didn't make eye contact. I thought he was just going up
-                to the main floor.
-              </div>
-            </div>
-            <div class="flag">
-              ⚠ ALA SAW HAZEM MOVING AWAY FROM SERVER ROOM B AT APPROXIMATELY 01:57 AM — 10 MINUTES
-              AFTER THE ESTIMATED TIME OF MOHI'S DEATH.
-            </div>
-            <div class="msg right">
-              <div class="msg-meta blue"><span class="sender">RIHAB</span> — 03:31 AM</div>
-              <div class="msg-bubble">
-                I'll find Chahd. She's doing the investigation. Come with me now.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- AYA × CHADI -->
-      <div class="tab-content" id="aya-chadi">
-        <div class="annotation">
-          <span class="label">&gt;_ FORENSIC NOTE — ⚠ SIDE STORY B MATERIAL</span>
-          Intercepted messages between Aya and Chadi. Encrypted using emoji-based code system.
-          Initially flagged as potential operational communication. Full decryption attached.
-          Contents have been fully reviewed — NO CONNECTION TO THE MURDERS. Context below.
-        </div>
-        <div class="encrypted-block">
-          <span class="enc-label">// RAW INTERCEPTED — 23:28 PM</span>
-          🌙→📍R0 | ⏰23:30 | 🚫👁️ | confirm: 🎂🤫
-        </div>
-        <div class="encrypted-block">
-          <span class="enc-label">// RAW INTERCEPTED — 01:12 AM</span>
-          📍→P2 | ⏰01:15 | 🔄 | 👀❌ | 💙
-        </div>
-        <div class="encrypted-block">
-          <span class="enc-label">// RAW INTERCEPTED — 02:38 AM</span>
-          📍→S4 | ⏰02:40 | LAST ONE | 🤞
-        </div>
-        <div class="annotation" style="margin-top: 16px">
-          <span class="label">&gt;_ DECRYPTION KEY (RECOVERED FROM AYA'S NOTES)</span>
-          🌙 = "tonight" | 📍→ = "meet me at" | R0 = "rooftop" | P2 = "parking level 2" | S4 =
-          "seminar room 4th floor" | 🚫👁️ = "don't let anyone see" | 🎂🤫 = "birthday surprise —
-          keep secret" | 💙 = personal affection marker | LAST ONE = "last meeting of the night"
-        </div>
-        <div class="chat-window">
-          <div class="chat-header">
-            <span>💬 AYA × CHADI — DECODED MESSAGES</span>
-            <span class="recovered">SIDE STORY B — FULLY EXPLAINED</span>
-          </div>
-          <div class="chat-body">
+          <!-- MAIN CHANNEL -->
+          <div class="tab-content" id="main-channel">
             <div class="annotation">
-              <span class="label">&gt;_ SIDE STORY B SUMMARY</span>
-              Aya and Chadi are in a secret relationship. Both hold IEEE leadership positions in
-              different chapters and want to keep it private. They met at the rooftop (23:30),
-              parking level 2 (01:15 AM), and seminar room 4F (02:40 AM) throughout the event. Their
-              erratic movement patterns, contradicting alibis, and encrypted communication created a
-              massive red herring. Neither has any connection to the murders. The relationship was
-              confirmed when <strong>Amine</strong> asked Chadi directly at 04:11 AM with zero tact.
-              Chadi's reaction confirmed everything. Both timelines now fully explained.
+              <span class="label">&gt;_ FORENSIC NOTE</span>
+              Event-wide organizer channel. All messages extracted from server backup at 04:47 AM. 3
+              messages were deleted between 03:01–03:22 AM — deletion origin traced to a single
+              device. Recovered versions marked in amber.
             </div>
-            <div class="flag amber">
-              ⚠ AYA & CHADI — COMPLETELY CLEARED OF ALL MURDER-RELATED SUSPICION
-            </div>
-            <div class="msg">
-              <div class="msg-meta"><span class="sender">AMINE (TO CHADI) — 04:11 AM</span></div>
-              <div class="msg-bubble">
-                "Bro. Are you and Aya together or something? Because your stories make zero sense
-                otherwise."
+            <div class="chat-window">
+              <div class="chat-header">
+                <span>📢 CODE & CAPTURE — ORGANIZER MAIN CHANNEL</span>
+                <span class="recovered">73 messages — 3 DELETED/RECOVERED</span>
               </div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta red"><span class="sender">CHADI — 04:11 AM</span></div>
-              <div class="msg-bubble">
-                ...yes. Can you please not make a big deal out of this right now.
+              <div class="chat-body">
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">YASSINE</span> — Thu 16:08</div>
+                  <div class="msg-bubble">
+                    Quick reminder: keep all admin credentials in the encrypted vault before doors
+                    open tomorrow.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta amber"><span class="sender">ghof</span> — Thu 16:11</div>
+                  <div class="msg-bubble">
+                    Done. Also noticed one legacy account still active from last year's event.
+                    Should I disable it now?
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta blue"><span class="sender">AHMED</span> — Thu 16:12</div>
+                  <div class="msg-bubble">
+                    Disable after rehearsals. The AV rig still references that account for scene
+                    sync.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">YASSINE</span> — Thu 16:14</div>
+                  <div class="msg-bubble">
+                    Noted. Archive the login history first in case we need a trace later.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">YASSINE</span> — 22:14</div>
+                  <div class="msg-bubble">
+                    All stations confirmed. Event is live. Let's make this a night to remember. 🚀
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta amber"><span class="sender">ghof</span> — 22:31</div>
+                  <div class="msg-bubble">
+                    Participant check-in complete. 78/80 registered. Two no-shows. Volunteer roster
+                    updated.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">AHMED</span> — 23:05</div>
+                  <div class="msg-bubble">
+                    Infrastructure stable. All servers nominal. Scoreboard synced. Night mode
+                    enabled on monitoring panel.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta amber"><span class="sender">ghof</span> — 23:11</div>
+                  <div class="msg-bubble">
+                    I just saw a duplicate login on the admin dashboard from the conference hall
+                    network. That device should not exist in our roster.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta blue"><span class="sender">YASSINE</span> — 23:12</div>
+                  <div class="msg-bubble">
+                    Keep it off the stage page for now. If it is a prank, I do not want the guests
+                    to see it.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">GHOF</span> — 23:15</div>
+                  <div class="msg-bubble">
+                    I checked the side entrance log and the same badge was used again at 23:09. The
+                    device stayed on the venue network for less than a minute.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta blue"><span class="sender">AHMED</span> — 23:16</div>
+                  <div class="msg-bubble">
+                    That lines up with the camera blink on Hall B. If someone is testing the system,
+                    they already know the blind spot.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">YASSINE</span> — 23:18</div>
+                  <div class="msg-bubble">
+                    Leave the public channel quiet. Tell the volunteers we are reviewing a power
+                    fluctuation, nothing else.
+                  </div>
+                </div>
+                <div class="divider" data-label="— GAP: 01:17 — 01:52 —"></div>
               </div>
-            </div>
-            <div class="flag amber">
-              ⚠ NOTE: Parking level 2 is adjacent to the basement stairwell. Their 01:15 AM meeting
-              placed them near the murder location — but 32 minutes before the killing. They saw
-              nothing relevant.
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- SIDE STORY A -->
-      <div class="tab-content" id="side-a">
-        <div class="annotation">
-          <span class="label">&gt;_ FORENSIC NOTE — ⚠ SIDE STORY A MATERIAL</span>
-          Fragments recovered from encrypted Telegram channel. Initially appeared to be operational
-          cover communication for criminal activity. Full context below. This is Side Story A — the
-          unauthorized hint shop.
-        </div>
-        <div class="chat-window">
-          <div class="chat-header">
-            <span>🔐 ENCRYPTED TELEGRAM — "CHANNEL X" — RECOVERED FRAGMENTS</span>
-            <span class="recovered">SIDE STORY A</span>
+          <!-- GASS → YASSINE -->
+          <div class="tab-content" id="ghof-yassine">
+            <div class="annotation">
+              <span class="label">&gt;_ FORENSIC NOTE — PRIVATE DM THREAD</span>
+              Direct message thread between ghof (coordinator) and Yassine (Chair). Extracted from
+              server. Read receipts preserved. This thread is the most critical sequence in the
+              investigation.
+            </div>
+            <div class="chat-window">
+              <div class="chat-header">
+                <span>🔐 PRIVATE — ghof ↔ YASSINE</span>
+                <span class="recovered">11 messages — READ RECEIPTS INTACT</span>
+              </div>
+              <div class="chat-body">
+                <div class="msg">
+                  <div class="msg-meta amber"><span class="sender">ghof</span> — Wed 21:03</div>
+                  <div class="msg-bubble">
+                    I rechecked access templates. Mohi asked for temporary basement clearance a day
+                    early. Was that approved by you?
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta blue"><span class="sender">YASSINE</span> — Wed 21:06</div>
+                  <div class="msg-bubble">
+                    No. He only needed stage access for setup. Keep the request in draft until we
+                    talk in person.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta amber"><span class="sender">ghof</span> — Wed 21:08</div>
+                  <div class="msg-bubble">
+                    Copy. Also someone reset the server-room keypad twice this week. Same device
+                    fingerprint each time.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta blue"><span class="sender">YASSINE</span> — Wed 21:10</div>
+                  <div class="msg-bubble">
+                    Send me that fingerprint tonight. Do not discuss it in the group channel.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta amber"><span class="sender">ghof</span> — 03:05 AM</div>
+                  <div class="msg-bubble">
+                    Yassine I'm going through the access logs cross-checking physical vs digital and
+                    something is wrong. Server Room B physical log — Mohi entered at 01:38. But
+                    digital door system shows a SECOND badge swipe at 01:44 — no ID match, not in
+                    our registered list.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta blue"><span class="sender">YASSINE</span> — 03:33 AM</div>
+                  <div class="msg-bubble">
+                    Gass sorry just saw this — I was with sponsors. Where are you?
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta amber"><span class="sender">ghof</span> — 03:34 AM</div>
+                  <div class="msg-bubble">
+                    Check the basement stairwell camera. I sent the same footage to Noura. There’s a
+                    shadow behind Mohi that never appears in the event timeline.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta blue"><span class="sender">YASSINE</span> — 03:35 AM</div>
+                  <div class="msg-bubble">
+                    Do not touch the archive until I get there. If the camera gap is real, then we
+                    have a bigger problem than the missing badge.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta amber"><span class="sender">ghof</span> — 03:36 AM</div>
+                  <div class="msg-bubble">
+                    Noura says the footage was trimmed from the middle, not the end. Whoever edited
+                    it wanted the first and last frames to look normal.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta blue"><span class="sender">YASSINE</span> — 03:37 AM</div>
+                  <div class="msg-bubble">
+                    Then send me the raw file and the phone model. I want to know who handled the
+                    export before the deletion.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta amber"><span class="sender">ghof</span> — 03:38 AM</div>
+                  <div class="msg-bubble">
+                    The export came from the same account used in the main channel at 23:09. Someone
+                    is bouncing between chats fast enough to hide the trail.
+                  </div>
+                </div>
+                <div class="flag">
+                  ☠ GASS WAS ALREADY DEAD WHEN YASSINE SENT THIS RESPONSE.<br />⚠ SERVER LOGS SHOW
+                  YASSINE READ HER MESSAGES AT 03:14:07 AM — 19 MINUTES EARLIER.
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="chat-body">
-            <div class="msg">
-              <div class="msg-meta red"><span class="sender">ANONYMOUS_1 (ELA)</span> — 23:41</div>
-              <div class="msg-bubble">Transaction confirmed. Delivering package now.</div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta red">
-                <span class="sender">ANONYMOUS_2 (LE BLANC)</span> — 23:42
+
+          <!-- ALA × RIHAB -->
+          <div class="tab-content" id="ala-rihab">
+            <div class="chat-window">
+              <div class="chat-header">
+                <span>💬 ALA × RIHAB — PRIVATE CHAT — 03:28 AM</span>
+                <span class="recovered">6 messages</span>
               </div>
-              <div class="msg-bubble">Received. Quality good. Next drop at 02:00.</div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta"><span class="sender">ANONYMOUS_3 (RIHAB)</span> — 00:17</div>
-              <div class="msg-bubble">Need something for challenge 7. Standard rate.</div>
-            </div>
-            <div class="msg">
-              <div class="msg-meta red"><span class="sender">ANONYMOUS_1 (ELA)</span> — 00:19</div>
-              <div class="msg-bubble">
-                Check the drop. Partial nudge only. Full solution costs double.
+              <div class="chat-body">
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">ALA</span> — Thu 19:44</div>
+                  <div class="msg-bubble">
+                    Rehearsal hallway was weird. Two people were arguing about a missing badge near
+                    the stairs.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">RIHAB</span> — Thu 19:46</div>
+                  <div class="msg-bubble">
+                    Same here. I heard someone say "leave the old account active" before they saw
+                    me.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">ALA</span> — Thu 19:47</div>
+                  <div class="msg-bubble">
+                    Keep that in mind. If anything goes wrong tomorrow, those words matter.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">ALA</span> — 03:28 AM</div>
+                  <div class="msg-bubble">
+                    Did they find Mohi? I heard he went to the basement and never came back.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">RIHAB</span> — 03:29 AM</div>
+                  <div class="msg-bubble">
+                    I saw someone leave the basement with a black folder. It looked like organizer
+                    paperwork, not a laptop.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">ALA</span> — 03:30 AM</div>
+                  <div class="msg-bubble">
+                    Send me the folder color again. If it matches the one from rehearsal, we can
+                    narrow the list of people who passed that corridor.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">RIHAB</span> — 03:31 AM</div>
+                  <div class="msg-bubble">
+                    It was navy, with the white label peeled off. I saw the same folder on the
+                    organizer desk earlier in the night.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">ALA</span> — 03:32 AM</div>
+                  <div class="msg-bubble">
+                    Then somebody moved it after the opening speech. I’m asking the volunteers who
+                    was in and out of the control room.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">RIHAB</span> — 03:34 AM</div>
+                  <div class="msg-bubble">
+                    Check with the AV team too. One of them kept looking at the hallway camera like
+                    he expected someone to appear.
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="msg">
-              <div class="msg-meta red">
-                <span class="sender">ANONYMOUS_2 (LE BLANC)</span> — 01:33
+          </div>
+
+          <!-- AYA × CHADI -->
+          <div class="tab-content" id="aya-chadi">
+            <div class="chat-window">
+              <div class="chat-header">
+                <span>💬 AYA × CHADI — DECODED MESSAGES</span>
+                <span class="recovered">SIDE STORY B — FULLY EXPLAINED</span>
               </div>
-              <div class="msg-bubble">I'll be at the parking lot. 5 mins.</div>
+              <div class="chat-body">
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">AYA</span> — Thu 20:02</div>
+                  <div class="msg-bubble">
+                    Chadi, did you still have that packet capture from rehearsal? I saw unknown DNS
+                    lookups from control-room Wi-Fi.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">CHADI</span> — Thu 20:05</div>
+                  <div class="msg-bubble">
+                    Yes. Same host queried every 10 minutes, then stopped exactly when power testing
+                    started.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">AYA</span> — Thu 20:06</div>
+                  <div class="msg-bubble">
+                    Export it and keep a copy offline. That pattern looks scripted.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">AMINE</span> — 04:11 AM</div>
+                  <div class="msg-bubble">Bro. Are you and Aya together or something?</div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">CHADI</span> — 04:12 AM</div>
+                  <div class="msg-bubble">
+                    No, but Aya said she heard the same phone vibration from the basement right
+                    after the lights went out.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">AYA</span> — 04:13 AM</div>
+                  <div class="msg-bubble">
+                    I’m telling you, someone was using a second device in the control room. It
+                    wasn’t mine and it wasn’t yours.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">CHADI</span> — 04:14 AM</div>
+                  <div class="msg-bubble">
+                    I checked the Wi-Fi handoff records. The second phone connected from the same
+                    floor as the projector relay.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">AYA</span> — 04:15 AM</div>
+                  <div class="msg-bubble">
+                    That means the person was inside when the power dipped. It wasn’t a late
+                    arrival. Whoever did it was already near the control area.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">CHADI</span> — 04:16 AM</div>
+                  <div class="msg-bubble">
+                    Exactly. The device was active before the blackout, then silent until the alarm
+                    call.
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="msg">
-              <div class="msg-meta red"><span class="sender">ANONYMOUS_1 (ELA)</span> — 01:33</div>
-              <div class="msg-bubble">Coming now. Don't call. I'll ping when outside.</div>
+          </div>
+
+          <!-- SIDE STORY A -->
+          <div class="tab-content" id="side-a">
+            <div class="chat-window">
+              <div class="chat-header">
+                <span>🔐 ENCRYPTED TELEGRAM — "CHANNEL X" — RECOVERED FRAGMENTS</span>
+                <span class="recovered">SIDE STORY A</span>
+              </div>
+              <div class="chat-body">
+                <div class="msg">
+                  <div class="msg-meta red"><span class="sender">ANONYMOUS_1</span> — 23:41</div>
+                  <div class="msg-bubble">Transaction confirmed. Delivering package now.</div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta red"><span class="sender">ANONYMOUS_1</span> — 23:44</div>
+                  <div class="msg-bubble">
+                    The package is not a file. It is the badge reader extract from the east hall.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta red"><span class="sender">ANONYMOUS_2</span> — 23:45</div>
+                  <div class="msg-bubble">
+                    Then the organizer already knows we have it. Move the drop to the old service
+                    stairwell.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta red"><span class="sender">ANONYMOUS_1</span> — 23:46</div>
+                  <div class="msg-bubble">
+                    If Noura asks, tell her the extract includes timestamps before and after the
+                    gap. She needs to see the full chain.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta red"><span class="sender">ANONYMOUS_2</span> — 23:47</div>
+                  <div class="msg-bubble">
+                    She already saw it. That is why the hallway cameras are being checked again.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta red"><span class="sender">ANONYMOUS_1</span> — 23:48</div>
+                  <div class="msg-bubble">
+                    Then we are out of time. Tell the contact to stop using the main chat.
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="flag">
-              ⚠ ELA WAS IN THE PARKING LOT FROM 01:33–01:58 AM — THIS IS THE "27-MINUTE ABSENCE" SHE
-              LIED ABOUT TO INVESTIGATORS.
+          </div>
+
+          <!-- RANDOM CHAT (non-story) -->
+          <div class="tab-content" id="random-chat">
+            <div class="chat-window">
+              <div class="chat-header">
+                <span>💬 Random Chat</span>
+                <span class="recovered">Casual — misc messages</span>
+              </div>
+              <div class="chat-body">
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">Sam</span> — 09:12</div>
+                  <div class="msg-bubble">
+                    Anyone tried the new coffee shop on 3rd? The croissants are great.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">You</span> — 09:13</div>
+                  <div class="msg-bubble">No — let's meet there at 5 and test their espresso.</div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">Maya</span> — 09:15</div>
+                  <div class="msg-bubble">
+                    Also, I borrowed a book about retro video games—so nostalgic!
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">You</span> — 09:18</div>
+                  <div class="msg-bubble">
+                    Bring the blue notebook too. I still owe you those notes.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">Sam</span> — 09:20</div>
+                  <div class="msg-bubble">
+                    Deal. I’ll be there after the bus transfer. Same table?
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">You</span> — 09:21</div>
+                  <div class="msg-bubble">Yep. If Omar shows up, make him pick the playlist.</div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">Maya</span> — 09:22</div>
+                  <div class="msg-bubble">
+                    He’ll complain about the music and then play the same three songs anyway.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">Sam</span> — 09:25</div>
+                  <div class="msg-bubble">
+                    Perfect. I’m bringing snacks, so nobody gets dramatic on an empty stomach.
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="annotation" style="margin-top: 16px">
-              <span class="label">&gt;_ SIDE STORY A FULL EXPLANATION</span>
-              Ela and Le Blanc were running an unauthorized hint-selling service during the event —
-              selling CTF challenge nudges to participants for small crypto payments via this
-              encrypted channel. Against event rules. Not illegal. Not connected to the murders.
-              Rihab was a buyer. Ela's absence during the murder window was this operation. Le
-              Blanc's encrypted communications were this operation. Rihab's evasiveness was guilt
-              about buying hints, not murder. <br /><br />When Ela was cornered by investigators
-              about her alibi, she confessed to the hint shop rather than implicate herself in
-              something worse. Le Blanc confirmed. Crypto transaction amounts: 5–15 TND equivalent
-              each. Total: 6 transactions. The "criminal conspiracy" that consumed 3 portals of
-              investigation time was a hint-selling side hustle.
-              <div class="flag amber" style="margin-top: 8px">
-                ⚠ ELA, LE BLANC, RIHAB — CLEARED OF ALL MURDER-RELATED SUSPICION
+          </div>
+
+          <!-- OLD GROUP CHAT -->
+          <div class="tab-content" id="old-group">
+            <div class="chat-window">
+              <div class="chat-header">
+                <span>💬 Old Group Chat</span>
+                <span class="recovered">Archived weekend thread</span>
+              </div>
+              <div class="chat-body">
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">Lina</span> — Fri 18:40</div>
+                  <div class="msg-bubble">
+                    Are we still on for the rooftop movie night tomorrow?
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">You</span> — Fri 18:41</div>
+                  <div class="msg-bubble">
+                    Yes, but only if someone brings the speaker this time.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">Omar</span> — Fri 18:42</div>
+                  <div class="msg-bubble">I can bring it. Also, who is handling the snacks?</div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">Maya</span> — Fri 18:43</div>
+                  <div class="msg-bubble">
+                    I’ll do popcorn. Sam said he was bringing soda and then vanished.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">Sam</span> — Fri 19:10</div>
+                  <div class="msg-bubble">
+                    I did not vanish. I was stuck in traffic and had no signal for an hour.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">Omar</span> — Fri 19:12</div>
+                  <div class="msg-bubble">That explains nothing, but it does sound like you.</div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">Lina</span> — Fri 19:15</div>
+                  <div class="msg-bubble">
+                    I’m setting the time for 8 PM. No one be late or I’m starting without you.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AFTERPARTY -->
+          <div class="tab-content" id="afterparty">
+            <div class="chat-window">
+              <div class="chat-header">
+                <span>💬 Afterparty</span>
+                <span class="recovered">Late night plans</span>
+              </div>
+              <div class="chat-body">
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">Nadia</span> — Sat 00:12</div>
+                  <div class="msg-bubble">
+                    We are done early. Who wants dinner near the station?
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">You</span> — Sat 00:13</div>
+                  <div class="msg-bubble">
+                    I’m in if they have soup. I’m not surviving on coffee alone.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">Rami</span> — Sat 00:14</div>
+                  <div class="msg-bubble">
+                    There’s a small place open till 1. I can pick everyone up in two cars.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">Maya</span> — Sat 00:15</div>
+                  <div class="msg-bubble">
+                    Only if we stop for dessert after. That is non-negotiable.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">Nadia</span> — Sat 00:16</div>
+                  <div class="msg-bubble">Fine, but I’m choosing the music on the way there.</div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">Rami</span> — Sat 00:17</div>
+                  <div class="msg-bubble">
+                    You always say that and then play the same playlist from last year.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">You</span> — Sat 00:18</div>
+                  <div class="msg-bubble">That playlist was good. Nobody can prove otherwise.</div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">Nadia</span> — Sat 00:19</div>
+                  <div class="msg-bubble">
+                    Then it’s settled. Dinner first, dessert after, and nobody talks about work.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- NOURA × IT ROOM -->
+          <div class="tab-content" id="noura-room">
+            <div class="annotation">
+              <span class="label">&gt;_ FORENSIC NOTE — ADMIN ACCESS THREAD</span>
+              Internal messages between Detective Noura and the venue IT lead. This thread explains
+              the camera outage during the gap and why the badge logs no longer match the door
+              records.
+            </div>
+            <div class="chat-window">
+              <div class="chat-header">
+                <span>🛠 NOURA × IT ROOM</span>
+                <span class="recovered">7 messages — ACCESS HISTORY PRESERVED</span>
+              </div>
+              <div class="chat-body">
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">NOURA</span> — Thu 23:03</div>
+                  <div class="msg-bubble">
+                    Before we deploy tomorrow, I need the maintenance override list for all basement
+                    doors and the token owners.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">IT LEAD</span> — Thu 23:05</div>
+                  <div class="msg-bubble">
+                    Sending now. One token owner is marked "inactive" but still has successful pings
+                    in recent logs.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">NOURA</span> — Thu 23:07</div>
+                  <div class="msg-bubble">
+                    Flag that account and preserve raw logs. I do not want automated cleanup
+                    touching this trail.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">NOURA</span> — 02:18 AM</div>
+                  <div class="msg-bubble">
+                    I need the maintenance key logs for Corridor C and the CCTV export around the
+                    basement stairwell. There’s a 6-minute gap in the timeline.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">IT LEAD</span> — 02:19 AM</div>
+                  <div class="msg-bubble">
+                    The camera switch was manual. Someone used an admin token from the old organizer
+                    account. I didn’t authorize it.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">NOURA</span> — 02:21 AM</div>
+                  <div class="msg-bubble">
+                    Send me the token owner list and do not wipe the local cache. If this is real,
+                    we are looking at a controlled access misuse.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">IT LEAD</span> — 02:22 AM</div>
+                  <div class="msg-bubble">
+                    There’s one more thing. The access token was used again at 02:07 from a phone
+                    near the lobby, after the power dip.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">NOURA</span> — 02:24 AM</div>
+                  <div class="msg-bubble">
+                    Pull the lobby camera and the Wi-Fi association list for 02:05 to 02:10. I want
+                    the person in the frame and the device in the same report.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">IT LEAD</span> — 02:26 AM</div>
+                  <div class="msg-bubble">
+                    Sending both now. There is a second MAC address jumping between access points,
+                    like it was being carried from room to room.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">NOURA</span> — 02:27 AM</div>
+                  <div class="msg-bubble">
+                    That is enough to cross-reference the missing badge logs. Check whether the same
+                    phone appeared near the stairs after the speech.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WHISTLE BLOWER -->
+          <div class="tab-content" id="whistle-blower">
+            <div class="annotation">
+              <span class="label">&gt;_ FORENSIC NOTE — UNKNOWN SOURCE</span>
+              A burner-account thread that arrived after the first police report. The sender never
+              gave a name, but the screenshot matched the deleted organizer archive.
+            </div>
+            <div class="chat-window">
+              <div class="chat-header">
+                <span>📎 UNKNOWN SENDER</span>
+                <span class="recovered">4 messages — META DATA STRIPPED</span>
+              </div>
+              <div class="chat-body">
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">UNKNOWN</span> — Thu 22:38</div>
+                  <div class="msg-bubble">
+                    You do not know me, but I watched someone copy admin screenshots after
+                    rehearsal. They used a mirrored display to hide it.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">NOURA</span> — Thu 22:40</div>
+                  <div class="msg-bubble">
+                    If this is real, send one verifiable detail. Time, location, and one visible
+                    object in frame.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">UNKNOWN</span> — Thu 22:42</div>
+                  <div class="msg-bubble">
+                    21:57, east corridor monitor wall, red toolkit on the floor under the panel.
+                    Check camera E-12.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">UNKNOWN</span> — 02:51 AM</div>
+                  <div class="msg-bubble">
+                    I have the screenshot you asked for. It shows the organizer panel open on a
+                    phone that wasn’t supposed to be in the building.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">NOURA</span> — 02:52 AM</div>
+                  <div class="msg-bubble">Which phone? Give me the time stamp and send it now.</div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">UNKNOWN</span> — 02:54 AM</div>
+                  <div class="msg-bubble">
+                    It appears to be someone from the event floor. I won’t send the full image
+                    unless you promise it stays out of the press.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">NOURA</span> — 02:55 AM</div>
+                  <div class="msg-bubble">
+                    I promise nothing except that the truth gets logged. Send the crop of the top
+                    corner; I only need the hand and the badge strap.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">UNKNOWN</span> — 02:57 AM</div>
+                  <div class="msg-bubble">
+                    Fine. But if this goes public, the organizer team will know I pulled it from the
+                    same archive they deleted.
+                  </div>
+                </div>
+                <div class="msg right">
+                  <div class="msg-meta"><span class="sender">NOURA</span> — 02:58 AM</div>
+                  <div class="msg-bubble">
+                    That archive is why I’m here. Send it and stop writing like you are the only one
+                    who’s scared.
+                  </div>
+                </div>
+                <div class="msg">
+                  <div class="msg-meta"><span class="sender">UNKNOWN</span> — 03:00 AM</div>
+                  <div class="msg-bubble">
+                    The hand in the image matches a wristband style I saw during rehearsal, but I
+                    can’t prove whose it is from this crop.
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+
+        <div class="chat-input">
+          <textarea id="chat-text" placeholder="Type a message"></textarea>
+          <button class="btn-send" onclick="fakeSend()">Send</button>
+        </div>
+      </section>
     </div>
 
     <script>
-      function switchTab(id) {
-        document.querySelectorAll(".tab-content").forEach((t) => t.classList.remove("active"));
-        document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
-        document.getElementById(id).classList.add("active");
-        event.target.classList.add("active");
+      function switchTab(id, btn) {
+        // remove active from tabs and chat-items
+        document.querySelectorAll(".tab-content").forEach((tc) => tc.classList.remove("active"));
+        document.querySelectorAll(".chat-item").forEach((ci) => ci.classList.remove("active"));
+        // activate selected
+        const el = document.getElementById(id);
+        if (!el) return;
+        const emptyState = document.getElementById("empty-state");
+        if (emptyState) emptyState.classList.add("hidden");
+        el.classList.add("active");
+        if (btn) btn.classList.add("active");
+        // update pane header title/status
+        const header = el.querySelector(".chat-header");
+        const titleEl = document.getElementById("pane-title");
+        const statusEl = document.getElementById("pane-status");
+        if (header) {
+          const t = header.querySelector("span");
+          const s = header.querySelector(".recovered");
+          if (t) titleEl.textContent = t.textContent;
+          if (s) statusEl.textContent = s.textContent;
+        }
+        // scroll chat body to bottom
+        const body = el.querySelector(".chat-body");
+        if (body) body.scrollTop = body.scrollHeight;
+      }
+
+      function fakeSend() {
+        const ta = document.getElementById("chat-text");
+        if (!ta) return;
+        const text = ta.value.trim();
+        if (!text) return;
+        const active = document.querySelector(".tab-content.active");
+        if (!active) return;
+        const body = active.querySelector(".chat-body");
+        const wrapper = document.createElement("div");
+        wrapper.className = "msg right";
+        const meta = document.createElement("div");
+        meta.className = "msg-meta";
+        meta.textContent = "You — now";
+        const bubble = document.createElement("div");
+        bubble.className = "msg-bubble";
+        bubble.textContent = text;
+        wrapper.appendChild(meta);
+        wrapper.appendChild(bubble);
+        body.appendChild(wrapper);
+        body.scrollTop = body.scrollHeight;
+        ta.value = "";
       }
     </script>
   </body>
 </html>
+*** End of file content snippet (truncated)

@@ -1,200 +1,1041 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>NODE 05 // IEEE ORGANIZER PORTAL</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{--green:#00ff41;--green-dim:#00cc33;--green-dark:#003300;--red:#ff3333;--amber:#ffb700;--blue:#00b4ff;--font:'Share Tech Mono',monospace;}
-body{background:#000;color:var(--green);font-family:var(--font);min-height:100vh;cursor:crosshair;}
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.012) 2px,rgba(0,255,65,0.012) 4px);pointer-events:none;z-index:9999;}
-.header{border-bottom:1px solid rgba(0,255,65,0.2);padding:14px 28px;display:flex;align-items:center;gap:16px;background:rgba(0,0,0,0.97);position:sticky;top:0;z-index:100;}
-.back-btn{color:var(--green-dim);text-decoration:none;font-size:0.75rem;letter-spacing:2px;border:1px solid rgba(0,255,65,0.2);padding:6px 12px;transition:all 0.2s;}
-.back-btn:hover{border-color:var(--green);}
-.header-title{font-size:0.85rem;letter-spacing:4px;}
-.header-badge{font-size:0.65rem;color:var(--amber);margin-left:auto;animation:blink 1s step-end infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-.main{max-width:1000px;margin:0 auto;padding:32px 24px 60px;}
-.page-title{font-size:1.4rem;letter-spacing:6px;margin-bottom:6px;}
-.page-sub{font-size:0.72rem;color:#555;letter-spacing:3px;margin-bottom:32px;}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NODE 05 // IEEE ORGANIZER PORTAL</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --green: #00ff41;
+        --green-dim: #00cc33;
+        --green-dark: #003300;
+        --red: #ff3333;
+        --amber: #ffb700;
+        --blue: #00b4ff;
+        --font: "Share Tech Mono", monospace;
+      }
+      body {
+        background: #000;
+        color: var(--green);
+        font-family: var(--font);
+        min-height: 100vh;
+        cursor: crosshair;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 65, 0.012) 2px,
+          rgba(0, 255, 65, 0.012) 4px
+        );
+        pointer-events: none;
+        z-index: 9999;
+      }
+      .header {
+        border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(0, 0, 0, 0.97);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .back-btn {
+        color: var(--green-dim);
+        text-decoration: none;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        padding: 6px 12px;
+        transition: all 0.2s;
+      }
+      .back-btn:hover {
+        border-color: var(--green);
+      }
+      .header-title {
+        font-size: 0.85rem;
+        letter-spacing: 4px;
+      }
+      .header-badge {
+        font-size: 0.65rem;
+        color: var(--amber);
+        margin-left: auto;
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      .main {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 32px 24px 60px;
+      }
+      .page-title {
+        font-size: 1.4rem;
+        letter-spacing: 6px;
+        margin-bottom: 6px;
+      }
+      .page-sub {
+        font-size: 0.72rem;
+        color: #555;
+        letter-spacing: 3px;
+        margin-bottom: 32px;
+      }
 
-.section{background:#030803;border:1px solid rgba(0,255,65,0.12);padding:24px;margin-bottom:24px;border-radius:2px;}
-.section h2{font-size:0.82rem;letter-spacing:4px;color:var(--green);margin-bottom:16px;border-bottom:1px solid rgba(0,255,65,0.1);padding-bottom:10px;}
+      .section {
+        background: #030803;
+        border: 1px solid rgba(0, 255, 65, 0.12);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 2px;
+      }
+      .section h2 {
+        font-size: 0.82rem;
+        letter-spacing: 4px;
+        color: var(--green);
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+        padding-bottom: 10px;
+      }
 
-.flag{display:inline-block;background:rgba(255,51,51,0.1);border:1px solid rgba(255,51,51,0.3);color:var(--red);font-size:0.65rem;padding:3px 8px;letter-spacing:1px;margin:4px 0;}
-.flag.amber{background:rgba(255,183,0,0.1);border-color:rgba(255,183,0,0.3);color:var(--amber);}
-.flag.green{background:rgba(0,255,65,0.05);border-color:rgba(0,255,65,0.2);color:var(--green-dim);}
-.flag.blue{background:rgba(0,180,255,0.05);border-color:rgba(0,180,255,0.2);color:var(--blue);}
+      .flag {
+        display: inline-block;
+        background: rgba(255, 51, 51, 0.1);
+        border: 1px solid rgba(255, 51, 51, 0.3);
+        color: var(--red);
+        font-size: 0.65rem;
+        padding: 3px 8px;
+        letter-spacing: 1px;
+        margin: 4px 0;
+      }
+      .flag.amber {
+        background: rgba(255, 183, 0, 0.1);
+        border-color: rgba(255, 183, 0, 0.3);
+        color: var(--amber);
+      }
+      .flag.green {
+        background: rgba(0, 255, 65, 0.05);
+        border-color: rgba(0, 255, 65, 0.2);
+        color: var(--green-dim);
+      }
+      .flag.blue {
+        background: rgba(0, 180, 255, 0.05);
+        border-color: rgba(0, 180, 255, 0.2);
+        color: var(--blue);
+      }
 
-.annotation{background:rgba(255,183,0,0.04);border:1px solid rgba(255,183,0,0.2);border-left:3px solid var(--amber);padding:14px 18px;margin:16px 0;font-size:0.75rem;color:#bbb;line-height:1.8;}
-.annotation .label{color:var(--amber);font-size:0.65rem;letter-spacing:2px;display:block;margin-bottom:6px;}
+      .annotation {
+        background: rgba(255, 183, 0, 0.04);
+        border: 1px solid rgba(255, 183, 0, 0.2);
+        border-left: 3px solid var(--amber);
+        padding: 14px 18px;
+        margin: 16px 0;
+        font-size: 0.75rem;
+        color: #bbb;
+        line-height: 1.8;
+      }
+      .annotation .label {
+        color: var(--amber);
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        display: block;
+        margin-bottom: 6px;
+      }
 
-/* DOCUMENT STYLE */
-.document{background:#040804;border:1px solid rgba(0,255,65,0.1);padding:28px;margin-bottom:16px;font-size:0.78rem;line-height:1.9;color:#888;}
-.document .doc-header{font-size:0.65rem;letter-spacing:3px;color:var(--green-dim);border-bottom:1px solid rgba(0,255,65,0.1);padding-bottom:10px;margin-bottom:16px;}
-.document strong{color:#ccc;}
-.document .redacted{background:#222;color:#222;padding:0 4px;border-radius:1px;user-select:none;}
-.document .highlight{color:var(--amber);}
-.document .danger{color:var(--red);}
-.document ul{margin:8px 0 8px 20px;}
-.document ul li{margin-bottom:4px;}
+      /* DOCUMENT STYLE */
+      .document {
+        background: #040804;
+        border: 1px solid rgba(0, 255, 65, 0.1);
+        padding: 28px;
+        margin-bottom: 16px;
+        font-size: 0.78rem;
+        line-height: 1.9;
+        color: #888;
+      }
+      .document .doc-header {
+        font-size: 0.65rem;
+        letter-spacing: 3px;
+        color: var(--green-dim);
+        border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+      }
+      .document strong {
+        color: #ccc;
+      }
+      .document .redacted {
+        background: #222;
+        color: #222;
+        padding: 0 4px;
+        border-radius: 1px;
+        user-select: none;
+      }
+      .document .highlight {
+        color: var(--amber);
+      }
+      .document .danger {
+        color: var(--red);
+      }
+      .document ul {
+        margin: 8px 0 8px 20px;
+      }
+      .document ul li {
+        margin-bottom: 4px;
+      }
 
-/* VOLUNTEER TABLE */
-.vol-table{width:100%;border-collapse:collapse;font-size:0.7rem;margin:12px 0;}
-.vol-table th{padding:8px 12px;background:#050f05;color:var(--green-dim);text-align:left;border-bottom:1px solid rgba(0,255,65,0.15);letter-spacing:1px;font-size:0.6rem;}
-.vol-table td{padding:8px 12px;border-bottom:1px solid rgba(0,255,65,0.05);color:#666;}
-.vol-table td.name{color:#aaa;}
-.vol-table td.emp{color:var(--green-dim);font-family:var(--font);}
-.vol-table td.red{color:var(--red);}
-.vol-table td.amber{color:var(--amber);}
-.vol-table td.green{color:var(--green-dim);}
-.vol-table tr.critical td{background:#080200;color:#999;}
-.vol-table tr:hover td{background:#030803;}
+      /* VOLUNTEER TABLE */
+      .vol-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.7rem;
+        margin: 12px 0;
+      }
+      .vol-table th {
+        padding: 8px 12px;
+        background: #050f05;
+        color: var(--green-dim);
+        text-align: left;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.15);
+        letter-spacing: 1px;
+        font-size: 0.6rem;
+      }
+      .vol-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid rgba(0, 255, 65, 0.05);
+        color: #666;
+      }
+      .vol-table td.name {
+        color: #aaa;
+      }
+      .vol-table td.emp {
+        color: var(--green-dim);
+        font-family: var(--font);
+      }
+      .vol-table td.red {
+        color: var(--red);
+      }
+      .vol-table td.amber {
+        color: var(--amber);
+      }
+      .vol-table td.green {
+        color: var(--green-dim);
+      }
+      .vol-table tr.critical td {
+        background: #080200;
+        color: #999;
+      }
+      .vol-table tr:hover td {
+        background: #030803;
+      }
 
-/* EMAIL CHAIN */
-.email{background:#040408;border:1px solid rgba(0,180,255,0.1);padding:20px;margin-bottom:12px;}
-.email-meta{font-size:0.65rem;color:#444;line-height:1.8;border-bottom:1px solid rgba(0,180,255,0.08);padding-bottom:10px;margin-bottom:12px;}
-.email-meta span{color:#666;}
-.email-body{font-size:0.77rem;color:#888;line-height:1.9;}
-.email-body strong{color:#bbb;}
-.email-body .highlight{color:var(--amber);}
-.email-body .danger{color:var(--red);}
+      /* EMAIL CHAIN */
+      .email {
+        background: #040408;
+        border: 1px solid rgba(0, 180, 255, 0.1);
+        padding: 20px;
+        margin-bottom: 12px;
+      }
+      .email-meta {
+        font-size: 0.65rem;
+        color: #444;
+        line-height: 1.8;
+        border-bottom: 1px solid rgba(0, 180, 255, 0.08);
+        padding-bottom: 10px;
+        margin-bottom: 12px;
+      }
+      .email-meta span {
+        color: #666;
+      }
+      .email-body {
+        font-size: 0.77rem;
+        color: #888;
+        line-height: 1.9;
+      }
+      .email-body strong {
+        color: #bbb;
+      }
+      .email-body .highlight {
+        color: var(--amber);
+      }
+      .email-body .danger {
+        color: var(--red);
+      }
 
-/* KEY FIND */
-.key-find{background:#090400;border:2px solid rgba(255,183,0,0.3);padding:20px;margin:16px 0;}
-.key-find h3{color:var(--amber);font-size:0.78rem;letter-spacing:3px;margin-bottom:12px;}
-.key-find p{font-size:0.78rem;color:#bbb;line-height:1.9;}
-.key-find .pin-reveal{font-size:1.4rem;color:var(--green);letter-spacing:8px;text-align:center;margin:16px 0;padding:12px;border:1px solid rgba(0,255,65,0.2);background:#000;}
-</style>
-</head>
-<body>
-<div class="header">
-  <a href="index.html" class="back-btn">← BACK</a>
-  <div class="header-title">NODE 05 // IEEE ORGANIZER PORTAL</div>
-  <div class="header-badge">⚠ INTERNAL — ORGANIZER ACCESS ONLY</div>
-</div>
-
-<div class="main">
-  <div class="page-title">&gt;_ IEEE ORGANIZER PORTAL</div>
-  <div class="page-sub">VOLUNTEER ROSTER // BACKGROUND FLAGS // INTERNAL DOCUMENTS // CASE #CC-2025-0001</div>
-
-  <!-- VOLUNTEER ROSTER -->
-  <div class="section">
-    <h2>👥 VOLUNTEER ROSTER — CODE & CAPTURE — COMPLETE</h2>
-    <div class="annotation">
-      <span class="label">&gt;_ NOTE — MOHI'S PHONE PIN</span>
-      Mohi's employee/volunteer ID is used as his phone PIN. This is standard practice per the event's volunteer onboarding document — "default device lock = volunteer ID number." Find Mohi's employee ID in the table below to unlock his phone in NODE 06.
+      /* KEY FIND */
+      .key-find {
+        background: #090400;
+        border: 2px solid rgba(255, 183, 0, 0.3);
+        padding: 20px;
+        margin: 16px 0;
+      }
+      .key-find h3 {
+        color: var(--amber);
+        font-size: 0.78rem;
+        letter-spacing: 3px;
+        margin-bottom: 12px;
+      }
+      .key-find p {
+        font-size: 0.78rem;
+        color: #bbb;
+        line-height: 1.9;
+      }
+      .key-find .pin-reveal {
+        font-size: 1.4rem;
+        color: var(--green);
+        letter-spacing: 8px;
+        text-align: center;
+        margin: 16px 0;
+        padding: 12px;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        background: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <a href="index.html" class="back-btn">← BACK</a>
+      <div class="header-title">NODE 05 // IEEE ORGANIZER PORTAL</div>
+      <div class="header-badge">⚠ INTERNAL — ORGANIZER ACCESS ONLY</div>
     </div>
-    <table class="vol-table">
-      <thead><tr><th>NAME</th><th>VOLUNTEER ID</th><th>ROLE</th><th>ACCESS LEVEL</th><th>HOODIE ISSUED</th><th>NOTES</th></tr></thead>
-      <tbody>
-        <tr><td class="name">YASSINE</td><td class="emp">CC-001</td><td>Event Director</td><td class="amber">DIRECTOR</td><td>Yes — Black</td><td>Organizer</td></tr>
-        <tr><td class="name">GHOFRANE MABROUK</td><td class="emp">CC-002</td><td>Event Coordinator</td><td>COORDINATOR</td><td>Yes — Black</td><td>Flagged Hazem pre-event</td></tr>
-        <tr><td class="name">AHMED</td><td class="emp">CC-003</td><td>System Admin</td><td class="amber">ROOT</td><td>Yes — Black</td><td>Granted Hazem admin access</td></tr>
-        <tr><td class="name">AYHEM</td><td class="emp">CC-004</td><td>CCTV Operator</td><td>MONITOR</td><td>Yes — Black</td><td>Absent 01:14–01:36 AM</td></tr>
-        <tr><td class="name">CHAHD</td><td class="emp">CC-005</td><td>Network Monitor</td><td>MONITOR</td><td>Yes — Black</td><td>Lead investigator</td></tr>
-        <tr class="critical"><td class="name">MOHI</td><td class="emp green">CC-006</td><td>Network Technician</td><td>TECHNICIAN</td><td>Yes — Black</td><td class="red">☠ DECEASED — VICTIM #1</td></tr>
-        <tr class="critical"><td class="name">HAZEM</td><td class="emp red">CC-007</td><td>Tech Volunteer (Pre-event)</td><td class="red">ROOT (NEVER REVOKED)</td><td class="red">Yes — GREY ⚠</td><td class="red">PRIME SUSPECT — IDENTITY UNVERIFIED</td></tr>
-        <tr><td class="name">DARINE</td><td class="emp">CC-008</td><td>Social Media Manager</td><td>SOCIAL</td><td>No</td><td>Key witness — photo archive</td></tr>
-        <tr><td class="name">ALA</td><td class="emp">CC-009</td><td>Participant (Volunteer assist)</td><td>NONE</td><td>No</td><td>Acoustic witness — 01:40–01:47 AM</td></tr>
-      </tbody>
-    </table>
-    <div class="key-find">
-      <h3>🔓 MOHI'S PHONE PIN — LOCATED</h3>
-      <p>Volunteer ID for Mohi (Network Technician, CC-006) is the default phone PIN per onboarding protocol. The volunteer onboarding document states: <strong>"Your volunteer ID is your default device PIN until you change it."</strong> Mohi never changed his PIN — confirmed by the phone's security settings which show the PIN was set during device initialization and never modified.</p>
-      <div class="pin-reveal">0 0 6</div>
-      <p style="text-align:center;font-size:0.7rem;color:#555;margin-top:8px;">→ Enter this PIN in NODE 06 (Locked Device) to unlock Mohi's phone and access the keylogger photograph.</p>
-    </div>
-    <div class="annotation" style="margin-top:8px;">
-      <span class="label">&gt;_ NOTE ON GREY HOODIE</span>
-      Only one volunteer received a GREY staff hoodie: Hazem (CC-007). All other volunteers and organizers received BLACK hoodies. The grey hoodie was issued because Hazem joined as a late pre-event addition and the black stock had run out. This is the hoodie visible in Darine's 01:52 AM photo. This is the hoodie Rahma described. This is the hoodie Ayhem saw adjusting CAM-12 two days before the event.
-    </div>
-    <div class="flag">⚠ HAZEM IS THE ONLY PERSON IN THE BUILDING WITH A GREY STAFF HOODIE. ALL THREE WITNESS DESCRIPTIONS MATCH.</div>
-  </div>
 
-  <!-- BACKGROUND FLAG REPORT -->
-  <div class="section">
-    <h2>🚩 BACKGROUND FLAG REPORT — HAZEM — FILED BY GHOFRANE MABROUK</h2>
-    <div class="document">
-      <div class="doc-header">INTERNAL FLAG REPORT // CODE & CAPTURE VOLUNTEER MANAGEMENT // DATE: [3 WEEKS PRE-EVENT] // FILED BY: GHOFRANE MABROUK (CC-002)</div>
-      <strong>Subject:</strong> Volunteer Registration Anomalies — CC-007 (HAZEM)<br/><br/>
-      I am filing this flag regarding the volunteer registration submitted for CC-007. During routine verification of all volunteer background forms, I identified the following discrepancies:<br/><br/>
-      <ul>
-        <li><strong>University affiliation:</strong> Listed as <span class="highlight">"ISET Sousse — Computer Science, 2022 cohort."</span> I contacted ISET Sousse's alumni records office. No student matching the submitted name and ID number appears in their 2022 cohort database. The student ID format also uses a numbering convention from 2019, not 2022.</li>
-        <li><strong>Phone number:</strong> Listed with a +216 Tunisia prefix but the middle digits indicate a <span class="highlight">Libyan mobile carrier registration</span> (verified via GSMA database). Applicant stated he is a local participant.</li>
-        <li><strong>Emergency contact email:</strong> <span class="danger">Address bounced with "mailbox does not exist" error.</span> Dead email provided as emergency contact.</li>
-        <li><strong>Previous event experience:</strong> Lists "HackMed 2023 — participant." HackMed 2023 was <span class="danger">cancelled before participants arrived</span> due to venue issues. He could not have attended it.</li>
-        <li><strong>Profile photo:</strong> Reverse image search of submitted photo returns <span class="danger">no social media matches</span>. Most participants have some digital footprint. This photo appears to be a one-time use image.</li>
-      </ul>
-      <br/>
-      <strong>Recommendation:</strong> Contact applicant for verification before granting volunteer access, especially given the ROOT-level infrastructure request.<br/><br/>
-      <strong class="highlight">Status of this flag:</strong> Forwarded to YASSINE (CC-001) for action on [date]. Yassine replied: <span class="highlight">"Forward to Hazem — he's heading the tech team. He can look into any discrepancies."</span> Flag considered resolved after Hazem self-reported that his information was correct.
-    </div>
-    <div class="flag">☠ THE FLAG ABOUT HAZEM WAS FORWARDED TO HAZEM HIMSELF. HE CLEARED HIS OWN BACKGROUND CHECK.</div>
-    <div class="flag amber">⚠ ALL 5 DISCREPANCIES GHOFRANE FLAGGED WERE ACCURATE. HAZEM IS OPERATING UNDER A FALSE IDENTITY.</div>
-  </div>
+    <div class="main">
+      <div class="page-title">&gt;_ IEEE ORGANIZER PORTAL</div>
+      <div class="page-sub">
+        VOLUNTEER ROSTER // BACKGROUND FLAGS // INTERNAL DOCUMENTS // CASE #CC-2025-0001
+      </div>
 
-  <!-- YASSINE EMAIL CHAIN -->
-  <div class="section">
-    <h2>📧 YASSINE — INTERNAL EMAIL CHAIN — INVESTIGATION RELEVANT</h2>
-    <div class="annotation">
-      <span class="label">&gt;_ CONTEXT</span>
-      These emails are relevant to understanding Yassine's role in the events leading up to the murders. He is not the killer. But his decisions enabled critical failures. When confronted, Yassine provided these emails voluntarily — he is cooperating fully. His statement is below.
-    </div>
+      <!-- VOLUNTEER ROSTER -->
+      <div class="section">
+        <h2>👥 VOLUNTEER ROSTER — CODE & CAPTURE — COMPLETE</h2>
+        <div class="annotation">
+          <span class="label">&gt;_ NOTE — MOHI'S PHONE PIN</span>
+          Mohi's employee/volunteer ID is used as his phone PIN. This is standard practice per the
+          event's volunteer onboarding document — "default device lock = volunteer ID number." Find
+          Mohi's employee ID in the table below to unlock his phone in NODE 06.
+        </div>
+        <table class="vol-table">
+          <thead>
+            <tr>
+              <th>NAME</th>
+              <th>VOLUNTEER ID</th>
+              <th>ROLE</th>
+              <th>ACCESS LEVEL</th>
+              <th>HOODIE ISSUED</th>
+              <th>NOTES</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="name">YASSINE</td>
+              <td class="emp">CC-001</td>
+              <td>Chair</td>
+              <td class="amber">CHAIR</td>
+              <td>Yes — Black</td>
+              <td>Organizer</td>
+            </tr>
+            <tr>
+              <td class="name">ghof</td>
+              <td class="emp">CC-002</td>
+              <td>Event Coordinator</td>
+              <td>COORDINATOR</td>
+              <td>Yes — Black</td>
+              <td>Flagged Hazem pre-event</td>
+            </tr>
+            <tr>
+              <td class="name">AHMED</td>
+              <td class="emp">CC-003</td>
+              <td>System Admin</td>
+              <td class="amber">ROOT</td>
+              <td>Yes — Black</td>
+              <td>Granted Hazem admin access</td>
+            </tr>
+            <tr>
+              <td class="name">AYHEM</td>
+              <td class="emp">CC-004</td>
+              <td>CCTV Operator</td>
+              <td>MONITOR</td>
+              <td>Yes — Black</td>
+              <td>Absent 01:14–01:36 AM</td>
+            </tr>
+            <tr>
+              <td class="name">CHAHD</td>
+              <td class="emp">CC-005</td>
+              <td>Network Monitor</td>
+              <td>MONITOR</td>
+              <td>Yes — Black</td>
+              <td>Lead investigator</td>
+            </tr>
+            <tr class="critical">
+              <td class="name">MOHI</td>
+              <td class="emp green">CC-006</td>
+              <td>Network Technician</td>
+              <td>TECHNICIAN</td>
+              <td>Yes — Black</td>
+              <td class="red">☠ DECEASED — VICTIM #1</td>
+            </tr>
+            <tr class="critical">
+              <td class="name">HAZEM</td>
+              <td class="emp red">CC-007</td>
+              <td>Tech Volunteer (Pre-event)</td>
+              <td class="red">ROOT (NEVER REVOKED)</td>
+              <td class="red">Yes — GREY ⚠</td>
+              <td class="red">FOCUS OF INVESTIGATION — IDENTITY DISCREPANCIES</td>
+            </tr>
+            <tr>
+              <td class="name">DARINE</td>
+              <td class="emp">CC-008</td>
+              <td>Social Media Manager</td>
+              <td>SOCIAL</td>
+              <td>No</td>
+              <td>Key witness — photo archive</td>
+            </tr>
+            <tr>
+              <td class="name">ALA</td>
+              <td class="emp">CC-009</td>
+              <td>Participant (Volunteer assist)</td>
+              <td>NONE</td>
+              <td>No</td>
+              <td>Acoustic witness — 01:40–01:47 AM</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="key-find">
+          <h3>🔓 MOHI'S PHONE PIN — LOCATED</h3>
+          <p>
+            Volunteer ID for Mohi (Network Technician, CC-006) is the default phone PIN per
+            onboarding protocol. The volunteer onboarding document states:
+            <strong>"Your volunteer ID is your default device PIN until you change it."</strong>
+            Mohi never changed his PIN — confirmed by the phone's security settings which show the
+            PIN was set during device initialization and never modified.
+          </p>
+          <div class="pin-reveal">0 0 6</div>
+          <p style="text-align: center; font-size: 0.7rem; color: #555; margin-top: 8px">
+            → Enter this PIN in NODE 06 (Locked Device) to unlock Mohi's phone and access the
+            keylogger photograph.
+          </p>
+        </div>
+        <div class="annotation" style="margin-top: 8px">
+          <span class="label">&gt;_ NOTE ON GREY HOODIE</span>
+          Only one volunteer received a GREY staff hoodie: Hazem (CC-007). All other volunteers and
+          organizers received BLACK hoodies. The grey hoodie was issued because Hazem joined as a
+          late pre-event addition and the black stock had run out. This is the hoodie visible in
+          Darine's 01:52 AM photo. This is the hoodie Rahma described. This is the hoodie Ayhem saw
+          adjusting CAM-12 two days before the event.
+        </div>
+        <div class="flag">
+          ⚠ HAZEM IS THE ONLY PERSON IN THE BUILDING WITH A GREY STAFF HOODIE. ALL THREE WITNESS
+          DESCRIPTIONS MATCH.
+        </div>
+      </div>
 
-    <div class="email">
-      <div class="email-meta">FROM: <span>ghofrane.mabrouk@ieee-fsm.org</span> | TO: <span>yassine@ieee-fsm.org</span> | SUBJECT: <span>Volunteer flag — CC-007</span> | DATE: <span>3 weeks pre-event</span></div>
-      <div class="email-body">Yassine — flagging CC-007 (Hazem). 5 discrepancies on his volunteer form. University doesn't check out, phone carrier mismatch, dead emergency email, attended an event that was cancelled, and his photo has no social media footprint. Recommending verification before granting ROOT access. Full report attached.</div>
-    </div>
+      <!-- BACKGROUND FLAG REPORT -->
+      <div class="section">
+        <h2>🚩 BACKGROUND FLAG REPORT — HAZEM — FILED BY ghof</h2>
+        <div class="document">
+          <div class="doc-header">
+            INTERNAL FLAG REPORT // CODE & CAPTURE VOLUNTEER MANAGEMENT // DATE: [3 WEEKS PRE-EVENT]
+            // FILED BY: ghof (CC-002)
+          </div>
+          <strong>Subject:</strong> Volunteer Registration Anomalies — CC-007 (HAZEM)<br /><br />
+          I am filing this flag regarding the volunteer registration submitted for CC-007. During
+          routine verification of all volunteer background forms, I identified the following
+          discrepancies:<br /><br />
+          <ul>
+            <li>
+              <strong>University affiliation:</strong> Listed as
+              <span class="highlight">"ISET Sousse — Computer Science, 2022 cohort."</span> I
+              contacted ISET Sousse's alumni records office. No student matching the submitted name
+              and ID number appears in their 2022 cohort database. The student ID format also uses a
+              numbering convention from 2019, not 2022.
+            </li>
+            <li>
+              <strong>Phone number:</strong> Listed with a +216 Tunisia prefix but the middle digits
+              indicate a <span class="highlight">Libyan mobile carrier registration</span> (verified
+              via GSMA database). Applicant stated he is a local participant.
+            </li>
+            <li>
+              <strong>Emergency contact email:</strong>
+              <span class="danger">Address bounced with "mailbox does not exist" error.</span> Dead
+              email provided as emergency contact.
+            </li>
+            <li>
+              <strong>Previous event experience:</strong> Lists "HackMed 2023 — participant."
+              HackMed 2023 was <span class="danger">cancelled before participants arrived</span> due
+              to venue issues. He could not have attended it.
+            </li>
+            <li>
+              <strong>Profile photo:</strong> Reverse image search of submitted photo returns
+              <span class="danger">no social media matches</span>. Most participants have some
+              digital footprint. This photo appears to be a one-time use image.
+            </li>
+          </ul>
+          <br />
+          <strong>Recommendation:</strong> Contact applicant for verification before granting
+          volunteer access, especially given the ROOT-level infrastructure request.<br /><br />
+          <strong class="highlight">Status of this flag:</strong> Forwarded to YASSINE (CC-001) for
+          action on [date]. Yassine replied:
+          <span class="highlight"
+            >"Forward to Hazem — he's heading the tech team. He can look into any
+            discrepancies."</span
+          >
+          Flag considered resolved after Hazem self-reported that his information was correct.
+        </div>
+        <div class="flag">
+          ☠ THE FLAG ABOUT HAZEM WAS FORWARDED TO HAZEM HIMSELF. HE CLEARED HIS OWN BACKGROUND
+          CHECK.
+        </div>
+        <div class="flag amber">
+          ⚠ ALL 5 DISCREPANCIES FLAGGED BY GHOF WERE SUBSEQUENTLY VERIFIED AS ACCURATE.
+          INVESTIGATION INDICATES FALSE IDENTITY INDICATORS.
+        </div>
+      </div>
 
-    <div class="email">
-      <div class="email-meta">FROM: <span>yassine@ieee-fsm.org</span> | TO: <span>ghofrane.mabrouk@ieee-fsm.org</span> | SUBJECT: <span>Re: Volunteer flag — CC-007</span> | DATE: <span>3 weeks pre-event</span></div>
-      <div class="email-body">Thanks for flagging. <span class="highlight">Please forward this directly to Hazem — he's coordinating the tech volunteer team. He can check into any inconsistencies on his end.</span> Probably an international student situation. We've seen this before. Don't overthink it. We need him confirmed before setup day.</div>
-    </div>
+      <!-- YASSINE EMAIL CHAIN -->
+      <div class="section">
+        <h2>📧 YASSINE — INTERNAL EMAIL CHAIN — INVESTIGATION RELEVANT</h2>
+        <div class="annotation">
+          <span class="label">&gt;_ CONTEXT</span>
+          These emails are relevant to understanding Yassine's role in the events leading up to the
+          incidents and investigation. He is not a suspect. But his decisions enabled critical
+          failures in vetting procedures. When confronted, Yassine provided these emails voluntarily
+          — he is cooperating fully. His statement is below.
+        </div>
 
-    <div class="email">
-      <div class="email-meta">FROM: <span>hazem.cc007@protonmail.com</span> | TO: <span>ghofrane.mabrouk@ieee-fsm.org</span> | SUBJECT: <span>Re: Re: Volunteer flag</span> | DATE: <span>3 weeks pre-event</span></div>
-      <div class="email-body">Hi Ghofrane — thanks for reaching out. Happy to clarify. The university database issue is because I graduated under a different department code — happens with interdisciplinary programs. The phone was registered through a family plan from before I moved. Emergency contact email was a typo — my fault. HackMed 2023 — I did register, but you're right it was cancelled; I forgot it didn't actually happen. My photo is new — I just don't use social media. <span class="danger">Hope that clears everything up.</span></div>
-    </div>
+        <div class="email">
+          <div class="email-meta">
+            FROM: <span>ghof@ieee-fsm.org</span> | TO: <span>yassine@ieee-fsm.org</span> | SUBJECT:
+            <span>Volunteer flag — CC-007</span> | DATE: <span>3 weeks pre-event</span>
+          </div>
+          <div class="email-body">
+            Yassine — flagging CC-007 (Hazem). 5 discrepancies on his volunteer form. University
+            doesn't check out, phone carrier mismatch, dead emergency email, attended an event that
+            was cancelled, and his photo has no social media footprint. Recommending verification
+            before granting ROOT access. Full report attached.
+          </div>
+        </div>
 
-    <div class="annotation">
-      <span class="label">&gt;_ INVESTIGATOR ANALYSIS</span>
-      Hazem's response addressed every flag with a plausible-sounding explanation but provided zero verifiable documentation. No corrected university contact, no new phone info, no updated emergency email, no acknowledgment that HackMed 2023 was cancelled before anyone arrived. <strong>Every "explanation" was unverifiable and accepted without follow-up.</strong> Ghofrane marked the flag as resolved. The ROOT access was granted.
-    </div>
-    <div class="flag">⚠ HAZEM'S SELF-CLEARANCE WAS ACCEPTED WITHOUT VERIFICATION. THIS IS THE ORIGINAL FAILURE POINT.</div>
+        <div class="email">
+          <div class="email-meta">
+            FROM: <span>yassine@ieee-fsm.org</span> | TO: <span>ghof@ieee-fsm.org</span> | SUBJECT:
+            <span>Re: Volunteer flag — CC-007</span> | DATE: <span>3 weeks pre-event</span>
+          </div>
+          <div class="email-body">
+            Thanks for flagging.
+            <span class="highlight"
+              >Please forward this directly to Hazem — he's coordinating the tech volunteer team. He
+              can check into any inconsistencies on his end.</span
+            >
+            Probably an international student situation. We've seen this before. Don't overthink it.
+            We need him confirmed before setup day.
+          </div>
+        </div>
 
-    <div class="document" style="margin-top:16px;border-left:3px solid var(--amber);">
-      <div class="doc-header">YASSINE — PERSONAL STATEMENT — RECORDED 04:45 AM</div>
-      I made two catastrophic mistakes. The first: I told Ghofrane to send the background flag to Hazem. I wasn't thinking. I was focused on getting setup done on time. I trusted that if something was seriously wrong, it would surface. It didn't — because I handed the investigation to the subject of the investigation.<br/><br/>
-      The second: I read Ghofrane's message at 03:14 AM. I was mid-conversation with a sponsor representative. I told myself I'd respond in two minutes. I got distracted. When I saw her body at 03:41 AM, I realized what I had done. I didn't tell investigators about the read receipt immediately because I was afraid of what it would look like. That was wrong. I'm telling you now.<br/><br/>
-      <strong>I didn't kill anyone. But I gave the killer the tools, the access, and the time he needed. I don't know how to live with that yet.</strong><br/><br/>
-      <span class="highlight">I am waiving all confidentiality and providing full access to every communication I sent or received during this event.</span>
-    </div>
-  </div>
+        <div class="email">
+          <div class="email-meta">
+            FROM: <span>hazem.cc007@protonmail.com</span> | TO: <span>ghof@ieee-fsm.org</span> |
+            SUBJECT: <span>Re: Re: Volunteer flag</span> | DATE: <span>3 weeks pre-event</span>
+          </div>
+          <div class="email-body">
+            Hi Gass — thanks for reaching out. Happy to clarify. The university database issue is
+            because I graduated under a different department code — happens with interdisciplinary
+            programs. The phone was registered through a family plan from before I moved. Emergency
+            contact email was a typo — my fault. HackMed 2023 — I did register, but you're right it
+            was cancelled; I forgot it didn't actually happen. My photo is new — I just don't use
+            social media. <span class="danger">Hope that clears everything up.</span>
+          </div>
+        </div>
 
-  <!-- HAZEM IDENTITY -->
-  <div class="section">
-    <h2">🕵️ HAZEM — IDENTITY VERIFICATION FAILURE — SUMMARY</h2>
-    <div class="document" style="border-left:3px solid var(--red);">
-      <div class="doc-header">IDENTITY ANALYSIS — CC-007 — COMPILED 05:02 AM</div>
-      <strong class="danger">The person registered as "Hazem" at Code & Capture is not who he claims to be.</strong><br/><br/>
-      Evidence:<br/>
-      <ul>
-        <li>5 registration discrepancies flagged by Ghofrane Mabrouk — all accurate, none followed up</li>
-        <li>Community CTF profile of the real "Hazem" (confirmed by Fares) shows a different face in 2022 event photos</li>
-        <li>Le Blanc, who competed against the real Hazem at a 2022 event, confirms: <strong class="danger">"That person is not Hazem."</strong></li>
-        <li>Firmware signature on keylogger matches a 2024 HackTN incident — same operator, different pseudonym</li>
-        <li>No biometric match exists in any national database under the submitted identity</li>
-        <li>ProtonMail address used for all communication — untraceable</li>
-      </ul>
-      <br/>
-      <strong>Real identity: UNKNOWN.</strong> Operating as a serial CTF infiltrator for a competitive intelligence firm. Code & Capture is at minimum his 4th confirmed event. The previous three: no deaths. This event: two deaths — because someone found the device early.
-    </div>
-    <div class="flag">☠ THE KILLER'S REAL NAME IS UNKNOWN. "HAZEM" IS A STOLEN CTF IDENTITY. THE INVESTIGATION CONTINUES.</div>
-  </div>
+        <div class="annotation">
+          <span class="label">&gt;_ INVESTIGATOR ANALYSIS</span>
+          Hazem's response addressed every flag with a plausible-sounding explanation but provided
+          zero verifiable documentation. No corrected university contact, no new phone info, no
+          updated emergency email, no acknowledgment that HackMed 2023 was cancelled before anyone
+          arrived.
+          <strong>Every "explanation" was unverifiable and accepted without follow-up.</strong> Gass
+          marked the flag as resolved. The ROOT access was granted.
+        </div>
+        <div class="flag">
+          ⚠ HAZEM'S SELF-CLEARANCE WAS ACCEPTED WITHOUT VERIFICATION. THIS IS THE ORIGINAL FAILURE
+          POINT.
+        </div>
 
-</div>
-</body>
+        <div class="document" style="margin-top: 16px; border-left: 3px solid var(--amber)">
+          <div class="doc-header">YASSINE — PERSONAL STATEMENT — RECORDED 04:45 AM</div>
+          I made two catastrophic mistakes. The first: I told Gass to send the background flag to
+          Hazem. I wasn't thinking. I was focused on getting setup done on time. I trusted that if
+          something was seriously wrong, it would surface. It didn't — because I handed the
+          investigation to the subject of the investigation.<br /><br />
+          The second: I read Gass's message at 03:14 AM. I was mid-conversation with a sponsor
+          representative. I told myself I'd respond in two minutes. I got distracted. By the time I
+          got to the incident location at 03:41 AM, the emergency was already in progress. I didn't
+          tell investigators about the read receipt immediately because I was afraid of what it
+          would look like. That was wrong. I'm telling you now.<br /><br />
+          <strong
+            >I didn't harm anyone. But I gave someone with bad intent the tools, the access, and the
+            time he needed. I don't know how to live with that yet.</strong
+          ><br /><br />
+          <span class="highlight"
+            >I am waiving all confidentiality and providing full access to every communication I
+            sent or received during this event.</span
+          >
+        </div>
+      </div>
+
+      <!-- HAZEM IDENTITY -->
+      <div class="section">
+        <h2>🕵️ HAZEM — IDENTITY VERIFICATION ANALYSIS — SUMMARY</h2>
+        <div class="document" style="border-left: 3px solid var(--red)">
+          <div class="doc-header">IDENTITY ANALYSIS — CC-007 — COMPILED 05:02 AM</div>
+          <strong class="amber"
+            >Investigative findings on the registered identity "Hazem" (CC-007)</strong
+          >:<br /><br />
+          Discovered discrepancies:<br />
+          <ul>
+            <li>
+              5 registration discrepancies flagged by ghof — all subsequently verified as accurate
+              upon investigation
+            </li>
+            <li>
+              Community CTF records and prior event documentation show photographic inconsistencies
+              in identity claims
+            </li>
+            <li>
+              Witness statements from prior CTF participants cast doubt on identity authenticity
+            </li>
+            <li>
+              Device firmware signatures found in event logs match signatures from previous security
+              incidents at other CTF events
+            </li>
+            <li>
+              Biometric and national database cross-referencing shows no corroboration of submitted
+              registration data
+            </li>
+            <li>
+              Digital communication traces through anonymous providers suggest deliberate identity
+              obfuscation
+            </li>
+          </ul>
+          <br />
+          <strong
+            >Status: Real identity currently UNKNOWN. Submitted identity \"Hazem\" requires further
+            verification. Investigation ongoing to establish actual identity and connection to
+            pre-event and event-night activities.</strong
+          >
+        </div>
+        <div class="flag">
+          ⚠ IDENTITY STATUS: UNVERIFIED. "HAZEM" (CC-007) REGISTERED IDENTITY DISCREPANCIES REQUIRE
+          CONTINUED INVESTIGATION.
+        </div>
+      </div>
+
+      <!-- EVENT PLANNING TIMELINE — MULTI-DAY -->
+      <div class="section">
+        <h2>📅 EVENT PLANNING TIMELINE — PRE-EVENT & EVENT DAYS</h2>
+        <div class="annotation">
+          <span class="label">&gt;_ ORGANIZER LOGS</span>
+          Multi-day organizer task log covering setup, execution, and post-event activities. This
+          timeline provides context for admin decisions and volunteer assignments.
+        </div>
+        <div class="document" style="max-height: 600px; overflow-y: auto">
+          <strong>APR 22 (0 Days Pre-Event Kickoff)</strong><br />
+          14:00 — Yassine chairs planning committee meeting. Volunteer coordinator roles assigned.
+          Ahmed briefed on infrastructure. Budget confirmed.<br />
+          16:30 — ghof contacts potential volunteers; Hazem applies and is tentatively approved
+          pending verification.<br /><br />
+          <strong>APR 24 (6 Days Pre-Event)</strong><br />
+          09:00 — Final volunteer roster frozen. Background checks requested for all new volunteers.
+          Hazem's discrepancies discovered by ghof during routine audit.<br />
+          14:30 — ghof files formal flag about Hazem's registration anomalies (forwarded to Yassine
+          for action).<br />
+          15:00 — Yassine redirects flag to Hazem for self-verification.<br /><br />
+          <strong>APR 25 (5 Days Pre-Event)</strong><br />
+          11:00 — Hazem responds with explanations for all flags; Yassine accepts response, marks
+          flag resolved.<br />
+          16:00 — Infrastructure setup begins; Ahmed onboards Hazem and grants ROOT-level access for
+          "volunteer oversight."<br /><br />
+          <strong>APR 27 (Dry Run Day)</strong><br />
+          10:00 — Dry run of scoreboard and badge systems executed. Hazem tests all infrastructure
+          commands. Badge printer tested; temporary badges printed.<br />
+          15:00 — Ayhem calibrates CCTV system; Hazem observed adjusting CAM-12 mount in the fire
+          exit corridor.<br /><br />
+          <strong>MAY 01 (Event Setup Day — 2 Days Pre-Event)</strong><br />
+          08:00 — Volunteers arrive for physical venue setup; Mohi assigned to server room B for
+          final equipment check.<br />
+          11:00 — Volunteer badges distributed; Hazem issued grey hoodie (stock shortage of black
+          hoodies).<br />
+          16:00 — All systems green; infrastructure handed off from setup phase to operational
+          phase; Ahmed forgets to revoke ROOT access.<br />
+          18:00 — Final organizer briefing; Yassine confirms all roles; Hazem confirmed as volunteer
+          tech lead.<br /><br />
+          <strong>MAY 02 (Event Day — 1 Day Pre-Main-Event)</strong><br />
+          20:00 — Doors open; participants begin registration. Badge alert systems armed. CCTV
+          recording begins.<br />
+          22:00 — Event officially starts; all infrastructure nominal. Badge alert suppression
+          initiated at 22:48 PM.<br /><br />
+          <strong>MAY 03 (Main Event — Incident Window)</strong><br />
+          01:14 AM — CCTV operator Ayhem receives power alert and leaves his post for 22 minutes.<br />
+          01:30 AM — Camera buffer on CAM-01 (basement incident area) is cleared remotely.<br />
+          01:44 — Unregistered badge 0x7F3A accesses Server Room B; technician later photographs
+          device there.<br />
+          03:10 AM — Camera buffer on CAM-12 (3F fire exit incident area) is cleared remotely.<br />
+          03:41 AM — First incident alert; emergency protocol initiated.<br />
+          03:52 AM — Second incident alert; all personnel accounted for.<br />
+          04:00 AM — Investigation begins; Chahd assumes evidence lead.<br /><br />
+          <strong>MAY 04 (Post-Event Investigation)</strong><br />
+          10:00 — Account-holder not located for 12 hours; fugitive status applied. Belongings
+          searched for cloned badge device (not recovered).<br />
+          16:00 — Profile match confirmed to earlier event; same firmware signature, different
+          pseudonym.<br />
+        </div>
+      </div>
+
+      <!-- ORGANIZER SCHEDULE & RANDOM MOMENTS -->
+      <div class="section">
+        <h2>🗒️ ORGANIZER SCHEDULE & RANDOM MOMENTS</h2>
+        <div class="document">
+          <strong>YASSINE'S EVENT DAY SCHEDULE (MAY 02):</strong><br />
+          18:00 — Arrives at venue; reviews final checklist with Ahmed.<br />
+          20:15 — Meets with sponsor rep for last-minute contract review.<br />
+          21:00 — Stands at registration to greet early arrivals.<br />
+          22:45 — Reviews scoreboard display in main hall with Darine (social media capture
+          moment).<br />
+          00:15 AM — Responds to power supply question from facilities; reassures Ayhem about
+          intermittent alerts.<br />
+          02:10 AM — Still in post-event sponsor call; doesn't respond to ghof's 02:00 AM message
+          about badge anomaly.<br />
+          03:14 AM — Reads ghof's final message about the badge log anomaly; distracted, doesn't
+          reply immediately. Marked as read.<br />
+          03:40 AM — Discovers first incident; emergency declared.<br /><br />
+          <strong>RANDOM ORGANIZER MOMENTS (UNRELATED):</strong><br />
+          APR 29, 12:30 — Beverages for volunteer orientation were forgotten; late-minute delivery
+          ordered.<br />
+          MAY 01, 19:22 — Yassine's laptop battery runs out mid-email during setup; power cord
+          located in storage closet after 8-minute search.<br />
+          MAY 02, 21:15 — A participant loses their badge; duplicate printed and issued by Ahmed
+          without incident.<br />
+          MAY 02, 23:50 — A volunteer complains about cold soda machine; facilities reminds them the
+          machine is set to energy-save mode.<br />
+          MAY 03, 02:30 — The coffee station has run out; backup coffee located and brewed by
+          Chahd.<br /><br />
+        </div>
+      </div>
+
+      <!-- UNRELATED ADMINISTRATIVE ENTRIES -->
+      <div class="section">
+        <h2>📋 UNRELATED ADMINISTRATIVE ENTRIES — BACKGROUND NOISE</h2>
+        <table class="vol-table">
+          <thead>
+            <tr>
+              <th>DATE</th>
+              <th>AREA</th>
+              <th>ENTRY</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>APR 20</td>
+              <td>Venue Rental</td>
+              <td>Signed 3-year renewal contract with venue management</td>
+              <td class="green">COMPLETED</td>
+            </tr>
+            <tr>
+              <td>APR 22</td>
+              <td>Sponsorship</td>
+              <td>TechCorp pledged 15K sponsorship; payment processed</td>
+              <td class="green">RECEIVED</td>
+            </tr>
+            <tr>
+              <td>APR 27</td>
+              <td>Insurance</td>
+              <td>Event liability insurance renewed; coverage confirmed</td>
+              <td class="green">VALID</td>
+            </tr>
+            <tr>
+              <td>MAY 01</td>
+              <td>Permits</td>
+              <td>Late-night event permit pulled; no violations logged</td>
+              <td class="green">OK</td>
+            </tr>
+            <tr>
+              <td>MAY 02</td>
+              <td>Catering</td>
+              <td>Vendor delivered 80 sandwich platters and beverages</td>
+              <td class="green">DELIVERED</td>
+            </tr>
+            <tr>
+              <td>MAY 02</td>
+              <td>Cleaning</td>
+              <td>Post-event cleanup crew scheduled for MAY 04 at 08:00</td>
+              <td class="amber">PENDING</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="annotation" style="margin-top: 14px">
+          <span class="label">&gt;_ NOTE</span>
+          These administrative entries are routine and unrelated to the incident. They are preserved
+          to maintain realistic context in the organizer portal.
+        </div>
+      </div>
+
+      <!-- VOLUNTEER ACTIVITY LOGS — DAILY -->
+      <div class="section">
+        <h2>📝 VOLUNTEER ACTIVITY LOGS — DAILY ENTRIES</h2>
+        <div class="document">
+          <strong>APR 23 (7 Days Pre-Event) — Setup Coordination</strong><br />
+          09:30 — Ahmed and Mohi surveyed server room B; identified cable routing issues. Planned
+          reconfiguration for next day.<br />
+          14:00 — ghof confirmed volunteer checklist with Yassine; 9 confirmed, 2 pending background
+          verification.<br />
+          16:45 — Chahd performed initial network bandwidth test; all systems nominal.<br /><br />
+          <strong>APR 26 (4 Days Pre-Event) — Infrastructure Testing</strong><br />
+          10:00 — Ahmed and Mohi completed cable reconfiguration in server room B; tested power
+          delivery and cooling.<br />
+          12:30 — Ayhem arrived for CCTV equipment inventory; confirmed all 12 cameras operational
+          and recording.<br />
+          15:00 — ghof attended mandatory volunteer training session; 8 volunteers present,
+          including tech volunteers.<br />
+          17:15 — Chahd ran network load test; identified minor latency spikes (unresolved until
+          post-event review).<br /><br />
+          <strong>APR 28 (3 Days Pre-Event) — Final Preparation</strong><br />
+          08:00 — Mohi performed full server diagnostics; database warm-up completed in 3 hours, 45
+          minutes.<br />
+          11:00 — Ahmed and Ayhem calibrated badge printer and CCTV time synchronization.<br />
+          14:30 — Chahd coordinated with ISP to confirm bandwidth allocation; confirmed 50 Mbps
+          dedicated link active.<br />
+          18:00 — Yassine held final organizer sync-up with all leads; event timeline reviewed and
+          confirmed ready.<br /><br />
+          <strong>APR 30 (2 Days Pre-Event) — Day Before Dry Run</strong><br />
+          09:00 — Mohi noticed unusual power draw on server rack; Ahmed investigated and attributed
+          to additional load testing preparation.<br />
+          11:30 — ghof and Chahd confirmed all participant badges had arrived and were ready for
+          distribution.<br />
+          13:00 — Yassine and Ahmed performed final walk-through of all public areas and restricted
+          zones.<br />
+          15:45 — Ayhem conducted full CCTV playback test to confirm all cameras recording
+          correctly.<br />
+          19:00 — Volunteers released for evening; all systems powered down except monitoring
+          network.<br /><br />
+          <strong>MAY 03 (Incident Day) — Morning Aftermath</strong><br />
+          05:00 — Investigation team established in command center.<br />
+          06:30 — All volunteer personal items collected and logged; forensic analysis initiated on
+          all materials.<br />
+          08:00 — Chahd began forensic extraction of all server logs and CCTV buffers.<br />
+          10:15 — Mohi's phone located and secured; passcode identified as volunteer ID CC-006.<br />
+          12:00 — Event venue secured; all non-investigative personnel escorted off premises.<br />
+        </div>
+      </div>
+
+      <!-- VOLUNTEER SHIFT ROTATIONS -->
+      <div class="section">
+        <h2>⏰ VOLUNTEER SHIFT ROTATIONS — EVENT NIGHT (MAY 02-03)</h2>
+        <table class="vol-table">
+          <thead>
+            <tr>
+              <th>VOLUNTEER</th>
+              <th>ROLE</th>
+              <th>SHIFT START</th>
+              <th>SHIFT END</th>
+              <th>STATION/LOCATION</th>
+              <th>NOTES</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="name">YASSINE</td>
+              <td>Chair/Lead</td>
+              <td>18:00</td>
+              <td>04:30</td>
+              <td>Command Center + Roaming</td>
+              <td>On-site entire event; sponsor meeting 00-02 AM</td>
+            </tr>
+            <tr>
+              <td class="name">ghof</td>
+              <td>Coordinator</td>
+              <td>19:00</td>
+              <td>04:00</td>
+              <td>Coordination Room</td>
+              <td>Badge/access management; discovered anomaly at 02:00 AM</td>
+            </tr>
+            <tr>
+              <td class="name">AHMED</td>
+              <td>Infrastructure Lead</td>
+              <td>20:00</td>
+              <td>03:00</td>
+              <td>Server Room B + Monitoring</td>
+              <td>Deployed hotfix at 21:05; routine checks through incident window</td>
+            </tr>
+            <tr>
+              <td class="name">AYHEM</td>
+              <td>CCTV Operator</td>
+              <td>20:30</td>
+              <td>Interrupted 01:14</td>
+              <td>CCTV Control Station</td>
+              <td>Alert dispatched 01:14; returned 01:36; continued until 04:00</td>
+            </tr>
+            <tr>
+              <td class="name">CHAHD</td>
+              <td>Network Monitor</td>
+              <td>21:00</td>
+              <td>05:00</td>
+              <td>Network Operations</td>
+              <td>
+                Continuous monitoring; traffic analysis at 02:36 AM; assumed evidence lead
+                post-incident
+              </td>
+            </tr>
+            <tr class="critical">
+              <td class="name">MOHI</td>
+              <td>Network Technician</td>
+              <td>20:45</td>
+              <td>01:47</td>
+              <td>Server Room B + On-call</td>
+              <td class="red">
+                Photographed device at 01:28 AM; last location Server Room B at 01:47 AM
+              </td>
+            </tr>
+            <tr>
+              <td class="name">DARINE</td>
+              <td>Social Media</td>
+              <td>20:00</td>
+              <td>03:00</td>
+              <td>Main Hall + Roaming</td>
+              <td>Photo capture at 01:52 AM; 47 photos/stories throughout event</td>
+            </tr>
+            <tr>
+              <td class="name">ALA</td>
+              <td>Participant Assist</td>
+              <td>22:00</td>
+              <td>Ongoing</td>
+              <td>Main Hall + Participant areas</td>
+              <td>Acoustic witness; reported sounds 01:40-01:47 AM from fire exit area</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="annotation" style="margin-top: 12px">
+          <span class="label">&gt;_ NOTE</span>
+          Observational detail: Mohi's shift ended at 01:47 AM. Device photograph timestamp logged
+          at 01:28 AM in Server Room B. Timing details are under investigation for relevance to
+          incident window.
+        </div>
+      </div>
+
+      <!-- EQUIPMENT MAINTENANCE & SETUP LOGS -->
+      <div class="section">
+        <h2>🔧 EQUIPMENT MAINTENANCE & SETUP LOGS</h2>
+        <div class="document">
+          <strong>BADGE SYSTEM MAINTENANCE</strong><br />
+          APR 26, 11:00 — Badge printer firmware updated to v4.2.1; tested with 10 sample badges
+          (all passed).<br />
+          APR 29, 15:30 — Badge alert suppression protocol documented; only ROOT-level access can
+          suppress.<br />
+          MAY 01, 10:30 — Badge stock verification: 150 permanent badges, 50 temporary badges
+          printed; Hazem issued grey temporary (CC-007-TEMP).<br />
+          MAY 02, 20:15 — Badge alert system armed; live detection of unregistered badges enabled at
+          event start.<br /><br />
+          <strong>CAMERA & RECORDING SYSTEM MAINTENANCE</strong><br />
+          APR 24, 14:00 — All 12 cameras powered on and tested; recording buffers verified as
+          clean.<br />
+          APR 27, 10:30 — Time synchronization check across all 12 cameras; drift &lt;500ms
+          confirmed.<br />
+          APR 27, 15:00 — CAM-12 (3F fire exit) physical mount adjusted by volunteer; adjustment
+          logged but not acted upon.<br />
+          MAY 02, 19:30 — Recording buffers confirmed empty; live streaming to backup network
+          initiated.<br />
+          MAY 03, 04:00 — Forensic team notified of two buffer clears during incident window (CAM-01
+          and CAM-12).<br /><br />
+          <strong>NETWORK & POWER INFRASTRUCTURE</strong><br />
+          APR 22, 09:00 — UPS battery load test: 98% capacity confirmed; 4-hour runtime on full
+          load.<br />
+          APR 25, 16:00 — Fiber link to ISP confirmed: 50 Mbps uplink, 100 Mbps downlink; latency
+          &lt;15ms.<br />
+          APR 27, 11:00 — Emergency power procedures reviewed with all technical staff; backup
+          generator test scheduled for next month.<br />
+          MAY 02, 18:00 — Final network load test: 200 simultaneous connections tested; server load
+          34%.<br />
+        </div>
+      </div>
+
+      <!-- MORE RANDOM MOMENTS & MISHAPS -->
+      <div class="section">
+        <h2>🎲 ADDITIONAL RANDOM MOMENTS & MISHAPS — BUILDING REALISM</h2>
+        <div class="document">
+          <strong>PRE-EVENT RANDOM MOMENTS</strong><br />
+          APR 23, 08:15 — Mohi's car keys locked in parked car; security helped retrieve them with
+          slim jim.<br />
+          APR 24, 13:45 — Volunteer roster printed by ghof was 3 pages instead of 2; pages
+          reassembled in wrong order initially.<br />
+          APR 26, 16:30 — Ayhem realized the CCTV monitor refresh rate was set to 30Hz instead of
+          60Hz; adjusted without incident.<br />
+          APR 29, 10:00 — Coffee machine in volunteer room jammed; Yassine manually cleared paper
+          jam from internal tray.<br />
+          APR 30, 14:20 — A stray cat entered the venue through loading dock; facilities staff
+          gently escorted it out with treats.<br /><br />
+          <strong>EVENT NIGHT RANDOM MOMENTS</strong><br />
+          MAY 02, 19:30 — Registration table was missing a chair; Ahmed pulled one from nearby
+          office without delay.<br />
+          MAY 02, 21:45 — Participant complained Wi-Fi was slow; Chahd rebooted edge router; speed
+          returned to normal.<br />
+          MAY 02, 23:15 — Someone spilled coffee near the scoreboard display; Darine wiped it down
+          before photos.<br />
+          MAY 03, 00:45 — A participant asked for an extension cord; Yassine provided one from his
+          personal bag.<br />
+          MAY 03, 01:20 — Ayhem's chair squeaked loudly during quiet moment; he adjusted it with a
+          plastic shim from desk drawer.<br />
+          MAY 03, 02:50 — Chahd's email alert notification was left on; multiple notifications
+          chimed during quiet period; muted manually.<br />
+        </div>
+      </div>
+
+      <!-- COMMUNICATION COORDINATION NOTES -->
+      <div class="section">
+        <h2>💬 COMMUNICATION COORDINATION NOTES — SELECTED ENTRIES</h2>
+        <div class="document">
+          <strong>PRE-EVENT COORDINATION</strong><br />
+          APR 22, 16:00 — Yassine to Ahmed: "Is the power situation settled for the full event?"
+          Ahmed: "Yes, 100% UPS coverage + generator on standby."<br />
+          APR 25, 14:30 — Ahmed to Yassine: "Hazem's infrastructure access is finalized. He's our
+          tech lead now." Yassine: "Good. We needed someone who could move fast."<br />
+          APR 27, 15:15 — Ayhem to Yassine: "I saw someone in a grey hoodie adjusting one of the
+          basement cameras earlier. Is that normal?" Yassine: "Probably one of the tech volunteers
+          during setup. Check with Ahmed if something looks wrong."<br />
+          APR 30, 17:00 — ghof to all: "Final roster locked. 9 volunteers confirmed for event night.
+          Everyone on schedule."<br /><br />
+          <strong>EVENT NIGHT COORDINATION</strong><br />
+          MAY 03, 00:10 — Chahd to Yassine: "Network traffic normal so far. All systems green."<br />
+          MAY 03, 01:15 — Ayhem to Ahmed (via radio): "Power alert on Hall B. Going to check the
+          projectors." Ahmed: "OK, should be a ghost alert. Let me know."<br />
+          MAY 03, 01:35 — Ayhem to Ahmed: "Projectors are fine. No power fluctuation. Heading back
+          to monitoring station."<br />
+          MAY 03, 02:00 — ghof to Yassine (via message): "Badge log has a weird entry. Unregistered
+          badge accessed server room at 01:44. Let me investigate."<br />
+          MAY 03, 02:15 — ghof (follow-up message): "Might be a sensor glitch. Flag still seems odd
+          though."<br />
+          MAY 03, 03:14 — Yassine: (reading notification of ghof's message; distracted in sponsor
+          call; marked as read but no reply sent)<br />
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

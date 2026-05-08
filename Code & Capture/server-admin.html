@@ -320,7 +320,7 @@
           <span class="label">&gt;_ AHMED'S NOTE</span>
           Standard access log only shows registered badge swipes. I ran a full query including
           unregistered events — something the default UI doesn't surface. Found three unregistered
-          entries total across the night. All in the basement. All within Hazem's confirmed movement
+          entries total across the night. All in the basement. All within the same narrow movement
           windows. Also found: the badge alert suppression at 22:48 and the infrastructure panel
           commands. Sharing the raw output below.
         </div>
@@ -407,21 +407,21 @@
             <span class="action">— EXIT: SERVER_ROOM_B</span></span
           >
           <span class="log-line warn"
-            ><span class="ts">[01:55:00]</span><span class="user">HAZEM_COMP</span>
+            ><span class="ts">[01:55:00]</span><span class="user">AUTO_COMP</span>
             <span class="action"
               >— SCOREBOARD: flag_submit(challenge=04, value=CTF{r3v3rs3_3ng1n33r}) |
               AUTO_SCRIPT_DETECTED ⚠</span
             ></span
           >
           <span class="log-line warn"
-            ><span class="ts">[02:03:00]</span><span class="user">HAZEM_COMP</span>
+            ><span class="ts">[02:03:00]</span><span class="user">AUTO_COMP</span>
             <span class="action"
               >— SCOREBOARD: flag_submit(challenge=06, value=CTF{buff3r_0v3rfl0w}) |
               AUTO_SCRIPT_DETECTED ⚠</span
             ></span
           >
           <span class="log-line warn"
-            ><span class="ts">[02:11:00]</span><span class="user">HAZEM_COMP</span>
+            ><span class="ts">[02:11:00]</span><span class="user">AUTO_COMP</span>
             <span class="action"
               >— SCOREBOARD: flag_submit(challenge=08, value=CTF{sql_1nj3ct10n}) |
               AUTO_SCRIPT_DETECTED ⚠</span
@@ -440,9 +440,10 @@
           <span class="log-line critical"
             ><span class="ts">[03:11:09]</span><span class="user">ADMIN_HZ</span>
             <span class="action"
-              >— READ: coordinator_channel | MSG_ID: GHF-3311 | SENDER: GHOFRANE | CONTENT: badge
+              >— READ: coordinator_channel | MSG_ID: GHF-3311 | SENDER: redacted | CONTENT: badge
               anomaly</span
             ></span
+          >
           >
           <span class="log-line highlight"
             ><span class="ts">[03:14:07]</span><span class="user">YASSINE</span>
@@ -481,15 +482,15 @@
           >
         </div>
         <div class="flag">
-          ☠ UNREGISTERED_BADGE_0x7F3A APPEARS 3 TIMES — BOTH MURDER SCENES, EXACT WINDOWS. THIS IS
-          HAZEM'S CLONED BADGE.
+          ☠ UNREGISTERED_BADGE_0x7F3A APPEARS 3 TIMES — BOTH INCIDENT WINDOWS. THIS BADGE MAY BE A
+          CLONE.
         </div>
         <div class="flag amber">
-          ⚠ ALL 6 ADMIN_HZ COMMANDS EXECUTED FROM A SINGLE ACCOUNT — HAZEM'S PRE-EVENT CREDENTIALS
+          ⚠ ALL 6 ADMIN_HZ COMMANDS EXECUTED FROM A SINGLE ACCOUNT — PRE-EVENT CREDENTIALS WERE
           NEVER REVOKED
         </div>
         <div class="flag amber">
-          ⚠ AUTO_SCRIPT_DETECTED ON ALL HAZEM FLAG SUBMISSIONS — SEE FULL ANALYSIS IN NODE 08
+          ⚠ AUTO_SCRIPT_DETECTED ON ALL FLAG SUBMISSIONS — SEE FULL ANALYSIS IN NODE 08
         </div>
       </div>
 
@@ -508,7 +509,7 @@
           </div>
           <div class="device-field">
             <span class="key">Source badge (cloned from):</span
-            ><span class="val amber">GHOFRANE MABROUK — Badge ID 0x7F39</span>
+            ><span class="val amber">Badge ID 0x7F39</span>
           </div>
           <div class="device-field">
             <span class="key">Clone detection:</span
@@ -519,8 +520,8 @@
           <div class="device-field">
             <span class="key">Clone creation window:</span
             ><span class="val"
-              >PRE-EVENT SETUP — Hazem had physical access to Ghofrane's badge when coordinating
-              volunteer check-in</span
+              >PRE-EVENT SETUP — the account-holder had physical access to a volunteer badge during
+              check-in</span
             >
           </div>
           <div class="device-field">
@@ -529,16 +530,15 @@
           </div>
           <div class="device-field">
             <span class="key">Physical badge recovered:</span
-            ><span class="val red">NOT YET FOUND — HAZEM'S BELONGINGS NOT SEARCHED</span>
+            ><span class="val red">NOT YET FOUND — ACCOUNT-HOLDER BELONGINGS NOT SEARCHED</span>
           </div>
         </div>
         <div class="annotation">
           <span class="label">&gt;_ INVESTIGATOR NOTE — THE IRONY</span>
-          The badge Hazem used to enter the rooms where he committed both murders was cloned from
-          Ghofrane Mabrouk's own access card. The same woman who would later discover the badge log
-          anomaly, write his name in her notes, and die because of it — her badge opened both murder
-          scenes. Hazem cloned it during pre-event setup coordination, when handling volunteer
-          credentials was routine and unquestioned.
+          The badge associated with ADMIN_HZ was cloned from a volunteer access card. The later
+          discoverer of the badge log anomaly wrote the account name in her notes, and that same
+          badge opened both incident scenes. The clone was created during pre-event setup
+          coordination, when handling volunteer credentials was routine and unquestioned.
         </div>
       </div>
 
@@ -547,9 +547,9 @@
         <h2>💾 HARDWARE KEYLOGGER — RECOVERED DEVICE ANALYSIS</h2>
         <div class="annotation">
           <span class="label">&gt;_ DEVICE STATUS</span>
-          The hardware keylogger photographed by Mohi at 01:28 AM was recovered from Server Room B
-          during the 04:00 AM sweep. Mohi had not removed it — he photographed it and left to find
-          Hazem. The device was still in place. Chahd extracted its firmware for analysis.
+          The hardware keylogger photographed at 01:28 AM was recovered from Server Room B during
+          the 04:00 AM sweep. It had not been removed — the photo was taken and the room was left
+          for reporting. The device was still in place. Chahd extracted its firmware for analysis.
         </div>
         <div class="device-analysis">
           <h3>KEYLOGGER DEVICE — FORENSIC EXTRACTION</h3>
@@ -605,14 +605,14 @@
           same competition style, same challenge selection pattern, same firmware. Different name.
           This is the same person.<br /><br />
           <strong
-            >The name used at HackTN 2024 was different. But the photo on the old profile — that's
-            not the Hazem I know from the community. This person has been operating under borrowed
+            >The name used at HackTN 2024 was different. But the photo on the old profile doesn't
+            match the community contact I expected. This person has been operating under borrowed
             identities across multiple events.</strong
           >
         </div>
         <div class="flag amber">
-          ⚠ HAZEM IS USING A STOLEN CTF IDENTITY — FARES CONFIRMS HE IS NOT THE REAL HAZEM FROM THE
-          COMMUNITY
+          ⚠ THE HACKTN IDENTITY DOES NOT MATCH THE COMMUNITY PROFILE — FARES CONFIRMS THE PHOTO AND
+          NAME DO NOT ALIGN
         </div>
       </div>
 
@@ -621,10 +621,10 @@
         <h2>⚙️ SYSTEM ADMIN STATEMENT — AHMED</h2>
         <div class="statement">
           <span class="speaker">// AHMED — SYSTEM ADMIN — STATEMENT — 04:12 AM</span>
-          I granted Hazem admin access to the infrastructure panel on setup day — I think it was 3
-          or 4 days before the event. He was coordinating the volunteer tech team, handling server
-          configuration and cabling. Yassine introduced him to me directly. I had no reason to
-          question it.<br /><br />
+          I granted the account-holder admin access to the infrastructure panel on setup day — I
+          think it was 3 or 4 days before the event. He was coordinating the volunteer tech team,
+          handling server configuration and cabling. Yassine introduced him to me directly. I had no
+          reason to question it.<br /><br />
           The access was supposed to be temporary — setup-phase only. I forgot to revoke it. That's
           on me. I never revoked it after setup was complete, which means he had root-level access
           to the infrastructure panel during the entire event.<br /><br />
@@ -632,11 +632,11 @@
           unregistered events — I nearly couldn't process what I was seeing. He suppressed the badge
           alert before the event started. He cleared two camera buffers exactly when he needed them
           cleared. He generated the fake alert that pulled Ayhem away from the monitoring station.
-          He read Ghofrane's message three minutes before she died.<br /><br />
+          He read a coordinator message three minutes before the incident window.<br /><br />
           <strong
-            >He planned both murders before the event started. He knew exactly which cameras to
-            clear, which alerts to suppress, and how long he had between actions. He used the
-            infrastructure I gave him access to as a murder toolkit.</strong
+            >The pattern suggests pre-event planning. He knew exactly which cameras to clear, which
+            alerts to suppress, and how long he had between actions. He used the infrastructure I
+            gave him access to as a cover for manipulation.</strong
           >
         </div>
         <div class="flag">
@@ -685,7 +685,7 @@
               <td class="green">ACTIVE (AUTHORIZED)</td>
             </tr>
             <tr class="critical">
-              <td>ADMIN_HZ (HAZEM)</td>
+              <td>ADMIN_HZ (REDACTED)</td>
               <td class="red">ROOT</td>
               <td>AHMED</td>
               <td class="amber">4 DAYS PRE-EVENT</td>
@@ -703,8 +703,238 @@
           </tbody>
         </table>
         <div class="flag">
-          ⚠ HAZEM'S ROOT ACCESS WAS NEVER REVOKED. HE RETAINED FULL INFRASTRUCTURE CONTROL FROM
-          PRE-EVENT SETUP THROUGH BOTH MURDERS.
+          ⚠ THE ADMIN ACCOUNT'S ROOT ACCESS WAS NEVER REVOKED. IT RETAINED FULL INFRASTRUCTURE
+          CONTROL FROM PRE-EVENT SETUP THROUGH THE INCIDENT WINDOW.
+        </div>
+      </div>
+
+      <!-- ADDITIONAL ADMIN SNAPSHOTS -->
+      <div class="section">
+        <h2>🖥️ ADDITIONAL ADMIN SNAPSHOTS — MULTI-DAY</h2>
+        <div class="log-terminal">
+          <span class="log-line"
+            ><span class="ts">[APR 28 09:12]</span><span class="user">SYSTEM</span>
+            <span class="action"
+              >— BACKUP: full_config_backup.tar → /backups/2026-04-28 | STATUS: OK</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[APR 30 02:01]</span><span class="user">MAINT</span>
+            <span class="action"
+              >— RESTART: web_service (graceful) | REASON: package update</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[MAY 01 11:22]</span><span class="user">SYS</span>
+            <span class="action"
+              >— CRON: disk_cleanup → /var/log rotated | FREETIME: 03m</span
+            ></span
+          >
+          <span class="log-line warn"
+            ><span class="ts">[MAY 02 00:47]</span><span class="user">SSH</span>
+            <span class="action"
+              >— ATTEMPT: failed login from 203.0.113.55 | USER: root | ATTEMPTS: 3</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[MAY 02 13:10]</span><span class="user">BACKUP</span>
+            <span class="action"
+              >— DB SNAPSHOT: scoreboard_db → /backups/scoreboard_2026-05-02.sql | OK</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[MAY 02 21:05]</span><span class="user">DEPLOY</span>
+            <span class="action">— DEPLOY: scoreboard_hotfix_v1 → /srv/ctf | STATUS: OK</span></span
+          >
+          <span class="log-line highlight"
+            ><span class="ts">[MAY 03 01:29]</span><span class="user">ADMIN_HZ (redacted)</span>
+            <span class="action"
+              >— CMD: mount --bind /dev/shm /srv/ctf/tmp | NOTE: temp bind for script</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[MAY 03 01:35]</span><span class="user">SYSTEM</span>
+            <span class="action"
+              >— AUDIT: integrity_check(/srv/ctf) | RESULT: OK (files modified: 2)</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[MAY 03 02:45]</span><span class="user">MONITOR</span>
+            <span class="action"
+              >— ALERT: high_disk_io on /srv/ctf | PID: 4421 | ACTION: logged</span
+            ></span
+          >
+        </div>
+        <div class="annotation">
+          <span class="label">&gt;_ OBSERVATION</span>
+          Routine maintenance and backup activity is present across multiple days. A small number of
+          operations around 01:29–01:35 AM on May 03 coincide with the incident windows and should
+          be cross-referenced with physical access logs and camera captures.
+        </div>
+      </div>
+
+      <!-- UNRELATED MAINTENANCE & NOISE -->
+      <div class="section">
+        <h2>🔧 UNRELATED MAINTENANCE & NOISE</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>DATE</th>
+              <th>SERVICE</th>
+              <th>ENTRY</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>APR 26</td>
+              <td>DNS</td>
+              <td>TTL adjusted for mirror.example.local</td>
+              <td class="green">OK</td>
+            </tr>
+            <tr>
+              <td>APR 29</td>
+              <td>MAIL</td>
+              <td>Queue spike during promo email</td>
+              <td class="amber">DELAYED</td>
+            </tr>
+            <tr>
+              <td>MAY 01</td>
+              <td>SYSLOG</td>
+              <td>Large rotate due to verbose debug flag left on</td>
+              <td class="green">ROTATED</td>
+            </tr>
+            <tr>
+              <td>MAY 02</td>
+              <td>NETWORK</td>
+              <td>Switch port flapped — vendor team replaced patch cable</td>
+              <td class="green">RESOLVED</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="annotation">
+          <span class="label">&gt;_ NOTE</span>
+          These entries are routine infrastructure noise and are unlikely to be related to the
+          incident. They remain in logs to preserve realistic context for later cross-checks.
+        </div>
+      </div>
+
+      <!-- ADMIN SHIFT NOTES & RANDOM MOMENTS -->
+      <div class="section">
+        <h2>🗒️ ADMIN SHIFT NOTES & RANDOM MOMENTS</h2>
+        <div class="statement">
+          <span class="speaker">// AHMED — 02:50 AM</span>
+          Performed a manual integrity check after a deploy. Two files showed modification
+          timestamps inconsistent with package manifests — I made a note to pull them for
+          post-mortem.
+        </div>
+        <div class="statement">
+          <span class="speaker">// CHAHD — 03:00 AM</span>
+          Noticed unexpected mount in /srv/ctf/tmp — temporary bind present, unclear purpose. I did
+          not unmount; logged the PID and timestamp for forensics team.
+        </div>
+        <div class="statement">
+          <span class="speaker">// RANDOM — 03:20 AM</span>
+          On-call engineer reported a power blip in the northern rack; UPS handled failover and
+          services remained up. No impact recorded to database state.
+        </div>
+        <div class="annotation">
+          <span class="label">&gt;_ OBSERVATION</span>
+          These human notes capture small, plausible admin actions and observations. They are
+          intentionally non-conclusive: useful for investigation but not revealing on their own.
+        </div>
+      </div>
+
+      <!-- RELATED MULTI-DAY SERVER EVENTS -->
+      <div class="section">
+        <h2>📈 RELATED SERVER EVENTS — MULTI-DAY TIMELINE</h2>
+        <div class="log-terminal">
+          <span class="log-line"
+            ><span class="ts">[APR 24 08:03]</span><span class="user">SYSTEM</span>
+            <span class="action"
+              >— PROVISION: new_vm(analytics-01) | IMAGE: ubuntu-22.04 | STATUS: OK</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[APR 26 13:14]</span><span class="user">DEPLOY</span>
+            <span class="action">— DEPLOY: leaderboard_cache_v2 | STATUS: OK</span></span
+          >
+          <span class="log-line"
+            ><span class="ts">[APR 29 09:40]</span><span class="user">MONITOR</span>
+            <span class="action"
+              >— ALERT: latency_spike → edge-node-3 | DURATION: 00:02:12</span
+            ></span
+          >
+          <span class="log-line warn"
+            ><span class="ts">[MAY 01 20:12]</span><span class="user">MAINT</span>
+            <span class="action"
+              >— TASK: badge_printer_firmware_update | DOWNTIME: 00:10 | STATUS: OK</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[MAY 02 10:03]</span><span class="user">BACKUP</span>
+            <span class="action"
+              >— VERIFY: backup_integrity /backups/2026-05-02 | RESULT: OK</span
+            ></span
+          >
+          <span class="log-line highlight"
+            ><span class="ts">[MAY 03 01:28]</span><span class="user">MONITOR</span>
+            <span class="action"
+              >— NOTE: photo capture detected near server rack; operator photographed device</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[MAY 03 01:40]</span><span class="user">FORCE</span>
+            <span class="action"
+              >— LOCKDOWN: server_room_b | REASON: forensics sweep | STATUS: ENGAGED</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[MAY 04 09:12]</span><span class="user">FORNSICS</span>
+            <span class="action"
+              >— EXTRACT: keylogger_firmware → analysis_server | SIZE: 2.1MB</span
+            ></span
+          >
+        </div>
+        <div class="annotation">
+          <span class="label">&gt;_ NOTE</span>
+          These related server events show normal provisioning and maintenance interleaved with a
+          few forensic triggers on May 3. They are intentionally factual; any interpretation should
+          cross-reference camera and access logs.
+        </div>
+      </div>
+
+      <!-- RANDOM ADMIN MOMENTS -->
+      <div class="section">
+        <h2>☕ RANDOM ADMIN MOMENTS & HUMAN NOISE</h2>
+        <div class="log-terminal">
+          <span class="log-line"
+            ><span class="ts">[APR 27 16:02]</span><span class="user">AHMED</span>
+            <span class="action"
+              >— NOTE: left laptop in cafeteria for 10m while grabbing tools</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[APR 30 12:11]</span><span class="user">YASSINE</span>
+            <span class="action">— NOTE: asked infra to print extra volunteer badges</span></span
+          >
+          <span class="log-line"
+            ><span class="ts">[MAY 01 22:20]</span><span class="user">VOLUNTEER</span>
+            <span class="action"
+              >— NOTE: complained about cold coffee; unrelated to infra</span
+            ></span
+          >
+          <span class="log-line"
+            ><span class="ts">[MAY 03 04:05]</span><span class="user">ONCALL</span>
+            <span class="action"
+              >— NOTE: left voicemail for facilities about leftover catering</span
+            ></span
+          >
+        </div>
+        <div class="annotation">
+          <span class="label">&gt;_ NOTE</span>
+          Small human logs like these create texture and are intentionally non-actionable. Keep them
+          to preserve realism in the audit trail.
         </div>
       </div>
     </div>

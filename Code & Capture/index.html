@@ -75,7 +75,7 @@
         color: var(--green);
       }
       .logo span {
-        color: var(--red);
+        color: var(--amber);
       }
       .header-status {
         font-size: 0.7rem;
@@ -107,7 +107,7 @@
         font-size: clamp(2.5rem, 6vw, 5rem);
         letter-spacing: 8px;
         position: relative;
-        color: var(--green);
+        color: var(--amber);
         text-transform: uppercase;
       }
       .glitch::before,
@@ -118,12 +118,12 @@
         width: 100%;
       }
       .glitch::before {
-        color: #ff0040;
+        color: var(--amber);
         clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
         animation: glitch1 3s infinite linear;
       }
       .glitch::after {
-        color: #00f7ff;
+        color: #ffd86b;
         clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
         animation: glitch2 3s infinite linear;
       }
@@ -530,17 +530,17 @@
       </div>
 
       <div class="director-note fade-up delay-4">
-        <div class="speaker">// BROADCAST FROM: YASSINE — EVENT DIRECTOR — 04:15 AM</div>
+        <div class="speaker">// BROADCAST FROM: YASSINE — CHAIR — 04:15 AM</div>
         <p>
           I need everyone to stop what they're doing. Two people are dead. Mohi was found in Server
-          Room B at 03:52 AM. Ghofrane was found in the fire exit corridor on the 3rd floor at 03:41
-          AM. This is not a drill. This is not part of the event.<br /><br />
+          Room B at 03:52 AM. Gass was found in the fire exit corridor on the 3rd floor at 03:41 AM.
+          This is not a drill. This is not part of the event.<br /><br />
           Nobody leaves this building. The portals below contain every piece of evidence we've
           collected so far. Work through them. Find out what happened. I am cooperating fully with
           the investigation. I have nothing to hide.<br /><br />
           I want answers as badly as you do.
         </p>
-        <div class="signature">— Y.A. | Director, Code & Capture | IEEE CS FSM Student Branch</div>
+        <div class="signature">— Y.A. | Chair, Code & Capture | IEEE CS FSM Student Branch</div>
       </div>
     </section>
 
@@ -558,7 +558,7 @@
           <div class="portal-num">NODE 01</div>
           <div class="portal-name">MESSENGER LOGS</div>
           <div class="portal-desc">
-            Recovered group chats, private messages, and deleted communications. Ghofrane's final
+            Recovered group chats, private messages, and deleted communications. Gass's final
             message to Yassine. Aya & Chadi's coded exchanges. Side Story A fragments.
           </div>
           <span class="portal-status status-open">&gt; ACCESS GRANTED</span>
@@ -602,8 +602,8 @@
           <div class="portal-num">NODE 05</div>
           <div class="portal-name">IEEE ORGANIZER PORTAL</div>
           <div class="portal-desc">
-            Volunteer management system. Ghofrane Mabrouk's background flag report. Hazem's
-            inconsistent registration history. Yassine's forwarded email chain.
+            Volunteer management system. ghof's background flag report. Hazem's inconsistent
+            registration history. Yassine's forwarded email chain.
           </div>
           <span class="portal-status status-open">&gt; ACCESS GRANTED</span>
         </a>
@@ -624,8 +624,8 @@
           <div class="portal-num">NODE 07</div>
           <div class="portal-name">TABLET CACHE RECOVERY</div>
           <div class="portal-desc">
-            Ghofrane's wiped tablet — partially recovered. Reconstructed access log. A 4:12 voice
-            memo she recorded narrating her own findings. She says a name at 3:47.
+            Gass's wiped tablet — partially recovered. Reconstructed access log. A 4:12 voice memo
+            she recorded narrating her own findings. She says a name at 3:47.
           </div>
           <span class="portal-status status-open">&gt; PARTIAL RECOVERY</span>
         </a>
@@ -639,25 +639,6 @@
             minutes — inhuman precision. Automated scripts don't take bathroom breaks.
           </div>
           <span class="portal-status status-open">&gt; ACCESS GRANTED</span>
-        </a>
-
-        <a
-          href="evidence-board.html"
-          class="portal-card"
-          style="border-color: rgba(0, 255, 65, 0.5)"
-        >
-          <div class="portal-icon">🎯</div>
-          <div class="portal-num">FINAL NODE</div>
-          <div class="portal-name">EVIDENCE BOARD</div>
-          <div class="portal-desc">
-            Submit your conclusions. 10 questions. Identify the killer, the victims, the decoy, the
-            liar, both side stories, and the evidence that breaks everything open.
-          </div>
-          <span
-            class="portal-status status-open"
-            style="color: var(--amber); border-color: rgba(255, 183, 0, 0.3)"
-            >&gt; SUBMIT ANSWERS</span
-          >
         </a>
       </div>
     </section>

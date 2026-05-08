@@ -192,7 +192,7 @@
                   <span class="app-icon">📷</span>CAMERA<br />⚠ NEW
                 </div>
                 <div class="phone-app"><span class="app-icon">🗺️</span>MAPS</div>
-                <div class="phone-app"><span class="app-icon">⚙️</span>SETTINGS</div>
+                <div class="phone-app"><span class="app-icon">📝</span>NOTES</div>
               </div>
               <div
                 style="
@@ -214,25 +214,275 @@
       <div class="evidence-reveal" id="evidenceReveal">
         <h2>📷 PHOTO EVIDENCE UNLOCKED</h2>
         <p>
-          Mohi's phone contains one photo taken at <strong>01:28:14 AM</strong> — 19 minutes before
-          his death. The photo shows the interior of Server Room B — specifically the USB hub on the
-          primary competition server. A small device is visible plugged between ports 3 and 4.
+          Mohi's phone contains one photo taken at <strong>01:28:14 AM</strong> during the pre-
+          incident window. The photo shows the interior of Server Room B — specifically the USB hub
+          on the primary competition server. A small device is visible plugged between ports 3 and
+          4.
         </p>
         <p>
-          This is a <strong>hardware keylogger</strong>. The photo timestamp places it 19 minutes
-          before Mohi's death, confirming his discovery preceded the murder. He took this photo,
-          then immediately went to find Hazem.
+          This appears to be an <strong>unauthorized USB device</strong>. The photo timestamp places
+          it in the same pre-incident window. He took this photo, then immediately went to report
+          what he found.
         </p>
         <div class="flag amber">
           📷 PHOTO METADATA: 01:28:14 AM | LOCATION: SERVER ROOM B | DEVICE: MOHI'S PERSONAL PHONE
         </div>
         <div class="flag">
-          ⚠ MOHI FOUND THE DEVICE. MOHI TOLD HAZEM. HAZEM KILLED HIM 16 MINUTES LATER.
+          ⚠ MOHI CAPTURED THE DEVICE IN A PHOTO. THE INVESTIGATION CONNECTS THIS IMAGE TO THE
+          INCIDENT WINDOW.
         </div>
         <p style="margin-top: 12px">
           Cross-reference: The keylogger firmware signature (KL-DAEMON-v3, BATCH: PRIV-INT-07) found
-          in NODE 04 matches this device. Fares recognizes this firmware from HackTN 2024. This is
-          the same operator.
+          in NODE 04 matches this device. Fares recognizes this firmware family from HackTN 2024.
+          The pattern is consistent with earlier incident reports.
+        </p>
+        <div
+          style="margin-top: 16px; border-top: 1px solid rgba(0, 255, 65, 0.1); padding-top: 16px"
+        >
+          <h3
+            style="
+              font-size: 0.75rem;
+              letter-spacing: 3px;
+              color: var(--green-dim);
+              margin-bottom: 10px;
+            "
+          >
+            DEVICE LOGS — SELECTED ENTRIES
+          </h3>
+          <p>
+            <strong>APR 27, 09:18 AM</strong> — Screen lock changed from 4-digit pattern to PIN.
+            Notes app created: "conference prep".<br />
+            <strong>APR 30, 18:42 PM</strong> — Missed call from Ahmed; voicemail left about server
+            room cable labeling.<br />
+            <strong>MAY 01, 11:06 AM</strong> — Wi-Fi toggled off for 3 minutes; device reconnected
+            on guest network. Low battery warning dismissed twice.<br />
+            <strong>MAY 02, 23:57 PM</strong> — Voice memo recorded for 14 seconds; audio file
+            exists but is corrupted.
+            <br />
+            <strong>MAY 03, 01:12 AM</strong> — Camera opened from lock screen; first shot taken
+            toward the rack aisle.
+          </p>
+        </div>
+        <div
+          style="margin-top: 14px; border-top: 1px solid rgba(0, 255, 65, 0.1); padding-top: 16px"
+        >
+          <h3
+            style="
+              font-size: 0.75rem;
+              letter-spacing: 3px;
+              color: var(--green-dim);
+              margin-bottom: 10px;
+            "
+          >
+            RECENT MESSAGES — HIGHLIGHTS
+          </h3>
+          <p>
+            <strong>MAY 02, 20:41</strong> — From Ahmed: "Power and cooling look fine. If you pass
+            by server room B, check the left rack fan."<br />
+            <strong>MAY 02, 23:10</strong> — From ghof: "Volunteer count is stable. Please keep an
+            eye on badge scans after midnight."<br />
+            <strong>MAY 03, 01:33</strong> — From Ayhem: "Camera feed is weirdly soft on CAM-12.
+            Might be angle drift again."<br />
+            <strong>MAY 03, 01:47</strong> — Outgoing draft message never sent: "Need to show you
+            something in server room B."<br />
+          </p>
+        </div>
+        <div
+          style="margin-top: 14px; border-top: 1px solid rgba(0, 255, 65, 0.1); padding-top: 16px"
+        >
+          <h3
+            style="
+              font-size: 0.75rem;
+              letter-spacing: 3px;
+              color: var(--green-dim);
+              margin-bottom: 10px;
+            "
+          >
+            RANDOM DEVICE MOMENTS
+          </h3>
+          <p>
+            <strong>APR 24</strong> — Alarm volume lowered in a hurry after a test notification went
+            off during class.<br />
+            <strong>APR 29</strong> — Calculator app opened and closed three times during a budget
+            discussion.<br />
+            <strong>MAY 01</strong> — A contact named "Mina" was pinned and then unpinned within 2
+            minutes.<br />
+            <strong>MAY 02</strong> — Battery reached 7%, then phone was plugged into a portable
+            charger at registration.<br />
+            <strong>MAY 03</strong> — One unread note remained at the top of the list: "return badge
+            after setup".
+          </p>
+        </div>
+        <div
+          style="margin-top: 14px; border-top: 1px solid rgba(0, 255, 65, 0.1); padding-top: 16px"
+        >
+          <h3
+            style="
+              font-size: 0.75rem;
+              letter-spacing: 3px;
+              color: var(--green-dim);
+              margin-bottom: 10px;
+            "
+          >
+            CALLS & DRAFTS — SELECTED FRAGMENTS
+          </h3>
+          <p>
+            <strong>APR 22, 17:04</strong> — Missed call from "Yassine"; voicemail length 9 seconds,
+            message cut off by ambient noise.<br />
+            <strong>APR 25, 13:18</strong> — Drafted text: "Badge check done, moving to cable
+            labels." Not sent.<br />
+            <strong>APR 27, 16:09</strong> — Received short call from Ahmed; duration 21 seconds;
+            speakerphone used briefly.<br />
+            <strong>MAY 02, 19:44</strong> — Voice note folder opened, three recordings appear, two
+            deleted later the same evening.<br />
+            <strong>MAY 03, 00:58</strong> — Draft message to unknown contact: "I found something in
+            the rack." Not sent.
+          </p>
+        </div>
+        <div
+          style="margin-top: 14px; border-top: 1px solid rgba(0, 255, 65, 0.1); padding-top: 16px"
+        >
+          <h3
+            style="
+              font-size: 0.75rem;
+              letter-spacing: 3px;
+              color: var(--green-dim);
+              margin-bottom: 10px;
+            "
+          >
+            APP ACTIVITY — BACKGROUND NOISE
+          </h3>
+          <p>
+            <strong>APR 23</strong> — Calendar alert: "bring extension cable" set for 18:30.<br />
+            <strong>APR 26</strong> — Map app briefly pinned the venue entrance, then closed.<br />
+            <strong>APR 30</strong> — Notes app toggled between "gear list" and "coffee" twice
+            during the afternoon.<br />
+            <strong>MAY 01</strong> — Battery saver mode enabled at 9% and automatically disabled
+            after charging.<br />
+            <strong>MAY 02</strong> — Camera flash tested once, then turned off immediately.
+          </p>
+        </div>
+        <div
+          style="margin-top: 14px; border-top: 1px solid rgba(0, 255, 65, 0.1); padding-top: 16px"
+        >
+          <h3
+            style="
+              font-size: 0.75rem;
+              letter-spacing: 3px;
+              color: var(--green-dim);
+              margin-bottom: 10px;
+            "
+          >
+            VOICE MEMOS & QUICK THOUGHTS
+          </h3>
+          <p>
+            <strong>APR 24, 07:16</strong> — 6-second voice memo: background fan noise, one clear
+            word, then cutoff.<br />
+            <strong>APR 28, 21:42</strong> — Voice memo titled "setup" saved but empty; likely
+            accidental trigger.<br />
+            <strong>MAY 01, 12:08</strong> — Notes app entry: "find charger before closing
+            doors".<br />
+            <strong>MAY 02, 17:55</strong> — Voice memo deleted from trash immediately after
+            listening.<br />
+            <strong>MAY 03, 00:41</strong> — Draft note: "if the rack is warm, check the lower cable
+            run".
+          </p>
+        </div>
+        <div
+          style="margin-top: 14px; border-top: 1px solid rgba(0, 255, 65, 0.1); padding-top: 16px"
+        >
+          <h3
+            style="
+              font-size: 0.75rem;
+              letter-spacing: 3px;
+              color: var(--green-dim);
+              margin-bottom: 10px;
+            "
+          >
+            UNRELATED PHONE NOISE
+          </h3>
+          <p>
+            <strong>APR 22</strong> — Calculator history cleared after a quick budget check.<br />
+            <strong>APR 25</strong> — Wallpaper changed once, then switched back to default dark
+            theme.<br />
+            <strong>APR 29</strong> — Nearby Bluetooth device named "SPEAKER-2" appeared for 4
+            minutes, then disappeared.<br />
+            <strong>MAY 01</strong> — Screenshot of a sandwich order accidentally captured and
+            deleted.<br />
+            <strong>MAY 02</strong> — Screen brightness maxed for a hallway photo, then returned to
+            32%.
+          </p>
+        </div>
+      </div>
+
+      <div class="evidence-reveal show" style="margin-top: 24px; display: block">
+        <h2>🗂️ DEVICE HISTORY — CONTEXT SNAPSHOTS</h2>
+        <p>
+          The device also contains several unrelated entries that help place it in time without
+          over-explaining the incident. They show ordinary use across different days: meeting notes,
+          missed calls, battery warnings, and a few rushed messages during event setup.
+        </p>
+        <p>
+          <strong>APR 23, 19:20</strong> — Photo of venue map with a handwritten circle around the
+          server room corridor.<br />
+          <strong>APR 26, 08:11</strong> — Reminder set for badge pickup and camera check.<br />
+          <strong>APR 28, 22:05</strong> — Screenshot of a task list: "charge battery, print roster,
+          confirm cable labels".<br />
+          <strong>MAY 02, 18:50</strong> — Short message draft: "I’ll swing by after setup."<br />
+          <strong>MAY 03, 01:29</strong> — Camera roll shows motion blur from a hurried walk.
+        </p>
+        <p style="margin-top: 12px">
+          <strong>APR 24, 21:44</strong> — Screenshot of a chat about last-minute badge stock
+          changes.<br />
+          <strong>APR 27, 09:41</strong> — Reminder saved: "recheck corridor sign near basement
+          stairs".<br />
+          <strong>APR 29, 17:05</strong> — Photo of a USB cable bundle labeled with colored tape.<br />
+          <strong>MAY 01, 23:12</strong> — Unread message from an unknown number; preview clipped to
+          "set the...".<br />
+          <strong>MAY 02, 22:31</strong> — Screenshot of battery level at 14% with charger plugged
+          in.
+        </p>
+        <p style="margin-top: 12px">
+          <strong>APR 23, 08:33</strong> — Wake-up alarm snoozed twice, then dismissed.<br />
+          <strong>APR 26, 19:58</strong> — Photo of cable labels laid out on a table; one label
+          missing.<br />
+          <strong>APR 30, 09:14</strong> — Reminder about lunch delivery for volunteers.<br />
+          <strong>MAY 02, 21:06</strong> — Screenshot of badge app showing all systems online.<br />
+          <strong>MAY 03, 01:36</strong> — Gallery entry: blurred hallway lights and a half-open
+          door.
+        </p>
+        <p style="margin-top: 12px">
+          <strong>APR 22, 14:06</strong> — Quick memo: "check spare charger in backpack".<br />
+          <strong>APR 24, 12:19</strong> — Lunch photo with a folded program note in frame.<br />
+          <strong>APR 25, 20:33</strong> — Wi-Fi toggled off for 18 seconds while testing hotspot.
+          <br />
+          <strong>APR 27, 18:26</strong> — Drafted reminder: "move extension reels away from
+          entrance".<br />
+          <strong>APR 29, 09:55</strong> — Screenshot of a meeting reminder that was never
+          dismissed.<br />
+          <strong>MAY 01, 07:48</strong> — Photo of a badge on a desk next to a coffee cup.
+        </p>
+        <p style="margin-top: 12px">
+          <strong>APR 23, 22:11</strong> — Short video clip of the venue lobby lights cycling on.
+          <br />
+          <strong>APR 26, 13:02</strong> — Notes app list added: "water, lanyard, USB-C, tape".<br />
+          <strong>APR 28, 16:40</strong> — Contact search for "Mina" repeated once, then cleared.<br />
+          <strong>MAY 02, 10:24</strong> — Screenshot of a map route from registration table to the
+          server corridor.<br />
+          <strong>MAY 03, 00:49</strong> — Camera roll shows one close-up of a door latch and a
+          blurred sleeve.
+        </p>
+        <p style="margin-top: 12px">
+          <strong>APR 24, 18:07</strong> — Battery saver automatically turned off after charging.
+          <br />
+          <strong>APR 27, 11:58</strong> — App switcher shows notes, camera, and maps open in quick
+          succession.<br />
+          <strong>APR 30, 22:41</strong> — A shared calendar invite was accepted, then archived.
+          <br />
+          <strong>MAY 01, 16:55</strong> — Screenshot of volunteer badge layout; one badge cropped
+          out of frame.<br />
+          <strong>MAY 02, 23:06</strong> — Unread message preview: "racks are too warm, fix the fan"
+          from an unnamed contact.
         </p>
       </div>
     </div>
@@ -252,7 +502,7 @@
             <span class="detail">Small black device — USB pass-through</span><br />
             <span class="detail">Between standard USB connections</span><br />
             <span style="color: var(--red); font-size: 0.85rem; margin-top: 8px; display: block"
-              >HARDWARE KEYLOGGER</span
+              >FOREIGN USB DEVICE</span
             >
           </div>
         </div>
@@ -263,7 +513,7 @@
           <span>Flash:</span> OFF — ambient server light only<br />
           <span class="key-line">Firmware visible on device:</span>
           <span style="color: var(--red)">KL-DAEMON-v3 // BATCH: PRIV-INT-07</span><br />
-          <span>Notes:</span> Photo taken 19 minutes before estimated time of death
+          <span>Notes:</span> Photo taken during the pre-incident window
         </div>
       </div>
     </div>

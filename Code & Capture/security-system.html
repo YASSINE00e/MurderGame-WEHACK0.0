@@ -424,7 +424,7 @@
               <div class="cam-detail danger">BUFFER CLEARED 01:30–02:00 AM</div>
               <div class="cam-detail">
                 Covers Server Room B entrance. Clear command issued from infrastructure panel at
-                01:30:02 AM. This is the primary murder scene camera.
+                01:30:02 AM. This is a primary incident camera.
               </div>
             </div>
           </div>
@@ -465,8 +465,9 @@
               <div class="cam-name">CAM-12 — 3F FIRE EXIT CORRIDOR</div>
               <div class="cam-detail danger">BUFFER CLEARED 03:10–03:25 AM</div>
               <div class="cam-detail">
-                Second murder scene camera. Clear command issued at 03:10:44 AM. The angle was also
-                adjusted 2 days before the event — away from the corridor floor. Ghofrane died here.
+                Second incident camera. Clear command issued at 03:10:44 AM. The angle was also
+                adjusted 2 days before the event — away from the corridor floor. A victim was found
+                in this area.
               </div>
             </div>
           </div>
@@ -485,9 +486,9 @@
               <div class="cam-name">CAM-03 — MAIN COMPETITION HALL</div>
               <div class="cam-detail green">OPERATIONAL — CONTINUOUS RECORDING</div>
               <div class="cam-detail">
-                Confirms Hazem at his terminal at various timestamps. But cross-reference with
-                scoreboard audit (NODE 08) — flag submission automation means "being at the
-                terminal" doesn't prove he was typing.
+                Records show activity at a terminal associated with the admin account at various
+                timestamps. Cross-reference with scoreboard audit (NODE 08) — automated flag
+                submissions mean terminal presence alone does not prove active input.
               </div>
             </div>
           </div>
@@ -506,8 +507,9 @@
               <div class="cam-name">CAM-05 — MAIN ENTRANCE</div>
               <div class="cam-detail green">OPERATIONAL — NO EXTERNAL EXIT AFTER 22:00</div>
               <div class="cam-detail">
-                Confirms killer never left the building. This is an inside job. All participants and
-                staff who entered before 22:00 are still in the building at 05:00 AM.
+                No external exit detected after 22:00 — this indicates the perpetrator likely
+                remained inside during the incident window. Participants and staff who entered
+                before 22:00 appear present at 05:00 AM.
               </div>
             </div>
           </div>
@@ -555,60 +557,60 @@
                 <td class="time">MAY 02 — 22:48:03</td>
                 <td>SUPPRESS_ALERT(badge_unregistered)</td>
                 <td>DOOR_SYSTEM_ALL</td>
-                <td class="red">ADMIN_HZ [HAZEM PRE-EVENT]</td>
+                <td class="red">ADMIN_HZ (redacted)</td>
                 <td class="red">EXECUTED</td>
               </tr>
               <tr class="critical-row">
                 <td class="time">MAY 03 — 01:30:02</td>
                 <td>CLEAR_BUFFER(cam_id=01)</td>
                 <td>CAM-01 BASEMENT</td>
-                <td class="red">ADMIN_HZ [HAZEM PRE-EVENT]</td>
+                <td class="red">ADMIN_HZ (redacted)</td>
                 <td class="red">EXECUTED</td>
               </tr>
               <tr>
                 <td class="time">MAY 03 — 01:32:17</td>
                 <td>ADJUST_ANGLE(cam_id=07, delta=-12)</td>
                 <td>CAM-07 STAIRWELL</td>
-                <td class="amber">ADMIN_HZ</td>
+                <td class="amber">ADMIN_HZ (redacted)</td>
                 <td class="amber">PARTIAL — ANGLE ONLY</td>
               </tr>
               <tr>
                 <td class="time">MAY 03 — 01:14:55</td>
                 <td>TRIGGER_ALERT(zone=HallB, type=power)</td>
                 <td>AYHEM_DEVICE</td>
-                <td class="red">ADMIN_HZ</td>
+                <td class="red">ADMIN_HZ (redacted)</td>
                 <td class="red">EXECUTED — AYHEM DISPATCHED</td>
               </tr>
               <tr class="critical-row">
                 <td class="time">MAY 03 — 03:10:44</td>
                 <td>CLEAR_BUFFER(cam_id=12)</td>
                 <td>CAM-12 3F EXIT</td>
-                <td class="red">ADMIN_HZ</td>
+                <td class="red">ADMIN_HZ (redacted)</td>
                 <td class="red">EXECUTED</td>
               </tr>
               <tr>
                 <td class="time">MAY 03 — 03:11:09</td>
                 <td>READ_CHANNEL(channel=coordinator_main)</td>
                 <td>COORDINATOR MSGS</td>
-                <td class="red">ADMIN_HZ</td>
-                <td class="red">EXECUTED — GHOFRANE'S MSG READ</td>
+                <td class="red">ADMIN_HZ (redacted)</td>
+                <td class="red">EXECUTED — COORDINATOR MESSAGE ACCESSED</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="annotation" style="margin-top: 16px">
           <span class="label">&gt;_ CRITICAL FINDING — AHMED'S ANALYSIS</span>
-          ALL six commands originate from the same admin account: ADMIN_HZ — Hazem's pre-event admin
-          credentials granted by Ahmed on Nov 29 for "infrastructure setup." Ahmed confirms he never
-          revoked these credentials after setup was complete. Hazem retained admin access through
-          the entire event. He used this access to: suppress badge alerts, clear two camera buffers,
-          manipulate a camera angle, generate a fake alert to remove Ayhem from his post, and
-          monitor the coordinator channel — where he saw Ghofrane's message about the badge anomaly
-          3 minutes before she was killed.
+          ALL six commands originate from the same admin account: ADMIN_HZ (redacted) — pre-event
+          admin credentials granted during setup. Ahmed confirms he never revoked these credentials
+          after setup was complete. The account retained admin access through the event. The account
+          was used to: suppress badge alerts, clear two camera buffers, manipulate a camera angle,
+          generate a fake alert to remove an operator from post, and monitor the coordinator channel
+          — where a coordinator message about a badge anomaly was accessed approximately 3 minutes
+          before an incident window.
         </div>
         <div class="flag">
-          ⚠ THE SAME ADMIN ACCOUNT EXECUTED ALL COVER-UP COMMANDS. BOTH CAMERA BUFFER CLEARS
-          DIRECTLY PRECEDE BOTH MURDERS.
+          ⚠ THE SAME ADMIN ACCOUNT EXECUTED THE COVER-UP COMMANDS. CAMERA BUFFER CLEARS DIRECTLY
+          PRECEDE RECORDED INCIDENT WINDOWS.
         </div>
       </div>
 
@@ -659,18 +661,15 @@
               partially cut off but posture, hoodie, and partial badge lanyard are visible.
               <br /><br />
               The badge lanyard shows a <strong>GUEST-VOLUNTEER label in yellow</strong>.
-              Cross-referenced with the volunteer roster from NODE 05: only three people received
-              guest-volunteer badges. Two are confirmed elsewhere at this time. The third:
-              <strong>Hazem.</strong> <br /><br />
-              Timestamp is 01:52:34 AM —
-              <strong>5 minutes and 34 seconds after Mohi's estimated time of death.</strong> Hazem
-              is walking away from the scene.
+              Cross-referenced with the volunteer roster from NODE 05: one roster entry links to
+              ADMIN_HZ (redacted). Timestamp is 01:52:34 AM — approximately 5½ minutes after the
+              estimated time of death. The person is walking away from the scene.
             </p>
           </div>
         </div>
         <div class="flag">
-          ⚠ DARINE'S PHOTO + RAHMA'S VENDING MACHINE TIMESTAMP + ALA'S TESTIMONY = HAZEM'S MOVEMENT
-          CONFIRMED AT THE SCENE
+          ⚠ DARINE'S PHOTO + RAHMA'S TIMESTAMP + ALA'S TESTIMONY = MOVEMENT AT THE SCENE
+          CORROBORATED BY PHOTOGRAPHY AND TIMING
         </div>
       </div>
 
@@ -703,10 +702,317 @@
         <div class="annotation">
           <span class="label">&gt;_ INVESTIGATOR NOTE</span>
           The CAM-12 physical angle adjustment happened during pre-event setup — the same period
-          Hazem had legitimate volunteer access to the venue. He prepared both murders days in
-          advance: the modified electrical cable in Server Room B, the camera angle on the 3rd floor
-          fire exit corridor, and the digital infrastructure panel access with suppressed alerts.
-          This was not impulsive. This was planned.
+          when the rostered account-holder associated with ADMIN_HZ (redacted) had volunteer access
+          to the venue. These preparatory actions (modified cable, camera angle adjustment, and
+          retained admin access) are consistent with coordinated pre-event system manipulation;
+          further corroboration is required before drawing conclusions about motive or intent.
+        </div>
+      </div>
+
+      <!-- MULTI-DAY ACCESS ADDENDUM -->
+      <div class="evidence-block">
+        <h2>🗓️ MULTI-DAY ACCESS ADDENDUM — RELATED SYSTEM EVENTS</h2>
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>DATE / TIME</th>
+              <th>CAMERA / PANEL</th>
+              <th>EVENT</th>
+              <th>NOTES</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="time">APR 30 — 18:12</td>
+              <td>CAM-03 / MAIN HALL</td>
+              <td>SHORT POWER DROP</td>
+              <td class="amber">Recovered after 9 seconds. No footage lost.</td>
+            </tr>
+            <tr>
+              <td class="time">APR 30 — 18:17</td>
+              <td>ACCESS PANEL</td>
+              <td>BADGE RESET TEST</td>
+              <td class="green">Maintenance only. Request closed.</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 01 — 21:05</td>
+              <td>CAM-07 / STAIRWELL</td>
+              <td>ANGLE CHECK</td>
+              <td class="amber">Manual pan verified; no incident recorded.</td>
+            </tr>
+            <tr class="highlight-row">
+              <td class="time">MAY 02 — 09:42</td>
+              <td>CAM-01 / BASEMENT</td>
+              <td>BUFFER TEST</td>
+              <td class="red">Dry run on recording buffer. No alarms.</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 02 — 14:18</td>
+              <td>ACCESS PANEL</td>
+              <td>GUEST BADGE PRINT</td>
+              <td class="green">Three temporary badges issued for speakers.</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 03 — 01:14</td>
+              <td>CAM-CONTROL / AYHEM</td>
+              <td>FAKE ALERT</td>
+              <td class="red">Operator dispatched away from desk.</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 03 — 03:10</td>
+              <td>CAM-12 / EXIT</td>
+              <td>BUFFER CLEAR</td>
+              <td class="red">Recording removed during incident window.</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="annotation" style="margin-top: 16px">
+          <span class="label">&gt;_ OBSERVATION</span>
+          The same account touched the system on several different days, but not every action is
+          connected to the murder sequence. Some entries are routine maintenance, some are simple
+          checks, and a few are just noise in the log. The useful part is the pattern: small camera
+          changes before the event, then the real buffer clears on the night of the incident.
+        </div>
+      </div>
+
+      <!-- UNRELATED RANDOM EVENTS -->
+      <div class="evidence-block">
+        <h2>📡 UNRELATED RANDOM EVENTS — SYSTEM NOISE ARCHIVE</h2>
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>DATE / TIME</th>
+              <th>SOURCE</th>
+              <th>ENTRY</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="time">APR 28 — 07:10</td>
+              <td>FRONT DESK</td>
+              <td>Printer jammed during badge sticker batch</td>
+              <td class="green">RESOLVED</td>
+            </tr>
+            <tr>
+              <td class="time">APR 28 — 12:33</td>
+              <td>PARKING GATE</td>
+              <td>Gate opened twice for the same van</td>
+              <td class="amber">FOLLOW-UP LOGGED</td>
+            </tr>
+            <tr class="highlight-row">
+              <td class="time">APR 29 — 19:04</td>
+              <td>LOBBY CAM</td>
+              <td>Umbrella left by reception desk</td>
+              <td class="green">COLLECTED BY OWNER</td>
+            </tr>
+            <tr>
+              <td class="time">APR 30 — 08:21</td>
+              <td>CAFETERIA</td>
+              <td>Microwave timer stuck at 02:00</td>
+              <td class="green">REPLACED</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 01 — 17:58</td>
+              <td>ELEVATOR A</td>
+              <td>Button panel wiped with sanitizer</td>
+              <td class="amber">NO DAMAGE</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 02 — 11:44</td>
+              <td>MAIN HALL</td>
+              <td>Vendor asked for directions to the nearest outlet</td>
+              <td class="green">INFO ONLY</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 03 — 00:08</td>
+              <td>STAFF ROOM</td>
+              <td>Missing pen returned with a note: "borrowed, sorry"</td>
+              <td class="green">CLOSED</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="annotation" style="margin-top: 16px">
+          <span class="label">&gt;_ NOTE</span>
+          These entries are unrelated to the homicide file and are kept here as realistic system
+          background. They create the feel of a live security archive without revealing any story
+          answer.
+        </div>
+      </div>
+
+      <!-- ADDITIONAL INCIDENT SNAPSHOTS -->
+      <div class="evidence-block">
+        <h2>📼 ADDITIONAL INCIDENT SNAPSHOTS — NIGHT OF EVENT</h2>
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>DATE / TIME</th>
+              <th>CAMERA</th>
+              <th>SNAPSHOT</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="time">MAY 02 — 21:47</td>
+              <td>CAM-04 / SIDE CORRIDOR</td>
+              <td>Two figures cross frame; one carrying a small backpack</td>
+              <td class="amber">AMBIGUOUS</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 02 — 22:50</td>
+              <td>CAM-03 / MAIN HALL</td>
+              <td>Participant leaves badge on table; retrieves it later</td>
+              <td class="green">MINOR</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 02 — 23:58</td>
+              <td>CAM-02 / STORAGE</td>
+              <td>Brief motion at edge of frame; glare obstructs detail</td>
+              <td class="green">NO CLEAR IDENT</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 03 — 00:20</td>
+              <td>CAM-09 / TECH LAB</td>
+              <td>Toolbox moved between shelves during unscheduled interval</td>
+              <td class="amber">FOLLOW-UP</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 03 — 01:51</td>
+              <td>CAM-07 / STAIRWELL</td>
+              <td>Figure in hoodie passes; face not visible in frame edge</td>
+              <td class="amber">PARTIAL</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 03 — 02:05</td>
+              <td>CAM-03 / MAIN HALL</td>
+              <td>Door held open briefly by staff member</td>
+              <td class="green">MINOR</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 03 — 02:58</td>
+              <td>CAM-12 / 3F EXIT</td>
+              <td>Person seen adjusting lanyard; hood up</td>
+              <td class="amber">UNCERTAIN</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 03 — 03:05</td>
+              <td>CAM-12 / 3F EXIT</td>
+              <td>Figure moves away from exit; partial silhouette</td>
+              <td class="amber">PARTIAL</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="annotation" style="margin-top: 12px">
+          <span class="label">&gt;_ OBSERVATION</span>
+          These snapshots provide context but remain ambiguous. None alone proves specific intent;
+          they are intended to guide cross-reference with access logs, badge records, and photo
+          archives.
+        </div>
+      </div>
+
+      <!-- OPERATOR SHIFT NOTES -->
+      <div class="evidence-block">
+        <h2>📝 OPERATOR SHIFT NOTES — RANDOM MOMENTS</h2>
+        <div class="operator-report">
+          <span class="speaker">// SHIFT — AYHEM — 00:55 AM</span>
+          Noted intermittent frame drop on CAM-02 at 00:54:12. Rebooted stream; confirmed full
+          recording resumed by 00:55:03. Logged as transient network glitch. No physical
+          intervention observed in room.
+        </div>
+        <div class="operator-report">
+          <span class="speaker">// SHIFT — LINA — 02:12 AM</span>
+          Maintenance crew passed through storeroom without access badge swipe. Said they were on
+          "urgent coffee run" for the late-night volunteers. I recorded their faces for roster;
+          nothing flagged at the time.
+        </div>
+        <div class="operator-report">
+          <span class="speaker">// SHIFT — OMAR — 03:02 AM</span>
+          Detected brief audio spike on CAM-05; environmental mic picked up shouting and a dropped
+          plastic crate. Classified as non-security noise and archived.
+        </div>
+      </div>
+
+      <!-- MAINTENANCE REQUESTS & MINOR INCIDENTS -->
+      <div class="evidence-block">
+        <h2>🔧 MAINTENANCE REQUESTS & MINOR INCIDENTS</h2>
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>DATE / TIME</th>
+              <th>AREA</th>
+              <th>ISSUE</th>
+              <th>RESOLUTION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="time">APR 25 — 10:11</td>
+              <td>BACKSTAGE</td>
+              <td>Loose cable near rigging</td>
+              <td class="green">SECURED</td>
+            </tr>
+            <tr>
+              <td class="time">APR 27 — 15:03</td>
+              <td>CAFETERIA</td>
+              <td>Spill: energy drink on floor</td>
+              <td class="green">CLEANED</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 01 — 12:22</td>
+              <td>MAIN HALL</td>
+              <td>Lost phone reported; found under chair at 14:40</td>
+              <td class="green">RETURNED</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 02 — 16:58</td>
+              <td>FRONT DESK</td>
+              <td>Clarification request for temporary badge design</td>
+              <td class="green">INFO PROVIDED</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 02 — 20:01</td>
+              <td>PARKING AREA</td>
+              <td>Van returned with duplicate key fob</td>
+              <td class="amber">LOGGED</td>
+            </tr>
+            <tr>
+              <td class="time">MAY 03 — 04:40</td>
+              <td>STAFF ROOM</td>
+              <td>Leftover catering box noted; labelled and stored</td>
+              <td class="green">STORED</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="annotation" style="margin-top: 12px">
+          <span class="label">&gt;_ NOTE</span>
+          Routine maintenance and small incidents are preserved to simulate a complete security
+          archive. These do not alter the incident timeline but help build a realistic record.
+        </div>
+      </div>
+
+      <!-- RANDOM SNAPSHOT ARCHIVE -->
+      <div class="evidence-block">
+        <h2>📸 RANDOM SNAPSHOT ARCHIVE</h2>
+        <div class="photo-evidence">
+          <div class="photo-mock">
+            <div class="scan-line"></div>
+            <div class="scene">
+              [CONFERENCE LOBBY — 00:10 AM]<br />Small crowd cluster around demo table; someone
+              drops a brochure; person in dark jacket helps pick it up. No badge visible.
+            </div>
+            <div
+              class="highlight-box"
+              style="right: 40%; top: 35%; width: 60px; height: 40px"
+            ></div>
+          </div>
+          <div class="photo-caption">
+            <span class="timestamp">📷 LOBBY SNAP — 00:10 AM — AUTO CAPTURE</span>
+            <p>
+              A small human interaction captured by an ambient snapshot camera. These images are
+              included to provide texture to the event timeline and are intentionally low detail.
+            </p>
+          </div>
         </div>
       </div>
     </div>
