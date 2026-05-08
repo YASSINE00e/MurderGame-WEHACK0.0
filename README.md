@@ -1,4 +1,4 @@
-# MurderGame WEHACK0.0
+# Murder Games
 
 This repository contains a cybersecurity-themed murder mystery game with two variants:
 
